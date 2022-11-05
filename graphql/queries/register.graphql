@@ -1,0 +1,10 @@
+mutation Register($newUsersInput: UsersInput!) {
+  createUsers(newUsersInput: $newUsersInput) {
+    accessToken
+    refreshToken
+    firstName
+    lastName
+    avatar
+    status
+  }
+}

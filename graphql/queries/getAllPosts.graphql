@@ -1,0 +1,17 @@
+query getAllPosts {
+  PostsList {
+    id
+    title
+    content
+    mainPicture
+    createdAt
+    validated
+    likes
+    intro
+    comments {
+      author
+      content
+      date
+    }
+  }
+}
