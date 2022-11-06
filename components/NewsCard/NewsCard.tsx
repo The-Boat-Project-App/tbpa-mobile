@@ -19,6 +19,7 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
   //* Regex to shorten text content
   const shortenedContent = content.replace(/^(.{60}[^\s]*).*/, '$1') + ' ...'
   const navigation = useNavigation()
+  console.log('test')
 
   return (
     <TouchableOpacity
