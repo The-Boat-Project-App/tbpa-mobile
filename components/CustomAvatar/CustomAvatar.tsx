@@ -1,4 +1,5 @@
-import { View, Image } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 interface CustomAvatar {
   avatarPicture: string
@@ -8,9 +9,15 @@ interface CustomAvatar {
 export const CustomAvatar: React.FunctionComponent<CustomAvatarProps> = ({
   avatarPicture,
   isConnected,
+  userId,
 }) => {
+  const navigation = useNavigation()
+
   return (
-    <View className='w-20 h-20 items-center justify-center'>
+    <TouchableOpacity
+      className='w-20 h-20 items-center justify-center'
+      onPress={() => navigation.navigate('User', { userId: userId })}
+    >
       <Image
         source={{
           uri: avatarPicture,
@@ -26,7 +33,7 @@ export const CustomAvatar: React.FunctionComponent<CustomAvatarProps> = ({
          border-white dark:border-gray-800 rounded-full'
         ></View>
       )}
-    </View>
+    </TouchableOpacity>
   )
 }
 

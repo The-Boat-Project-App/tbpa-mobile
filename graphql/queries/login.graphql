@@ -6,5 +6,6 @@ mutation Login($UsersLoginInput: UsersInput!) {
     lastName
     avatar
     status
+    email
   }
 }

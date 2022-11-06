@@ -12,7 +12,7 @@ import {
 
 import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { useEffect, useState } from 'react'
-import { deleteAccessToken, getAccessToken } from 'accessToken'
+import { deleteAccessToken, getAccessToken } from '../../accessToken'
 import SignInScreen from '@screens/SignInScreen/SignInScreen'
 import { useReactiveVar, gql, useQuery } from '@apollo/client'
 import { accessTokenVar } from '../../variables/accessToken'

@@ -1,0 +1,11 @@
+query getTripById($id: String!) {
+  Trip(id: $id) {
+    id
+    locations {
+      name
+      latitude
+      longitude
+      date
+    }
+  }
+}

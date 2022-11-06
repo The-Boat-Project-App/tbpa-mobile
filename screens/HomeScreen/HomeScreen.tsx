@@ -20,10 +20,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { CustomAvatar } from '@components/CustomAvatar/CustomAvatar'
 import HomeHeader from '@components/HomeHeader/HomeHeader'
 import SeeAll from '@components/SeeAll/SeeAll'
+import CrewDisplay from '@components/CrewDisplay/CrewDisplay'
 import NewsCard from '@components/NewsCard/NewsCard'
 import PostCard from '@components/PostCard/PostCard'
 import ThemesDisplay from '@components/ThemesDisplay/ThemesDisplay'
-import { useGetAllNewsQuery, useGetAllPostsQuery } from '../../graphql/graphql'
+import { useGetAllNewsQuery, useGetAllPostsQuery, useGetTripByIdQuery } from '../../graphql/graphql'
+import { boatLocationVar } from '../../variables/boatLocation'
 
 interface HomeScreenProps {}
 
@@ -35,15 +37,27 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   const navigation = useNavigation()
   const { data, refetch } = useGetAllNewsQuery()
   const { data: postsData, refetch: refetchPostsData } = useGetAllPostsQuery()
-
+  const { data: tripData, refetch: refetchTripData } = useGetTripByIdQuery({
+    variables: { id: '63627a16ad3d7a6d9999e8e9' },
+  })
+  if (tripData) {
+    boatLocationVar({
+      date: tripData.Trip.locations[0].date,
+      description: tripData.Trip.locations[0].description,
+      latitude: tripData.Trip.locations[0].latitude,
+      longitude: tripData.Trip.locations[0].longitude,
+      name: tripData.Trip.locations[0].name,
+    })
+  }
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     console.log('postsData', postsData)
+    console.log('tripData', tripData)
     wait(2000).then(() => {
-      refetch(), refetchPostsData(), setRefreshing(false)
+      refetch(), refetchPostsData(), refetchTripData(), setRefreshing(false)
     })
   }, [])
 
@@ -130,48 +144,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
           <Text className='text-xl  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
             Les compagnons de la Méditérranée
           </Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-            />
-            <CustomAvatar
-              isConnected={false}
-              avatarPicture='https://www.mensjournal.com/wp-content/uploads/mf/1280-selfie.jpg?w=900&quality=86&strip=all'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?cs=srgb&dl=pexels-italo-melo-2379005.jpg&fm=jpg'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://www.kcl.ac.uk/ImportedImages/Schools/Business/news-images/Elisa-Russo500x499.xe1f2b6fd.jpg?w=376&h=375&crop=368,208,8,35'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.generated.photos/2mP6i-lgiMAV6cANGDvtzOUmmpxBlXmgPTDbPXpXFXI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTEwNjQwLmpwZw.jpg'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.generated.photos/2mP6i-lgiMAV6cANGDvtzOUmmpxBlXmgPTDbPXpXFXI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTEwNjQwLmpwZw.jpg'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.generated.photos/2mP6i-lgiMAV6cANGDvtzOUmmpxBlXmgPTDbPXpXFXI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTEwNjQwLmpwZw.jpg'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.generated.photos/2mP6i-lgiMAV6cANGDvtzOUmmpxBlXmgPTDbPXpXFXI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTEwNjQwLmpwZw.jpg'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.generated.photos/2mP6i-lgiMAV6cANGDvtzOUmmpxBlXmgPTDbPXpXFXI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTEwNjQwLmpwZw.jpg'
-            />
-            <CustomAvatar
-              isConnected={true}
-              avatarPicture='https://images.generated.photos/2mP6i-lgiMAV6cANGDvtzOUmmpxBlXmgPTDbPXpXFXI/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTEwNjQwLmpwZw.jpg'
-            />
-          </ScrollView>
+          <CrewDisplay />
           <View className='flex flex-row space-x-10 w-screen  justify-between'>
             <View className='w-1/2 '>
               <Text className='text-xl  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>

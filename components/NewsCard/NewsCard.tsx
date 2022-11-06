@@ -31,9 +31,9 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
           uri: picture,
         }}
       />
-      <Text className='font-bold  text-xstext-xl  color-deepBlue font-raleway'>{date}</Text>
+      <Text className='font-bold  text-xstext-xl  color-grey font-raleway'>{date}</Text>
       <Text className='text-md  color-deepBlue font-ralewayBold'>{title}</Text>
-      <Text className='text-xs  color-deepBlue font-raleway'>{shortenedContent}</Text>
+      <Text className='text-xs  color-grey font-raleway'>{shortenedContent}</Text>
     </TouchableOpacity>
   )
 }

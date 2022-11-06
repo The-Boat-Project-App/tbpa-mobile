@@ -28,8 +28,7 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
   intro,
 }) => {
   //* Regex to shorten text content
-  console.log('intro dans postcard', intro)
-  const shortenedContent = intro.replace(/^(.{110}[^\s]*).*/, '$1') + ' ...'
+  const shortenedContent = intro.replace(/^(.{70}[^\s]*).*/, '$1') + ' ...'
   const navigation = useNavigation()
 
   return (
@@ -49,9 +48,7 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
       </View>
       <View className='w-3/5 pl-3 flex-col '>
         <Text className='color-deepBlue font-ralewayBold'>{title}</Text>
-        <Text className='text-xs  color-deepBlue font-raleway text-justify'>
-          {shortenedContent}
-        </Text>
+        <Text className='text-xs  color-grey font-raleway text-justify'>{shortenedContent}</Text>
         <View className='flex-row mt-2  self-end'>
           {likes > 0 && (
             <>

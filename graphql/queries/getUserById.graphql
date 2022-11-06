@@ -1,0 +1,17 @@
+query getUsersById($id: String!) {
+  userInfo(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    avatar
+    audio
+    bio
+    lang
+    status
+    country
+    createdAt
+    lastLogin
+    city
+  }
+}

@@ -1,10 +1,8 @@
 import { useRef, useState } from 'react'
 import {
-  Button,
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   Platform,
@@ -12,6 +10,8 @@ import {
   ScrollView,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+// import Icon from 'react-native-vector-icons/FontAwesome5'
+import { FontAwesome5 } from '@expo/vector-icons'
 
 import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor'
 import {
@@ -21,9 +21,10 @@ import {
   ListBulletIcon,
   PhotoIcon,
 } from 'react-native-heroicons/outline'
-import { Input, Image, TextArea } from 'native-base'
+import { Input, Image, TextArea, Button, Text, Icon, useToast, Box } from 'native-base'
 import * as ImagePicker from 'expo-image-picker'
 import { newPostVar } from '../../variables/newPost'
+import { flexbox } from 'native-base/lib/typescript/theme/styled-system'
 
 interface AddPostScreenProps {}
 
@@ -34,10 +35,12 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   const [descHTML, setDescHTML] = useState('')
   const [title, setTitle] = useState('')
   const [intro, setIntro] = useState('')
+  const [isButtonVisible, setIsButtonVisible] = useState(true)
 
   const [showDescError, setShowDescError] = useState(false)
   const [image, setImage] = useState('')
-  const [imageBase64, setImageBase64] = useState('')
+  const toast = useToast()
+  const id = 'test-toast'
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -48,16 +51,27 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
       quality: 1,
     })
     console.log('🖍🖍', result)
+
+    if (result.cancelled) {
+    }
     if (!result.cancelled) {
+      setIsButtonVisible(false)
       setImage(result.uri)
     }
   }
   const richTextHandle = (descriptionText) => {
-    if (descriptionText) {
+    if (
+      descriptionText &&
+      title &&
+      title !== '' &&
+      intro &&
+      intro !== '' &&
+      image &&
+      image !== ''
+    ) {
       setShowDescError(false)
       setDescHTML(descriptionText)
     } else {
-      setShowDescError(true)
       setDescHTML('')
     }
   }
@@ -66,7 +80,12 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
     const replaceHTML = descHTML.replace(/<(.|\n)*?>/g, '').trim()
     const replaceWhiteSpace = replaceHTML.replace(/&nbsp;/g, '').trim()
     if (replaceWhiteSpace.length <= 0) {
-      setShowDescError(true)
+      if (!toast.isActive(id)) {
+        toast.show({
+          id,
+          title: '🤔 Veuillez remplir tous les champs',
+        })
+      }
     } else {
       newPostVar({
         title: title,
@@ -75,7 +94,6 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
         intro: intro,
       })
       navigation.navigate('PreviewPost')
-      console.log(descHTML)
     }
   }
   return (
@@ -84,35 +102,61 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
         <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
           Proposer une publication
         </Text>
-        <Input size='lg' placeholder='Titre' onChangeText={(val) => setTitle(val)} value={title} />
-        <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
-          Introduction
-        </Text>
-        <TextArea
-          h={20}
-          placeholder='Introduction'
-          w='100%'
-          fontSize='md'
-          onChangeText={(val) => setIntro(val)}
-          value={intro}
+        <Input
+          size='lg'
+          maxLength={40}
+          placeholder='Titre'
+          onChangeText={(val) => setTitle(val)}
+          value={title}
         />
-        <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
-          Sélectionnez l'image principale
-        </Text>
-        <View className='flex-row justify-center'>
-          <PhotoIcon size='35' color='blue' onPress={pickImage} />
-        </View>
-        {image && image !== '' && (
-          <Image
-            className='self-center m-2 rounded-md'
-            width='200'
-            alt='uploaded image'
-            height='100'
-            resizeMode='cover'
-            source={{
-              uri: image,
-            }}
+        <View className='mb-2'>
+          <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
+            Introduction
+          </Text>
+          <TextArea
+            h={20}
+            maxLength={150}
+            placeholder='Introduction'
+            w='100%'
+            fontSize='md'
+            onChangeText={(val) => setIntro(val)}
+            value={intro}
           />
+        </View>
+        {/* <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
+          Sélectionnez l'image principale
+        </Text> */}
+        {isButtonVisible && (
+          <Button
+            variant='outline'
+            onPress={pickImage}
+            size='md'
+            leftIcon={<FontAwesome5 name='image' color='grey' size='20' />}
+          >
+            Sélectionnez l'image principale
+          </Button>
+        )}
+        {image && image !== '' && (
+          <>
+            <TouchableOpacity onPress={pickImage}>
+              <Image
+                className='self-center m-2 rounded-md'
+                width='200'
+                alt='uploaded image'
+                height='100'
+                resizeMode='cover'
+                source={{
+                  uri: image,
+                }}
+              />
+            </TouchableOpacity>
+            <Button onPress={submitContentHandle}>
+              <Text className='color-white'>Prévisualiser votre publication</Text>
+            </Button>
+          </>
+        )}
+        {showDescError && (
+          <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
         )}
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -165,10 +209,12 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
               }}
             />
           </View>
-          {showDescError && <Text style={styles.errorTextStyle}>Votre article est vide 🤔</Text>}
-          <TouchableOpacity style={styles.saveButtonStyle} onPress={submitContentHandle}>
-            <Text>Preview</Text>
-          </TouchableOpacity>
+          {showDescError && (
+            <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
+          )}
+          <Button onPress={submitContentHandle}>
+            <Text className='color-white'>Prévisualiser votre publication</Text>
+          </Button>
         </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
@@ -205,6 +251,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column-reverse',
     width: '100%',
     marginBottom: 10,
+    marginTop: 10,
   },
 
   richTextEditorStyle: {

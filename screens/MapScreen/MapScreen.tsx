@@ -38,8 +38,8 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
     <View style={styles.container}>
       <MapView
         initialRegion={{
-          latitude: 43.3,
-          longitude: 3.4,
+          latitude: boatLocationInApollo.latitude,
+          longitude: boatLocationInApollo.longitude,
           latitudeDelta: 15,
           longitudeDelta: 15,
         }}

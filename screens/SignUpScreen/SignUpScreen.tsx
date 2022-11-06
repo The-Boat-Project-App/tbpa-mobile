@@ -44,6 +44,7 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
         lastName: response.data.createUsers.lastName,
         avatar: response.data.createUsers.avatar,
         status: response.data.createUsers.status,
+        email: response.data.createUsers.email,
       })
 
       navigation.navigate('BottomTabs')

@@ -43,6 +43,7 @@ export type LoginResponse = {
   __typename?: 'LoginResponse';
   accessToken: Scalars['String'];
   avatar: Scalars['String'];
+  email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   refreshToken: Scalars['String'];
@@ -63,11 +64,9 @@ export type Mutation = {
   deleteUsers: Scalars['String'];
   loginUsers: LoginResponse;
   revokeRefreshTokensForUser: Scalars['Boolean'];
-  updateNews: News;
   updateNotes: Notes;
   updatePosts: Posts;
   updateTrip: Trip;
-  updateUsers: Users;
 };
 
 
@@ -131,11 +130,6 @@ export type MutationRevokeRefreshTokensForUserArgs = {
 };
 
 
-export type MutationUpdateNewsArgs = {
-  editNewsInput: NewsInput;
-};
-
-
 export type MutationUpdateNotesArgs = {
   editNotesInput: NotesInput;
 };
@@ -143,11 +137,6 @@ export type MutationUpdateNotesArgs = {
 
 export type MutationUpdatePostsArgs = {
   editPostsInput: PostsInput;
-};
-
-
-export type MutationUpdateUsersArgs = {
-  editUsersInput: UsersInput;
 };
 
 /** The News Model */
@@ -228,13 +217,16 @@ export type Query = {
   /** Get List of News */
   NewsList: Array<News>;
   Posts: Posts;
+  /** Get List of Posts By User */
+  PostsByUserList: Array<Posts>;
   /** Get List of Posts */
   PostsList: Array<Posts>;
+  Trip: Trip;
   notes: Notes;
   /** Get List of Notes */
   notesList: Array<Notes>;
   user: Users;
-  users: Users;
+  userInfo: Users;
   /** Get List of Users */
   usersList: Array<Users>;
 };
@@ -250,12 +242,22 @@ export type QueryPostsArgs = {
 };
 
 
+export type QueryPostsByUserListArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryTripArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryNotesArgs = {
   id: Scalars['String'];
 };
 
 
-export type QueryUsersArgs = {
+export type QueryUserInfoArgs = {
   id: Scalars['String'];
 };
 
@@ -263,6 +265,7 @@ export type RegisterResponse = {
   __typename?: 'RegisterResponse';
   accessToken: Scalars['String'];
   avatar: Scalars['String'];
+  email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   refreshToken: Scalars['String'];
@@ -304,12 +307,13 @@ export type Users = {
   audio?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   email?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['ID'];
-  lang?: Maybe<Scalars['String']>;
+  lang: Array<Scalars['String']>;
   lastLogin: Scalars['DateTime'];
   lastName: Scalars['String'];
   password?: Maybe<Scalars['String']>;
@@ -324,12 +328,13 @@ export type UsersInput = {
   audio?: InputMaybe<Scalars['String']>;
   avatar?: InputMaybe<Scalars['String']>;
   bio?: InputMaybe<Scalars['String']>;
+  city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
   email?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
-  lang?: InputMaybe<Scalars['String']>;
+  lang?: InputMaybe<Array<Scalars['String']>>;
   lastLogin?: InputMaybe<Scalars['DateTime']>;
   lastName?: InputMaybe<Scalars['String']>;
   password?: InputMaybe<Scalars['String']>;
@@ -364,7 +369,7 @@ export type GetAllPostsQuery = { __typename?: 'Query', PostsList: Array<{ __type
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', usersList: Array<{ __typename?: 'Users', id: string, email?: string | null, firstName: string, lastName: string }> };
+export type GetAllUsersQuery = { __typename?: 'Query', usersList: Array<{ __typename?: 'Users', id: string, email?: string | null, firstName: string, lastName: string, status?: string | null, avatar?: string | null }> };
 
 export type GetPostsByIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -372,6 +377,27 @@ export type GetPostsByIdQueryVariables = Exact<{
 
 
 export type GetPostsByIdQuery = { __typename?: 'Query', Posts: { __typename?: 'Posts', id: string, title: string, content?: string | null, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, likes?: number | null, author: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> } };
+
+export type GetPostsByUserQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetPostsByUserQuery = { __typename?: 'Query', PostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+
+export type GetTripByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetTripByIdQuery = { __typename?: 'Query', Trip: { __typename?: 'Trip', id: string, locations: Array<{ __typename?: 'LocationObject', name: string, latitude: number, longitude: number, date: any }> } };
+
+export type GetUsersByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetUsersByIdQuery = { __typename?: 'Query', userInfo: { __typename?: 'Users', id: string, firstName: string, lastName: string, email?: string | null, avatar?: string | null, audio?: string | null, bio?: string | null, lang: Array<string>, status?: string | null, country?: string | null, createdAt: any, lastLogin: any, city?: string | null } };
 
 export type GetUserDataQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -383,14 +409,14 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', loginUsers: { __typename?: 'LoginResponse', accessToken: string, refreshToken: string, firstName: string, lastName: string, avatar: string, status: string } };
+export type LoginMutation = { __typename?: 'Mutation', loginUsers: { __typename?: 'LoginResponse', accessToken: string, refreshToken: string, firstName: string, lastName: string, avatar: string, status: string, email: string } };
 
 export type RegisterMutationVariables = Exact<{
   newUsersInput: UsersInput;
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', createUsers: { __typename?: 'RegisterResponse', accessToken: string, refreshToken: string, firstName: string, lastName: string, avatar: string, status: string } };
+export type RegisterMutation = { __typename?: 'Mutation', createUsers: { __typename?: 'RegisterResponse', accessToken: string, refreshToken: string, firstName: string, lastName: string, avatar: string, status: string, email: string } };
 
 export type UpdateTripMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -561,6 +587,8 @@ export const GetAllUsersDocument = gql`
     email
     firstName
     lastName
+    status
+    avatar
   }
 }
     `;
@@ -644,6 +672,139 @@ export function useGetPostsByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
 export type GetPostsByIdQueryHookResult = ReturnType<typeof useGetPostsByIdQuery>;
 export type GetPostsByIdLazyQueryHookResult = ReturnType<typeof useGetPostsByIdLazyQuery>;
 export type GetPostsByIdQueryResult = Apollo.QueryResult<GetPostsByIdQuery, GetPostsByIdQueryVariables>;
+export const GetPostsByUserDocument = gql`
+    query getPostsByUser($id: String!) {
+  PostsByUserList(id: $id) {
+    id
+    title
+    mainPicture
+    createdAt
+    intro
+    likes
+    comments {
+      author
+      content
+      date
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPostsByUserQuery__
+ *
+ * To run a query within a React component, call `useGetPostsByUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostsByUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostsByUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPostsByUserQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPostsByUserQuery, GetPostsByUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetPostsByUserQuery, GetPostsByUserQueryVariables>(GetPostsByUserDocument, options);
+      }
+export function useGetPostsByUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPostsByUserQuery, GetPostsByUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetPostsByUserQuery, GetPostsByUserQueryVariables>(GetPostsByUserDocument, options);
+        }
+export type GetPostsByUserQueryHookResult = ReturnType<typeof useGetPostsByUserQuery>;
+export type GetPostsByUserLazyQueryHookResult = ReturnType<typeof useGetPostsByUserLazyQuery>;
+export type GetPostsByUserQueryResult = Apollo.QueryResult<GetPostsByUserQuery, GetPostsByUserQueryVariables>;
+export const GetTripByIdDocument = gql`
+    query getTripById($id: String!) {
+  Trip(id: $id) {
+    id
+    locations {
+      name
+      latitude
+      longitude
+      date
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTripByIdQuery__
+ *
+ * To run a query within a React component, call `useGetTripByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTripByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTripByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTripByIdQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetTripByIdQuery, GetTripByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetTripByIdQuery, GetTripByIdQueryVariables>(GetTripByIdDocument, options);
+      }
+export function useGetTripByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetTripByIdQuery, GetTripByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetTripByIdQuery, GetTripByIdQueryVariables>(GetTripByIdDocument, options);
+        }
+export type GetTripByIdQueryHookResult = ReturnType<typeof useGetTripByIdQuery>;
+export type GetTripByIdLazyQueryHookResult = ReturnType<typeof useGetTripByIdLazyQuery>;
+export type GetTripByIdQueryResult = Apollo.QueryResult<GetTripByIdQuery, GetTripByIdQueryVariables>;
+export const GetUsersByIdDocument = gql`
+    query getUsersById($id: String!) {
+  userInfo(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    avatar
+    audio
+    bio
+    lang
+    status
+    country
+    createdAt
+    lastLogin
+    city
+  }
+}
+    `;
+
+/**
+ * __useGetUsersByIdQuery__
+ *
+ * To run a query within a React component, call `useGetUsersByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUsersByIdQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetUsersByIdQuery, GetUsersByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetUsersByIdQuery, GetUsersByIdQueryVariables>(GetUsersByIdDocument, options);
+      }
+export function useGetUsersByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUsersByIdQuery, GetUsersByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetUsersByIdQuery, GetUsersByIdQueryVariables>(GetUsersByIdDocument, options);
+        }
+export type GetUsersByIdQueryHookResult = ReturnType<typeof useGetUsersByIdQuery>;
+export type GetUsersByIdLazyQueryHookResult = ReturnType<typeof useGetUsersByIdLazyQuery>;
+export type GetUsersByIdQueryResult = Apollo.QueryResult<GetUsersByIdQuery, GetUsersByIdQueryVariables>;
 export const GetUserDataDocument = gql`
     query getUserData {
   user {
@@ -688,6 +849,7 @@ export const LoginDocument = gql`
     lastName
     avatar
     status
+    email
   }
 }
     `;
@@ -726,6 +888,7 @@ export const RegisterDocument = gql`
     lastName
     avatar
     status
+    email
   }
 }
     `;

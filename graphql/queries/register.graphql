@@ -6,5 +6,6 @@ mutation Register($newUsersInput: UsersInput!) {
     lastName
     avatar
     status
+    email
   }
 }

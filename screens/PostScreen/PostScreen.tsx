@@ -46,7 +46,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
   const tagsStyles = {
     body: {
       whiteSpace: 'normal',
-      color: '#272E67',
+      color: '#494848',
     },
     a: {
       color: '#87BC23',
@@ -96,7 +96,11 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
           />
           <View className='flex-row justify-between mt-2 '>
             <View className='-mt-12'>
-              <CustomAvatar isConnected={true} avatarPicture={data?.Posts.author.avatar} />
+              <CustomAvatar
+                userId={data?.Posts.author.id}
+                isConnected={true}
+                avatarPicture={data?.Posts.author.avatar}
+              />
             </View>
             <View className='flex-row justify-center'>
               <Toggle isEnabled={false} />

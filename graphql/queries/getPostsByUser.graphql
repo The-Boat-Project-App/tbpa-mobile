@@ -1,0 +1,15 @@
+query getPostsByUser($id: String!) {
+  PostsByUserList(id: $id) {
+    id
+    title
+    mainPicture
+    createdAt
+    intro
+    likes
+    comments {
+      author
+      content
+      date
+    }
+  }
+}

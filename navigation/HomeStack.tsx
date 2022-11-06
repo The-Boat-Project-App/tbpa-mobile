@@ -5,6 +5,7 @@ import { getAccessToken } from '../accessToken'
 
 import SignUpScreen from '@screens/SignUpScreen/SignUpScreen'
 import SignInScreen from '@screens/SignInScreen/SignInScreen'
+import UserScreen from '@screens/UserScreen/UserScreen'
 import PostScreen from '@screens/PostScreen/PostScreen'
 import PreviewPostScreen from '@screens/PreviewPostScreen/PreviewPostScreen'
 import NewsScreen from '@screens/NewsScreen/NewsScreen'
@@ -43,6 +44,7 @@ const HomeStackNavigator = () => {
         <HomeStack.Screen name='PreviewPost' component={PreviewPostScreen} />
 
         <HomeStack.Screen name='News' component={NewsScreen} />
+        <HomeStack.Screen name='User' component={UserScreen} />
 
         <HomeStack.Screen name='Dev' component={DevScreen} />
         <HomeStack.Screen name='Mika' component={MikaScreen} />
