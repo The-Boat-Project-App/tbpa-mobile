@@ -1,6 +1,0 @@
-query getUserData {
-  user {
-    firstName
-    lastName
-  }
-}

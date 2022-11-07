@@ -1,5 +1,5 @@
 query getUsersById($id: String!) {
-  userInfo(id: $id) {
+  user(id: $id) {
     id
     firstName
     lastName

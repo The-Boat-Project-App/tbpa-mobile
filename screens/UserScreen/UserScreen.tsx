@@ -7,6 +7,8 @@ import Toggle from '@components/Toggle/Toggle'
 import { useGetUsersByIdQuery, useGetPostsByUserQuery } from '../../graphql/graphql'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
+import LottieView from 'lottie-react-native'
+
 import PostCard from '@components/PostCard/PostCard'
 
 import { HomeModernIcon, ChatBubbleLeftIcon } from 'react-native-heroicons/outline'
@@ -42,6 +44,19 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
     })
   }, [])
 
+  if (!data) {
+    return (
+      <View className='flex-1 items-center justify-center'>
+        <LottieView
+          style={{ width: width * 0.13 }}
+          source={require('../../assets/animations/faster_loader.json')}
+          autoPlay
+          loop
+        />
+      </View>
+    )
+  }
+
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader />
@@ -58,14 +73,14 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
         }
       >
         <View className=' bg-white flex flex-row mb-4 mt-2 justify-center'>
-          {data?.userInfo.firstName && (
+          {data?.user.firstName && (
             <View className='w-1/2 justify-center '>
               <Text className='text-xl color-deepBlue font-ralewayBold '>
                 👋 Bonjour !{'\n'}Je m'appelle{'\n'}
-                {data?.userInfo.firstName}
+                {data?.user.firstName}
               </Text>
               <Text className='text-sm color-grey font-raleway mb-8'>
-                Membre depuis {moment(data?.userInfo.createdAt).format('MMMM YYYY')}
+                Membre depuis {moment(data?.user.createdAt).format('MMMM YYYY')}
               </Text>
             </View>
           )}
@@ -73,7 +88,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
           <Image
             className='rounded-full w-40 h-40'
             source={{
-              uri: data?.userInfo.avatar,
+              uri: data?.user.avatar,
             }}
           />
         </View>
@@ -82,12 +97,12 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
             <Toggle isEnabled={false} />
           </View> */}
           <Text className='text-xl color-deepBlue font-ralewayBold mb-2'>À propos</Text>
-          <Text className='text-sm color-grey font-raleway mb-6'>{data?.userInfo.bio}</Text>
+          <Text className='text-sm color-grey font-raleway mb-6'>{data?.user.bio}</Text>
           <View className='flex flex-row items-center mb-6'>
             <ChatBubbleLeftIcon size={24} color='#272E67' />
             <Text className='text-sm color-grey font-raleway ml-1'>
               Langues :{' '}
-              {data?.userInfo.lang.map((language, index) => {
+              {data?.user.lang.map((language, index) => {
                 let formattedLanguage = ''
                 if (language === 'FR') {
                   formattedLanguage = 'Français'
@@ -106,7 +121,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
                   formattedLanguage = 'Italiano'
                 }
 
-                if (index == data?.userInfo.lang.length - 1) {
+                if (index == data?.user.lang.length - 1) {
                   return `${formattedLanguage}`
                 }
 
@@ -117,7 +132,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
           <View className='flex flex-row items-center mb-6'>
             <HomeModernIcon size={24} color='#272E67' />
             <Text className='text-sm color-grey font-raleway ml-1'>
-              Vient de : {`${data?.userInfo.city}, ${data?.userInfo.country}`}
+              Vient de : {`${data?.user.city}, ${data?.user.country}`}
             </Text>
           </View>
           {userPostsData?.PostsByUserList.length > 0 ? (
@@ -126,7 +141,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
             </Text>
           ) : (
             <Text className='text-xl color-deepBlue font-ralewayBold mb-3'>
-              {data?.userInfo.firstName} n'a encore rien publié.
+              {data?.user.firstName} n'a encore rien publié.
             </Text>
           )}
           {userPostsData?.PostsByUserList.map((postItem, index) => {

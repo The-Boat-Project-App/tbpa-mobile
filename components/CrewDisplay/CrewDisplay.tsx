@@ -10,7 +10,6 @@ const CrewDisplay = ({ likes, postId }) => {
   const { data, refetch } = useGetAllUsersQuery()
   const userDataInApollo = useReactiveVar(userDataVar)
 
-  console.log(data)
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       {data?.usersList.map((user, index) => {

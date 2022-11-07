@@ -9,6 +9,7 @@ interface PostCardProps {
   content: string
   likes: number
   intro: string
+  setIsLoading: Function
   comments: [
     {
       author: string
