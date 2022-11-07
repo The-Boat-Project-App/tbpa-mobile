@@ -26,6 +26,7 @@ import PostCard from '@components/PostCard/PostCard'
 import ThemesDisplay from '@components/ThemesDisplay/ThemesDisplay'
 import { useGetAllNewsQuery, useGetAllPostsQuery, useGetTripByIdQuery } from '../../graphql/graphql'
 import { boatLocationVar } from '../../variables/boatLocation'
+import LottieView from 'lottie-react-native'
 
 interface HomeScreenProps {}
 
@@ -64,6 +65,29 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   console.log('API_URL in .env', API_URL)
   // ! Changement locale Momentjs en global en même temps que la langue ?
   moment.updateLocale('fr', localization)
+
+  if (!data || !postsData || !tripData) {
+    navigation.setOptions({
+      tabBarStyle: { display: 'none' },
+    })
+
+    return (
+      <View className='flex-1 items-center justify-center'>
+        <LottieView
+          style={{ width: width * 0.13 }}
+          source={require('../../assets/animations/faster_loader.json')}
+          autoPlay
+          loop
+        />
+      </View>
+    )
+  }
+
+  if (data && postsData && tripData) {
+    navigation.setOptions({
+      tabBarStyle: { display: 'flex' },
+    })
+  }
 
   return (
     <SafeAreaView className='flex-1 bg-white'>

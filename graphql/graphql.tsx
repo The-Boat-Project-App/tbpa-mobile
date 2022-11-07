@@ -226,7 +226,6 @@ export type Query = {
   /** Get List of Notes */
   notesList: Array<Notes>;
   user: Users;
-  userInfo: Users;
   /** Get List of Users */
   usersList: Array<Users>;
 };
@@ -257,7 +256,7 @@ export type QueryNotesArgs = {
 };
 
 
-export type QueryUserInfoArgs = {
+export type QueryUserArgs = {
   id: Scalars['String'];
 };
 
@@ -397,12 +396,7 @@ export type GetUsersByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUsersByIdQuery = { __typename?: 'Query', userInfo: { __typename?: 'Users', id: string, firstName: string, lastName: string, email?: string | null, avatar?: string | null, audio?: string | null, bio?: string | null, lang: Array<string>, status?: string | null, country?: string | null, createdAt: any, lastLogin: any, city?: string | null } };
-
-export type GetUserDataQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetUserDataQuery = { __typename?: 'Query', user: { __typename?: 'Users', firstName: string, lastName: string } };
+export type GetUsersByIdQuery = { __typename?: 'Query', user: { __typename?: 'Users', id: string, firstName: string, lastName: string, email?: string | null, avatar?: string | null, audio?: string | null, bio?: string | null, lang: Array<string>, status?: string | null, country?: string | null, createdAt: any, lastLogin: any, city?: string | null } };
 
 export type LoginMutationVariables = Exact<{
   UsersLoginInput: UsersInput;
@@ -760,7 +754,7 @@ export type GetTripByIdLazyQueryHookResult = ReturnType<typeof useGetTripByIdLaz
 export type GetTripByIdQueryResult = Apollo.QueryResult<GetTripByIdQuery, GetTripByIdQueryVariables>;
 export const GetUsersByIdDocument = gql`
     query getUsersById($id: String!) {
-  userInfo(id: $id) {
+  user(id: $id) {
     id
     firstName
     lastName
@@ -805,41 +799,6 @@ export function useGetUsersByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQuer
 export type GetUsersByIdQueryHookResult = ReturnType<typeof useGetUsersByIdQuery>;
 export type GetUsersByIdLazyQueryHookResult = ReturnType<typeof useGetUsersByIdLazyQuery>;
 export type GetUsersByIdQueryResult = Apollo.QueryResult<GetUsersByIdQuery, GetUsersByIdQueryVariables>;
-export const GetUserDataDocument = gql`
-    query getUserData {
-  user {
-    firstName
-    lastName
-  }
-}
-    `;
-
-/**
- * __useGetUserDataQuery__
- *
- * To run a query within a React component, call `useGetUserDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetUserDataQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetUserDataQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserDataQuery, GetUserDataQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<GetUserDataQuery, GetUserDataQueryVariables>(GetUserDataDocument, options);
-      }
-export function useGetUserDataLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserDataQuery, GetUserDataQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<GetUserDataQuery, GetUserDataQueryVariables>(GetUserDataDocument, options);
-        }
-export type GetUserDataQueryHookResult = ReturnType<typeof useGetUserDataQuery>;
-export type GetUserDataLazyQueryHookResult = ReturnType<typeof useGetUserDataLazyQuery>;
-export type GetUserDataQueryResult = Apollo.QueryResult<GetUserDataQuery, GetUserDataQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($UsersLoginInput: UsersInput!) {
   loginUsers(UsersLoginInput: $UsersLoginInput) {

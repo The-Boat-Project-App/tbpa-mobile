@@ -4,7 +4,7 @@ import { useReactiveVar } from '@apollo/client'
 
 import { useNavigation } from '@react-navigation/native'
 import CustomButton from '@components/CustomButton/CustomButton'
-import { useRegisterMutation, useGetUserDataQuery } from '../../graphql/graphql'
+import { useRegisterMutation } from '../../graphql/graphql'
 import { setAccessToken } from '../../accessToken'
 import { accessTokenVar } from '../../variables/accessToken'
 import { userDataVar } from '../../variables/userData'
