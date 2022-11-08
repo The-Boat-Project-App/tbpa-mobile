@@ -125,6 +125,8 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
                 <NewsCard
                   key={index}
                   title={item.title}
+                  id={item.id}
+                  intro={item.intro}
                   picture={item.mainPicture}
                   content={item.content}
                   date={

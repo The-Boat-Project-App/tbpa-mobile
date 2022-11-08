@@ -146,6 +146,7 @@ export type News = {
   content?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  intro?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;
   mainPicture?: Maybe<Scalars['String']>;
   title: Scalars['String'];
@@ -156,6 +157,7 @@ export type NewsInput = {
   content?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
   id?: InputMaybe<Scalars['ID']>;
+  intro?: InputMaybe<Scalars['String']>;
   isActive?: InputMaybe<Scalars['Boolean']>;
   mainPicture?: InputMaybe<Scalars['String']>;
   title: Scalars['String'];
@@ -358,7 +360,7 @@ export type CreateNewPostMutation = { __typename?: 'Mutation', createPosts: { __
 export type GetAllNewsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllNewsQuery = { __typename?: 'Query', NewsList: Array<{ __typename?: 'News', id: string, title: string, author: string, content?: string | null, mainPicture?: string | null, createdAt: any, isActive?: boolean | null }> };
+export type GetAllNewsQuery = { __typename?: 'Query', NewsList: Array<{ __typename?: 'News', id: string, title: string, author: string, content?: string | null, mainPicture?: string | null, createdAt: any, isActive?: boolean | null, intro?: string | null }> };
 
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -369,6 +371,13 @@ export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllUsersQuery = { __typename?: 'Query', usersList: Array<{ __typename?: 'Users', id: string, email?: string | null, firstName: string, lastName: string, status?: string | null, avatar?: string | null }> };
+
+export type GetNewsByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetNewsByIdQuery = { __typename?: 'Query', News: { __typename?: 'News', id: string, title: string, content?: string | null, mainPicture?: string | null, createdAt: any, intro?: string | null } };
 
 export type GetPostsByIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -498,6 +507,7 @@ export const GetAllNewsDocument = gql`
     mainPicture
     createdAt
     isActive
+    intro
   }
 }
     `;
@@ -613,6 +623,46 @@ export function useGetAllUsersLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
 export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
 export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
+export const GetNewsByIdDocument = gql`
+    query getNewsById($id: String!) {
+  News(id: $id) {
+    id
+    title
+    content
+    mainPicture
+    createdAt
+    intro
+  }
+}
+    `;
+
+/**
+ * __useGetNewsByIdQuery__
+ *
+ * To run a query within a React component, call `useGetNewsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNewsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNewsByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetNewsByIdQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetNewsByIdQuery, GetNewsByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetNewsByIdQuery, GetNewsByIdQueryVariables>(GetNewsByIdDocument, options);
+      }
+export function useGetNewsByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetNewsByIdQuery, GetNewsByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetNewsByIdQuery, GetNewsByIdQueryVariables>(GetNewsByIdDocument, options);
+        }
+export type GetNewsByIdQueryHookResult = ReturnType<typeof useGetNewsByIdQuery>;
+export type GetNewsByIdLazyQueryHookResult = ReturnType<typeof useGetNewsByIdLazyQuery>;
+export type GetNewsByIdQueryResult = Apollo.QueryResult<GetNewsByIdQuery, GetNewsByIdQueryVariables>;
 export const GetPostsByIdDocument = gql`
     query getPostsById($id: String!) {
   Posts(id: $id) {
