@@ -1,31 +1,52 @@
 import React, { useState, useCallback } from 'react'
 import { View, Text, Image, useWindowDimensions, ScrollView, RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
+import RenderHtml from 'react-native-render-html'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
-import CustomAvatar from '@components/CustomAvatar/CustomAvatar'
 import Toggle from '@components/Toggle/Toggle'
-import Applause from '@components/Applause/Applause'
-import { BookmarkIcon } from 'react-native-heroicons/solid'
-import { BookmarkIcon as BookmarkIconOutline } from 'react-native-heroicons/outline'
+import { useGetNewsByIdQuery } from '../../graphql/graphql'
+import moment from 'moment'
+import localization from 'moment/locale/fr'
 
 interface NewsScreenProps {}
 
-const NewsScreen: React.FunctionComponent<NewsScreenProps> = ({}) => {
+const NewsScreen: React.FunctionComponent<NewsScreenProps> = (props) => {
+  const { data, refetch } = useGetNewsByIdQuery({
+    variables: { id: props.route.params.newsId },
+  })
+  console.log('data dans postscreen', data)
+
+  console.log(props.route.params.newsId)
+  const [likes, setLikes] = useState<number>(data?.News.likes)
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
   const { height, width } = useWindowDimensions()
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
+  console.log('rerender data dans newscreen', data)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
+    console.log('data dans onrefresh sur newsScreen', data)
 
     wait(2000).then(() => {
-      refetch(), refetchPostsData(), setRefreshing(false)
+      refetch(), setRefreshing(false)
     })
   }, [])
 
+  const source = {
+    html: data?.News.content,
+  }
+  // Modification du style du rendu HTML
+  const tagsStyles = {
+    body: {
+      whiteSpace: 'normal',
+      color: '#494848',
+    },
+    a: {
+      color: '#87BC23',
+    },
+  }
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader />
@@ -41,58 +62,31 @@ const NewsScreen: React.FunctionComponent<NewsScreenProps> = ({}) => {
         }
       >
         <View className='justify-center bg-white px-3 '>
-          <Text className='font-bold text-lg color-cyan-900 ml-3 mb-4 text-center'>
-            On part bientôt !
-          </Text>
+          <View className='self-end mr-2  z-40'></View>
           <Image
             className='h-40 rounded-md '
             source={{
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Vents_du_Sud_-_Le_Grau-du-Roi_03.jpg/1600px-Vents_du_Sud_-_Le_Grau-du-Roi_03.jpg',
+              uri: data?.News.mainPicture,
             }}
           />
-          <View className='flex-row justify-between mt-2 '>
-            <View className='-mt-12'>
-              <CustomAvatar
-                isConnected={true}
-                avatarPicture='https://cache.desktopnexus.com/thumbseg/2487/2487414-bigthumbnail.jpg'
-              />
-            </View>
-            <View className='flex-row justify-center'>
-              <Toggle isEnabled={false} />
-            </View>
-          </View>
-          <Text className='font-bold text-md color-cyan-900 '>Publié par Antoine</Text>
-          <Text className='font-bold text-xs color-cyan-900  mb-4'>Aujourd'hui, 14h02</Text>
-          <Text className=' text-xs color-cyan-900  mb-4 text-justify'>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown
-            printer took a galley of type and scrambled it to make a type specimen book. It has
-            survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-            l'augmentation du nombre de plaisanciers en France, le mouillage des navires est un
-            enjeu économique, mais aussi environnemental,Face à l'augmentation du nombre de
-            plaisanciers en France, le mouillage des navires est un enjeu économique, mais aussi
-            environnemental,Face à l'augmentation du nombre de plaisanciers en France, le mouillage
-            des navires est un enjeu économique, mais aussi environnemental,Face à l'augmentation du
-            nombre de plaisanciers en France, le mouillage des navires est un enjeu économique, mais
-            aussi environnemental,Face à l'augmentation du nombre de plaisanciers en France, le
-            mouillage des navires est un enjeu économique, mais aussi environnemental,Face à
-            l'augmentation du nombre de plaisanciers en France, le mouillage des navires est un
-            enjeu économique, mais aussi environnemental,Face à l'augmentation du nombre de
-            plaisanciers en France, le mouillage des navires est un enjeu économique, mais aussi
-            environnemental,Face à l'augmentation du nombre de plaisanciers en France, le mouillage
-            des navires est un enjeu économique, mais aussi environnemental,Face à l'augmentation du
-            nombre de plaisanciers en France, le mouillage des navires est un enjeu économique, mais
-            aussi environnemental,Face à l'augmentation du nombre de plaisanciers en France, le
-            mouillage des navires est un enjeu économique, mais aussi environnemental,Face à
-            l'augmentation du nombre de plaisanciers en France, le mouillage des navires est un
-            enjeu économique, mais aussi environnemental,
-          </Text>
+          {data?.News.title && (
+            <>
+              <Text className='text-xl color-deepBlue font-ralewayBold  ml-3 mt-6 mb-2 text-center'>
+                {data?.News.title}
+              </Text>
+              <Text className='text-xs color-deepBlue font-raleway  mb-6 text-center '>
+                {moment().diff(data?.News.createdAt, 'days') <= 2
+                  ? moment(data?.News.createdAt).fromNow()
+                  : moment(data?.News.createdAt).format('LL')}
+              </Text>
+            </>
+          )}
+
+          {data?.News.content && (
+            <RenderHtml contentWidth={width} tagsStyles={tagsStyles} source={source} />
+          )}
         </View>
       </ScrollView>
-      <Applause />
     </SafeAreaView>
   )
 }
