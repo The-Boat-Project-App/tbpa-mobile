@@ -18,7 +18,6 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
   const { data, refetch } = useGetPostsByIdQuery({
     variables: { id: props.route.params.postId },
   })
-  console.log('data dans postscreen', data)
 
   console.log(props.route.params.postId)
   const [likes, setLikes] = useState<number>(data?.Posts.likes)
@@ -40,7 +39,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
   }, [])
 
   const source = {
-    html: data?.Posts.content,
+    html: `<div style="text-align:justify;">${data?.Posts.content}</div>`,
   }
   // Modification du style du rendu HTML
   const tagsStyles = {

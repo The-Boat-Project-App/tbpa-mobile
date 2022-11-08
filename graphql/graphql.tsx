@@ -377,7 +377,7 @@ export type GetNewsByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetNewsByIdQuery = { __typename?: 'Query', News: { __typename?: 'News', id: string, title: string, content?: string | null, mainPicture?: string | null, createdAt: any, intro?: string | null } };
+export type GetNewsByIdQuery = { __typename?: 'Query', News: { __typename?: 'News', id: string, title: string, author: string, content?: string | null, mainPicture?: string | null, createdAt: any, isActive?: boolean | null, intro?: string | null } };
 
 export type GetPostsByIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -628,9 +628,11 @@ export const GetNewsByIdDocument = gql`
   News(id: $id) {
     id
     title
+    author
     content
     mainPicture
     createdAt
+    isActive
     intro
   }
 }
