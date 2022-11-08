@@ -2,9 +2,11 @@ query getNewsById($id: String!) {
   News(id: $id) {
     id
     title
+    author
     content
     mainPicture
     createdAt
+    isActive
     intro
   }
 }

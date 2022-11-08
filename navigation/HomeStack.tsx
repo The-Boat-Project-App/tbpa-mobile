@@ -10,6 +10,8 @@ import PostScreen from '@screens/PostScreen/PostScreen'
 import PreviewPostScreen from '@screens/PreviewPostScreen/PreviewPostScreen'
 import NewsScreen from '@screens/NewsScreen/NewsScreen'
 import AllPostsScreen from '@screens/AllPostsScreen/AllPostsScreen'
+import AllNewsScreen from '@screens/AllNewsScreen/AllNewsScreen'
+
 import BottomTabs from './Tabs'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
@@ -40,11 +42,18 @@ const HomeStackNavigator = () => {
         <HomeStack.Screen name='SignUp' component={SignUpScreen} />
         <HomeStack.Screen name='Post' component={PostScreen} />
         <HomeStack.Screen name='AllPosts' component={AllPostsScreen} />
+        <HomeStack.Screen name='AllNews' component={AllNewsScreen} />
 
         <HomeStack.Screen name='PreviewPost' component={PreviewPostScreen} />
 
         <HomeStack.Screen name='News' component={NewsScreen} />
-        <HomeStack.Screen name='User' component={UserScreen} />
+        <HomeStack.Screen
+          name='User'
+          component={UserScreen}
+          options={{
+            animationTypeForReplace: 'pop',
+          }}
+        />
 
         <HomeStack.Screen name='Dev' component={DevScreen} />
         <HomeStack.Screen name='Mika' component={MikaScreen} />
