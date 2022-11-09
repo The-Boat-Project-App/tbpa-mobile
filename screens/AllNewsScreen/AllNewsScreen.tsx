@@ -10,7 +10,11 @@ import {
 } from 'react-native'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import { useGetAllNewsQuery } from '../../graphql/graphql'
-import NewsCard from '@components/NewsCard/NewsCard'
+import NewsCardHorizontal from '@components/NewsCardHorizontal/NewsCardHorizontal'
+import moment from 'moment'
+import LoadingView from '@components/LoadingView/LoadingView'
+
+import localization from 'moment/locale/fr'
 interface AllNewsScreenProps {}
 
 const AllNewsScreen: React.FunctionComponent<AllNewsScreenProps> = (props) => {
@@ -28,12 +32,15 @@ const AllNewsScreen: React.FunctionComponent<AllNewsScreenProps> = (props) => {
       refetchNewsData(), setRefreshing(false)
     })
   }, [])
+  if (!newsData) {
+    return <LoadingView />
+  }
 
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader />
       <View className='flex flex-row justify-center'>
-        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-5'>Actualités</Text>
+        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-3'>Actualités</Text>
       </View>
       <ScrollView
         className='mx-3'
@@ -49,7 +56,12 @@ const AllNewsScreen: React.FunctionComponent<AllNewsScreenProps> = (props) => {
       >
         {newsData?.NewsList.map((newsItem, index) => {
           return (
-            <NewsCard
+            <NewsCardHorizontal
+              date={
+                moment().diff(newsItem.createdAt, 'days') <= 2
+                  ? moment(newsItem.createdAt).fromNow()
+                  : moment(newsItem.createdAt).format('LL')
+              }
               key={index}
               id={newsItem.id}
               title={newsItem.title}
@@ -58,30 +70,6 @@ const AllNewsScreen: React.FunctionComponent<AllNewsScreenProps> = (props) => {
             />
           )
         })}
-        {data && (
-          <FlatList
-            horizontal={true}
-            inverted={true}
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
-            data={data.NewsList}
-            renderItem={({ item, index }) => (
-              <NewsCard
-                key={index}
-                title={item.title}
-                id={item.id}
-                intro={item.intro}
-                picture={item.mainPicture}
-                content={item.content}
-                date={
-                  moment().diff(item.createdAt, 'days') <= 2
-                    ? moment(item.createdAt).fromNow()
-                    : moment(item.createdAt).format('LL')
-                }
-              />
-            )}
-          />
-        )}
       </ScrollView>
     </SafeAreaView>
   )

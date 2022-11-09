@@ -11,6 +11,7 @@ import { BookmarkIcon as BookmarkIconOutline } from 'react-native-heroicons/outl
 import { useGetPostsByIdQuery } from '../../graphql/graphql'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
+import LoadingView from '@components/LoadingView/LoadingView'
 
 interface PostScreenProps {}
 
@@ -50,6 +51,9 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
     a: {
       color: '#87BC23',
     },
+  }
+  if (!data) {
+    return <LoadingView />
   }
   return (
     <SafeAreaView className='flex-1 bg-white'>

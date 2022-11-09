@@ -16,7 +16,7 @@ import Toggle from '@components/Toggle/Toggle'
 import { useGetNewsByIdQuery, useGetAllNewsQuery } from '../../graphql/graphql'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
-import LottieView from 'lottie-react-native'
+import LoadingView from '@components/LoadingView/LoadingView'
 
 interface NewsScreenProps {}
 
@@ -61,16 +61,7 @@ const NewsScreen: React.FunctionComponent<NewsScreenProps> = (props) => {
   }
 
   if (!data || !newsData) {
-    return (
-      <View className='flex-1 items-center justify-center'>
-        <LottieView
-          style={{ width: width * 0.13 }}
-          source={require('../../assets/animations/faster_loader.json')}
-          autoPlay
-          loop
-        />
-      </View>
-    )
+    return <LoadingView />
   }
   return (
     <SafeAreaView className='flex-1 bg-white'>

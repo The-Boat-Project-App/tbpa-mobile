@@ -11,7 +11,7 @@ const CrewDisplay = ({ likes, postId }) => {
   const userDataInApollo = useReactiveVar(userDataVar)
 
   return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} className='mb-3'>
       {data?.usersList.map((user, index) => {
         if (user.status === 'crew' && user.email !== userDataInApollo.email) {
           return (

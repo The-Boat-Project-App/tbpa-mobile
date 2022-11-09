@@ -7,7 +7,7 @@ import Toggle from '@components/Toggle/Toggle'
 import { useGetUsersByIdQuery, useGetPostsByUserQuery } from '../../graphql/graphql'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
-import LottieView from 'lottie-react-native'
+import LoadingView from '@components/LoadingView/LoadingView'
 
 import PostCard from '@components/PostCard/PostCard'
 
@@ -45,16 +45,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
   }, [])
 
   if (!data) {
-    return (
-      <View className='flex-1 items-center justify-center'>
-        <LottieView
-          style={{ width: width * 0.13 }}
-          source={require('../../assets/animations/faster_loader.json')}
-          autoPlay
-          loop
-        />
-      </View>
-    )
+    return <LoadingView />
   }
 
   return (

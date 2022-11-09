@@ -1,4 +1,4 @@
-import { View, Image, TouchableOpacity, Text } from 'react-native'
+import { Image, TouchableOpacity, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 interface NewsCard {
@@ -9,7 +9,7 @@ interface NewsCard {
   content: string
 }
 
-export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
+export const NewsCardHorizontal: React.FunctionComponent<NewsCardProps> = ({
   id,
   picture,
   date,
@@ -19,20 +19,19 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
 }) => {
   //* Regex to shorten text content
   console.log(intro)
-  let shortenedContent = intro.replace(/^(.{80}[^\s]*).*/, '$1')
-  if (shortenedContent.length > 80) {
+  let shortenedContent = intro.replace(/^(.{60}[^\s]*).*/, '$1')
+  if (shortenedContent.length > 60) {
     shortenedContent += ' ...'
   }
   const navigation = useNavigation()
-  console.log('tessst')
-  console.log('id dans newscard ', id)
+
   return (
     <TouchableOpacity
-      className='w-40 p-0 ml-3 '
+      className=' p-0  flex flew-row mt-6'
       onPress={() => navigation.navigate('News', { newsId: id })}
     >
       <Image
-        className='rounded-md w-full h-16'
+        className='rounded-md w-full h-32'
         source={{
           uri: picture,
         }}
@@ -44,4 +43,4 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
   )
 }
 
-export default NewsCard
+export default NewsCardHorizontal
