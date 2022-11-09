@@ -11,6 +11,8 @@ import {
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import { useGetAllPostsQuery } from '../../graphql/graphql'
 import PostCard from '@components/PostCard/PostCard'
+import LoadingView from '@components/LoadingView/LoadingView'
+
 interface AllPostsScreenProps {}
 
 const AllPostsScreen: React.FunctionComponent<AllPostsScreenProps> = (props) => {
@@ -32,7 +34,9 @@ const AllPostsScreen: React.FunctionComponent<AllPostsScreenProps> = (props) => 
       refetchPostsData(), setRefreshing(false)
     })
   }, [])
-
+  if (!postsData) {
+    return <LoadingView />
+  }
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader />

@@ -77,9 +77,22 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   }
 
   const submitContentHandle = () => {
+    console.log('title.length', title.length)
+    console.log('title', title)
+    console.log('intro', intro)
+    console.log('image', image)
+
     const replaceHTML = descHTML.replace(/<(.|\n)*?>/g, '').trim()
     const replaceWhiteSpace = replaceHTML.replace(/&nbsp;/g, '').trim()
-    if (replaceWhiteSpace.length <= 0) {
+    console.log('replaceWhiteSpace', replaceWhiteSpace)
+    if (
+      replaceWhiteSpace.length <= 0 ||
+      !title ||
+      title.length === 0 ||
+      (!intro && intro.length === 0) ||
+      !image ||
+      image.length === 0
+    ) {
       if (!toast.isActive(id)) {
         toast.show({
           id,
@@ -98,42 +111,41 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   }
   return (
     <SafeAreaView className={` bg-white ${Platform.OS === 'ios' ? 'pb-0 -mt-4' : 'pb-1 -mt-1'}  `}>
-      <ScrollView className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}>
-        <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
+      >
+        <Text className='text-md color-deepBlue font-ralewayBold  mt-4 ml-3 mb-2 text-center'>
           Proposer une publication
         </Text>
         <Input
-          size='lg'
+          size='xl'
           maxLength={40}
           placeholder='Titre'
           onChangeText={(val) => setTitle(val)}
           value={title}
         />
-        <View className='mb-2'>
-          <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
-            Introduction
-          </Text>
+        <View className='mb-2 mt-2'>
           <TextArea
             h={20}
+            size='lg'
             maxLength={150}
             placeholder='Introduction'
             w='100%'
-            fontSize='md'
+            // fontSize='md'
             onChangeText={(val) => setIntro(val)}
             value={intro}
           />
         </View>
-        {/* <Text className='text-xl color-deepBlue font-ralewayBold  mt-2 ml-3 my-2 text-center'>
-          Sélectionnez l'image principale
-        </Text> */}
+
         {isButtonVisible && (
-          <Button
-            variant='outline'
-            onPress={pickImage}
-            size='md'
-            leftIcon={<FontAwesome5 name='image' color='grey' size='20' />}
-          >
-            Sélectionnez l'image principale
+          <Button variant='outline' onPress={pickImage}>
+            <View className='flex flex-row items-center justify-center'>
+              <Text className='color-grey '>
+                <PhotoIcon size='24' color='grey' />
+                Sélectionnez l'image principale
+              </Text>
+            </View>
           </Button>
         )}
         {image && image !== '' && (
@@ -155,9 +167,9 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
             </Button>
           </>
         )}
-        {showDescError && (
+        {/* {showDescError && (
           <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
-        )}
+        )} */}
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ flex: 1 }}
@@ -209,9 +221,9 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
               }}
             />
           </View>
-          {showDescError && (
+          {/* {showDescError && (
             <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
-          )}
+          )} */}
           <Button onPress={submitContentHandle}>
             <Text className='color-white'>Prévisualiser votre publication</Text>
           </Button>

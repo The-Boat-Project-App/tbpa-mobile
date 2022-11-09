@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
 import { HomeStackNavigatorParamList } from './types'
 import { getAccessToken } from '../accessToken'
 
@@ -26,6 +27,17 @@ import AboubacarScreen from '@screens/DevScreens/AboubacarScreen/AboubacarScreen
 import MikaScreen from '@screens/DevScreens/MikaScreen/MikaScreen'
 //* DEV SCREENS
 const HomeStack = createNativeStackNavigator<HomeStackNavigatorParamList>()
+const config = {
+  animation: 'spring',
+  config: {
+    stiffness: 1000,
+    damping: 500,
+    mass: 3,
+    overshootClamping: true,
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 0.01,
+  },
+}
 
 const HomeStackNavigator = () => {
   return (
@@ -40,18 +52,55 @@ const HomeStackNavigator = () => {
         <HomeStack.Screen name='BottomTabs' component={BottomTabs} />
         <HomeStack.Screen name='SignIn' component={SignInScreen} />
         <HomeStack.Screen name='SignUp' component={SignUpScreen} />
-        <HomeStack.Screen name='Post' component={PostScreen} />
-        <HomeStack.Screen name='AllPosts' component={AllPostsScreen} />
-        <HomeStack.Screen name='AllNews' component={AllNewsScreen} />
+        <HomeStack.Screen
+          name='Post'
+          component={PostScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <HomeStack.Screen
+          name='AllPosts'
+          component={AllPostsScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <HomeStack.Screen
+          name='AllNews'
+          component={AllNewsScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
 
-        <HomeStack.Screen name='PreviewPost' component={PreviewPostScreen} />
+        <HomeStack.Screen
+          name='PreviewPost'
+          component={PreviewPostScreen}
+          options={{
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
 
-        <HomeStack.Screen name='News' component={NewsScreen} />
+        <HomeStack.Screen
+          name='News'
+          component={NewsScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
         <HomeStack.Screen
           name='User'
           component={UserScreen}
           options={{
-            animationTypeForReplace: 'pop',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
           }}
         />
 

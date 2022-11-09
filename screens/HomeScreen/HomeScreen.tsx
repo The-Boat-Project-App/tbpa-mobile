@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
+import LoadingView from '@components/LoadingView/LoadingView'
 
 import {
   useWindowDimensions,
@@ -71,16 +72,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
       tabBarStyle: { display: 'none' },
     })
 
-    return (
-      <View className='flex-1 items-center justify-center'>
-        <LottieView
-          style={{ width: width * 0.13 }}
-          source={require('../../assets/animations/faster_loader.json')}
-          autoPlay
-          loop
-        />
-      </View>
-    )
+    return <LoadingView />
   }
 
   if (data && postsData && tripData) {
@@ -116,8 +108,8 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
           </View>
           {data && (
             <FlatList
+              className='mb-3'
               horizontal={true}
-              inverted={true}
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item) => item.id}
               data={data.NewsList}
