@@ -20,21 +20,24 @@ import {
   LinkIcon,
   ListBulletIcon,
   PhotoIcon,
+  EyeIcon,
 } from 'react-native-heroicons/outline'
-import { Input, Image, TextArea, Button, Text, Icon, useToast, Box } from 'native-base'
+import { Input, Image, TextArea, Button, Text, Icon, useToast, Box, IconButton } from 'native-base'
 import * as ImagePicker from 'expo-image-picker'
 import { newPostVar } from '../../variables/newPost'
 import { flexbox } from 'native-base/lib/typescript/theme/styled-system'
+import { useReactiveVar } from '@apollo/client'
 
 interface AddPostScreenProps {}
 
 const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   const richText = useRef()
   const navigation = useNavigation()
+  const existingNewPostData = useReactiveVar(newPostVar)
 
   const [descHTML, setDescHTML] = useState('')
-  const [title, setTitle] = useState('')
-  const [intro, setIntro] = useState('')
+  const [title, setTitle] = useState(existingNewPostData.title)
+  const [intro, setIntro] = useState(existingNewPostData.intro)
   const [isButtonVisible, setIsButtonVisible] = useState(true)
 
   const [showDescError, setShowDescError] = useState(false)
@@ -60,15 +63,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
     }
   }
   const richTextHandle = (descriptionText) => {
-    if (
-      descriptionText &&
-      title &&
-      title !== '' &&
-      intro &&
-      intro !== '' &&
-      image &&
-      image !== ''
-    ) {
+    if (descriptionText) {
       setShowDescError(false)
       setDescHTML(descriptionText)
     } else {
@@ -77,6 +72,8 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   }
 
   const submitContentHandle = () => {
+    console.log('descHTML', descHTML)
+
     console.log('title.length', title.length)
     console.log('title', title)
     console.log('intro', intro)
@@ -115,22 +112,24 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
         showsVerticalScrollIndicator={false}
         className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
       >
-        <Text className='text-md color-deepBlue font-ralewayBold  mt-4 ml-3 mb-2 text-center'>
+        <Text className='text-xl color-deepBlue font-ralewayBold  mt-4 ml-3 mb-2 text-center'>
           Proposer une publication
         </Text>
         <Input
           size='xl'
           maxLength={40}
           placeholder='Titre'
+          placeholderTextColor='#272E67'
           onChangeText={(val) => setTitle(val)}
           value={title}
         />
         <View className='mb-2 mt-2'>
           <TextArea
             h={20}
-            size='lg'
+            size='xl'
             maxLength={150}
             placeholder='Introduction'
+            placeholderTextColor='#272E67'
             w='100%'
             // fontSize='md'
             onChangeText={(val) => setIntro(val)}
@@ -139,9 +138,13 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
         </View>
 
         {isButtonVisible && (
-          <Button variant='outline' onPress={pickImage}>
-            <View className='flex flex-row items-center justify-center'>
-              <Text className='color-grey '>
+          <Button
+            variant='outline'
+            onPress={pickImage}
+            className='flex flex-row items-center justify-center'
+          >
+            <View>
+              <Text className='color-grey font-bold '>
                 <PhotoIcon size='24' color='grey' />
                 Sélectionnez l'image principale
               </Text>
@@ -163,7 +166,10 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
               />
             </TouchableOpacity>
             <Button onPress={submitContentHandle}>
-              <Text className='color-white'>Prévisualiser votre publication</Text>
+              <Text className='color-white'>
+                <EyeIcon size='24' color='white' />
+                Prévisualiser votre publication
+              </Text>
             </Button>
           </>
         )}
@@ -182,6 +188,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
               placeholder='Rédigez votre publication ici ...'
               androidHardwareAccelerationDisabled={true}
               initialHeight={400}
+              placeholderTextColor='#272E67'
             />
             <RichToolbar
               editor={richText}

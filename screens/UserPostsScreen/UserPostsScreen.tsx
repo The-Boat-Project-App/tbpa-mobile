@@ -9,20 +9,19 @@ import {
   RefreshControl,
 } from 'react-native'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
-import { useGetValidatedPostsQuery } from '../../graphql/graphql'
+import { useGetAllPostsQuery } from '../../graphql/graphql'
 import PostCard from '@components/PostCard/PostCard'
 import LoadingView from '@components/LoadingView/LoadingView'
-import { Divider } from 'native-base'
 
-interface AllPostsScreenProps {}
+interface UserPostsScreenProps {}
 
-const AllPostsScreen: React.FunctionComponent<AllPostsScreenProps> = (props) => {
+const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) => {
   // const { data, refetch } = useGetPostsByIdQuery({
   //   variables: { id: props.route.params.postId },
   // })
   // console.log(props.route.params.postId)
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  const { data: postsData, refetch: refetchPostsData } = useGetValidatedPostsQuery()
+  const { data: postsData, refetch: refetchPostsData } = useGetAllPostsQuery()
 
   const { height, width } = useWindowDimensions()
   const wait = (timeout: number) => {
@@ -41,8 +40,8 @@ const AllPostsScreen: React.FunctionComponent<AllPostsScreenProps> = (props) => 
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader />
-      <View className='flex flex-row justify-center mb-4'>
-        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-5'>Journal de bord</Text>
+      <View className='flex flex-row justify-center'>
+        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-5'>Vos publications</Text>
       </View>
       <ScrollView
         className='mx-3'
@@ -56,9 +55,9 @@ const AllPostsScreen: React.FunctionComponent<AllPostsScreenProps> = (props) => 
           />
         }
       >
-        {postsData?.ValidatedPostsList.map((postItem, index) => {
-          return (
-            <>
+        {postsData?.PostsList.map((postItem, index) => {
+          if (postItem.validated == 'validated') {
+            return (
               <PostCard
                 key={index}
                 id={postItem.id}
@@ -68,15 +67,12 @@ const AllPostsScreen: React.FunctionComponent<AllPostsScreenProps> = (props) => 
                 comments={postItem.comments}
                 intro={postItem.intro}
               />
-              {index !== postsData?.ValidatedPostsList.length - 1 && (
-                <Divider bg='#dddddd' thickness='1' my='3' orientation='horizontal' />
-              )}
-            </>
-          )
+            )
+          }
         })}
       </ScrollView>
     </SafeAreaView>
   )
 }
 
-export default AllPostsScreen
+export default UserPostsScreen

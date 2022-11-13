@@ -6,4 +6,5 @@ export const boatLocationVar = makeVar({
   latitude: 0,
   longitude: 0,
   name: 'UNKNOWN',
+  start_date: '',
 })

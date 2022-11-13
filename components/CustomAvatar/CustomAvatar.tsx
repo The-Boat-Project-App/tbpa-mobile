@@ -4,19 +4,24 @@ import { useNavigation } from '@react-navigation/native'
 interface CustomAvatar {
   avatarPicture: string
   isConnected: boolean
+  userId: string
+  noLink: boolean
 }
 
 export const CustomAvatar: React.FunctionComponent<CustomAvatarProps> = ({
   avatarPicture,
   isConnected,
   userId,
+  noLink = false,
 }) => {
   const navigation = useNavigation()
 
   return (
     <TouchableOpacity
       className='w-20 h-20 items-center justify-center'
-      onPress={() => navigation.navigate('User', { userId: userId })}
+      onPress={() => {
+        !noLink && navigation.navigate('User', { userId: userId })
+      }}
     >
       <Image
         source={{

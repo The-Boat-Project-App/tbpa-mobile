@@ -14,6 +14,7 @@ import MapScreen from '@screens/MapScreen/MapScreen'
 import MessagesScreen from '@screens/MessagesScreen/MessagesScreen'
 import ProfileScreen from '@screens/ProfileScreen/ProfileScreen'
 import AddPostScreen from '@screens/AddPostScreen/AddPostScreen'
+import UserPostsScreen from '@screens/UserPostsScreen/UserPostsScreen'
 
 const Tab = createBottomTabNavigator()
 
@@ -73,7 +74,7 @@ const BottomTabs = () => {
       />
       <Tab.Screen
         name='AddPost'
-        component={AddPostScreen}
+        component={UserPostsScreen}
         options={{
           tabBarLabel: 'Publier',
         }}
