@@ -50,6 +50,7 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
             latitude: boatLocationInApollo.latitude,
             longitude: boatLocationInApollo.longitude,
           }}
+          image={require('../../assets/icons/sailboat.png')} //uses relative file path.
         />
       </MapView>
     </View>

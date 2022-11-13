@@ -47,6 +47,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   const { data: tripData, refetch: refetchTripData } = useGetTripByIdQuery({
     variables: { id: '63627a16ad3d7a6d9999e8e9' },
   })
+
   if (tripData) {
     boatLocationVar({
       date: tripData.Trip.locations[0].date,
@@ -73,9 +74,9 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   // ! Changement locale Momentjs en global en même temps que la langue ?
   moment.updateLocale('fr', localization)
 
-  if (!data || !postsData || !tripData) {
-    return <LoadingView />
-  }
+  // if (!data || !postsData || !tripData) {
+  //   return <LoadingView />
+  // }
 
   if (data && postsData && tripData) {
     navigation.setOptions({
