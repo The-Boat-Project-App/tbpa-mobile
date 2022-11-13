@@ -3,8 +3,8 @@ import { View, Dimensions, StyleSheet } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import { useReactiveVar } from '@apollo/client'
 import { boatLocationVar } from '../../variables/boatLocation'
-
-import boat from '../../assets/boat-pin.jpg'
+import { useGetAllPartnersQuery } from '../../graphql/graphql'
+import LoadingView from '@components/LoadingView/LoadingView'
 
 interface MapScreenProps {}
 
@@ -13,6 +13,8 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
   // const { width, height } = size
 
   const [region, setRegion] = useState({})
+  const { data: partnersData, refetch: refetchPartnersData } = useGetAllPartnersQuery()
+
   const boatLocationInApollo = useReactiveVar(boatLocationVar)
   useEffect(() => {
     ;(async () => {
@@ -34,14 +36,18 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
   const onRegionChange = (region) => {
     setRegion({ region })
   }
+
+  if (!partnersData) {
+    return <LoadingView />
+  }
   return (
     <View style={styles.container}>
       <MapView
         initialRegion={{
           latitude: boatLocationInApollo.latitude,
           longitude: boatLocationInApollo.longitude,
-          latitudeDelta: 15,
-          longitudeDelta: 15,
+          latitudeDelta: 8,
+          longitudeDelta: 8,
         }}
         style={styles.map}
       >
@@ -50,8 +56,24 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
             latitude: boatLocationInApollo.latitude,
             longitude: boatLocationInApollo.longitude,
           }}
+          title='Emplacement actuel du bateau :'
+          description={`${boatLocationInApollo.name}  ${boatLocationInApollo.latitude} ${boatLocationInApollo.longitude}`}
           image={require('../../assets/icons/sailboat.png')} //uses relative file path.
         />
+
+        {partnersData?.PartnersList.map((partnerItem, index) => {
+          return (
+            <Marker
+              key={index}
+              pinColor={'green'}
+              title={partnerItem.name.FR}
+              coordinate={{
+                latitude: partnerItem.latitude,
+                longitude: partnerItem.longitude,
+              }}
+            />
+          )
+        })}
       </MapView>
     </View>
   )

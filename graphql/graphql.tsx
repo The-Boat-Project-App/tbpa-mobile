@@ -183,6 +183,24 @@ export type NotesInput = {
   title: Scalars['String'];
 };
 
+/** The Partners Model */
+export type Partners = {
+  __typename?: 'Partners';
+  address?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  content: ContentObject;
+  country?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  intro: IntroObject;
+  latitude: Scalars['Float'];
+  logo?: Maybe<Scalars['String']>;
+  longitude: Scalars['Float'];
+  main_picture?: Maybe<Scalars['String']>;
+  name: NameObject;
+  website?: Maybe<Scalars['String']>;
+};
+
 /** The Posts Model */
 export type Posts = {
   __typename?: 'Posts';
@@ -220,6 +238,9 @@ export type Query = {
   News: News;
   /** Get List of News */
   NewsList: Array<News>;
+  Partner: Partners;
+  /** Get List of Partners */
+  PartnersList: Array<Partners>;
   Posts: Posts;
   /** Get List of Posts By User */
   PostsByUserList: Array<Posts>;
@@ -243,6 +264,11 @@ export type QueryAllPostsByUserListArgs = {
 
 
 export type QueryNewsArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryPartnerArgs = {
   id: Scalars['String'];
 };
 
@@ -353,6 +379,33 @@ export type UsersInput = {
   updatedAt?: InputMaybe<Scalars['DateTime']>;
 };
 
+export type ContentObject = {
+  __typename?: 'contentObject';
+  AR: Scalars['String'];
+  EN: Scalars['String'];
+  ES: Scalars['String'];
+  FR: Scalars['String'];
+  IT: Scalars['String'];
+};
+
+export type IntroObject = {
+  __typename?: 'introObject';
+  AR: Scalars['String'];
+  EN: Scalars['String'];
+  ES: Scalars['String'];
+  FR: Scalars['String'];
+  IT: Scalars['String'];
+};
+
+export type NameObject = {
+  __typename?: 'nameObject';
+  AR: Scalars['String'];
+  EN: Scalars['String'];
+  ES: Scalars['String'];
+  FR: Scalars['String'];
+  IT: Scalars['String'];
+};
+
 export type AddLikesMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -371,6 +424,11 @@ export type GetAllNewsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllNewsQuery = { __typename?: 'Query', NewsList: Array<{ __typename?: 'News', id: string, title: string, author: string, content?: string | null, mainPicture?: string | null, createdAt: any, isActive?: boolean | null, intro?: string | null }> };
+
+export type GetAllPartnersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllPartnersQuery = { __typename?: 'Query', PartnersList: Array<{ __typename?: 'Partners', id: string, latitude: number, longitude: number, name: { __typename?: 'nameObject', FR: string } }> };
 
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -560,6 +618,45 @@ export function useGetAllNewsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryH
 export type GetAllNewsQueryHookResult = ReturnType<typeof useGetAllNewsQuery>;
 export type GetAllNewsLazyQueryHookResult = ReturnType<typeof useGetAllNewsLazyQuery>;
 export type GetAllNewsQueryResult = Apollo.QueryResult<GetAllNewsQuery, GetAllNewsQueryVariables>;
+export const GetAllPartnersDocument = gql`
+    query getAllPartners {
+  PartnersList {
+    id
+    latitude
+    longitude
+    name {
+      FR
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllPartnersQuery__
+ *
+ * To run a query within a React component, call `useGetAllPartnersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPartnersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPartnersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllPartnersQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllPartnersQuery, GetAllPartnersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetAllPartnersQuery, GetAllPartnersQueryVariables>(GetAllPartnersDocument, options);
+      }
+export function useGetAllPartnersLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllPartnersQuery, GetAllPartnersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetAllPartnersQuery, GetAllPartnersQueryVariables>(GetAllPartnersDocument, options);
+        }
+export type GetAllPartnersQueryHookResult = ReturnType<typeof useGetAllPartnersQuery>;
+export type GetAllPartnersLazyQueryHookResult = ReturnType<typeof useGetAllPartnersLazyQuery>;
+export type GetAllPartnersQueryResult = Apollo.QueryResult<GetAllPartnersQuery, GetAllPartnersQueryVariables>;
 export const GetAllPostsDocument = gql`
     query getAllPosts {
   PostsList {

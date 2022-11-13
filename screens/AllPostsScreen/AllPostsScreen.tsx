@@ -9,7 +9,6 @@ import {
   RefreshControl,
 } from 'react-native'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
-import { useGetValidatedPostsQuery } from '../../graphql/graphql'
 import PostCard from '@components/PostCard/PostCard'
 import LoadingView from '@components/LoadingView/LoadingView'
 import { Divider } from 'native-base'

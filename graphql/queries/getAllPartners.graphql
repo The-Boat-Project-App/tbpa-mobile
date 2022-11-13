@@ -1,0 +1,10 @@
+query getAllPartners {
+  PartnersList {
+    id
+    latitude
+    longitude
+    name {
+      FR
+    }
+  }
+}
