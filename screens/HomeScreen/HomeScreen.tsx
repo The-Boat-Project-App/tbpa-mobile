@@ -63,8 +63,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   }
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    console.log('postsData', postsData)
-    console.log('tripData', tripData)
+
     wait(2000).then(() => {
       refetch(), refetchPostsData(), refetchTripData(), setRefreshing(false)
     })
@@ -74,9 +73,12 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   // ! Changement locale Momentjs en global en même temps que la langue ?
   moment.updateLocale('fr', localization)
 
-  // if (!data || !postsData || !tripData) {
-  //   return <LoadingView />
-  // }
+  if (!data || !postsData || !tripData) {
+    navigation.setOptions({
+      tabBarStyle: { display: 'none' },
+    })
+    return <LoadingView />
+  }
 
   if (data && postsData && tripData) {
     navigation.setOptions({
