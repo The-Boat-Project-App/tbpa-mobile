@@ -80,7 +80,7 @@ const NewsScreen: React.FunctionComponent<NewsScreenProps> = (props) => {
         <View className='justify-center bg-white px-3 '>
           <View className='self-end mr-2  z-40'></View>
           <Image
-            className='h-40 rounded-md '
+            className='h-60 rounded-md '
             source={{
               uri: data?.News.mainPicture,
             }}
@@ -90,7 +90,7 @@ const NewsScreen: React.FunctionComponent<NewsScreenProps> = (props) => {
               <Text className='text-xl color-deepBlue font-ralewayBold  ml-3 mt-6 mb-2 text-center'>
                 {data?.News.title}
               </Text>
-              <Text className='text-xs color-deepBlue font-raleway  mb-6 text-center '>
+              <Text className='text-xs color-deepBlue font-raleway  mb-2 text-center '>
                 {moment().diff(data?.News.createdAt, 'days') <= 2
                   ? moment(data?.News.createdAt).fromNow()
                   : moment(data?.News.createdAt).format('LL')}

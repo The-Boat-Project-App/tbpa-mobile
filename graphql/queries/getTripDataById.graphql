@@ -1,6 +1,7 @@
 query getTripById($id: String!) {
   Trip(id: $id) {
     id
+    start_date
     locations {
       name
       latitude

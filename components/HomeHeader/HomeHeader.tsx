@@ -1,8 +1,40 @@
+import { useState } from 'react'
 import { View, Image, Text, useWindowDimensions, Platform } from 'react-native'
+import { boatLocationVar } from '../../variables/boatLocation'
+import { useReactiveVar } from '@apollo/client'
+
 interface HomeHeaderProps {}
 
 const HomeHeader: React.FunctionComponent<HomeHeaderProps> = ({}) => {
   const { width } = useWindowDimensions()
+  const [formattedCountDown, setFormattedCountDown] = useState<string>('')
+  const boatData = useReactiveVar(boatLocationVar)
+  // Set the date we're counting down to
+  const countDownDate = new Date(boatData.start_date).getTime()
+
+  // Update the count down every 1 second
+  let x = setInterval(function () {
+    // Get today's date and time
+    let now = new Date().getTime()
+
+    // Find the distance between now and the count down date
+    let distance = countDownDate - now
+
+    // Time calculations for days, hours, minutes and seconds
+    let days = Math.floor(distance / (1000 * 60 * 60 * 24))
+    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+    let seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+    // Display the result in the element with id="demo"
+    setFormattedCountDown(`J-${days} ${hours} h  ${minutes} m ${seconds} s`)
+
+    // If the count down is finished, write some text
+    if (distance < 0) {
+      clearInterval(x)
+      setFormattedCountDown('EXPIRED')
+    }
+  }, 1000)
 
   return (
     <View className={`flex-row bg-white mr-1 ${Platform.OS === 'ios' ? 'pb-0' : 'pb-1'} pr-1 `}>
@@ -31,10 +63,12 @@ const HomeHeader: React.FunctionComponent<HomeHeaderProps> = ({}) => {
 
       <View className='items-end  w-1/2  mr-2'>
         <Text className='color-deepBlue font-raleway text-xs '>Départ 1ère édition :</Text>
-        <Text className='color-deepBlue text-xs font-raleway'>23 janvier 2023</Text>
-        <View className='flex-row rounded-md p-2 mt-2 bg-clearBlue'>
-          <Text className='color-white font-bold font-raleway'>J- 159</Text>
-          <Text className='color-white font-raleway'> 18 : 30 : 22</Text>
+        <Text className='color-deepBlue text-xs font-raleway'>13 janvier 2023</Text>
+        <View
+          className='flex-row rounded-md p-2 mt-2 bg-clearBlue justify-center'
+          style={{ width: width * 0.35 }}
+        >
+          <Text className='color-white font-bold font-raleway'>{formattedCountDown}</Text>
         </View>
       </View>
     </View>

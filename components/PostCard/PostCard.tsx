@@ -34,7 +34,7 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
 
   return (
     <TouchableOpacity
-      className='flex-row bg-white p-0  rounded-xl mb-2'
+      className='flex-row bg-white p-0  rounded-xl '
       onPress={() => navigation.navigate('Post', { postId: id })}
     >
       <View className='w-2/5'>

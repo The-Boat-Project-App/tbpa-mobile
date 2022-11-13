@@ -25,9 +25,14 @@ import CrewDisplay from '@components/CrewDisplay/CrewDisplay'
 import NewsCard from '@components/NewsCard/NewsCard'
 import PostCard from '@components/PostCard/PostCard'
 import ThemesDisplay from '@components/ThemesDisplay/ThemesDisplay'
-import { useGetAllNewsQuery, useGetAllPostsQuery, useGetTripByIdQuery } from '../../graphql/graphql'
+import {
+  useGetAllNewsQuery,
+  useGetValidatedPostsQuery,
+  useGetTripByIdQuery,
+} from '../../graphql/graphql'
 import { boatLocationVar } from '../../variables/boatLocation'
 import LottieView from 'lottie-react-native'
+import { Divider } from 'native-base'
 
 interface HomeScreenProps {}
 
@@ -38,7 +43,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   const [newList, setNewsList] = useState([])
   const navigation = useNavigation()
   const { data, refetch } = useGetAllNewsQuery()
-  const { data: postsData, refetch: refetchPostsData } = useGetAllPostsQuery()
+  const { data: postsData, refetch: refetchPostsData } = useGetValidatedPostsQuery()
   const { data: tripData, refetch: refetchTripData } = useGetTripByIdQuery({
     variables: { id: '63627a16ad3d7a6d9999e8e9' },
   })
@@ -49,6 +54,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
       latitude: tripData.Trip.locations[0].latitude,
       longitude: tripData.Trip.locations[0].longitude,
       name: tripData.Trip.locations[0].name,
+      start_date: tripData.Trip.start_date,
     })
   }
   const wait = (timeout) => {
@@ -68,10 +74,6 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   moment.updateLocale('fr', localization)
 
   if (!data || !postsData || !tripData) {
-    navigation.setOptions({
-      tabBarStyle: { display: 'none' },
-    })
-
     return <LoadingView />
   }
 
@@ -130,37 +132,9 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
               )}
             />
           )}
-          {/* <ScrollView className='' horizontal={true} showsHorizontalScrollIndicator={false}>
-            {data?.NewsList.map((newsItem, index) => {
-              const formattedDate =
-                moment().diff(newsItem.createdAt, 'days') <= 2
-                  ? moment(newsItem.createdAt).fromNow()
-                  : moment(newsItem.createdAt).format('LL')
 
-              return (
-                <NewsCard
-                  key={index}
-                  title={newsItem.title}
-                  picture={newsItem.mainPicture}
-                  content={newsItem.content}
-                  date={formattedDate}
-                />
-              )
-            }).reverse()}
-          </ScrollView> */}
-          {/* <TouchableOpacity
-            className='p-2  ml-2 mr-2 mt-3 rounded-xl bg-white'
-            onPress={() => navigation.navigate('Map')}
-          >
-            <Image
-              className='w-full h-20 rounded-xl'
-              source={{
-                uri: 'https://media.peche.com/src/images/news/articles/ima-image-31469.png',
-              }}
-            />
-          </TouchableOpacity> */}
-          <Text className='text-xl  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
-            Les compagnons de la Méditérranée
+          <Text className='text-xl color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
+            Les compagnons
           </Text>
           <CrewDisplay />
           <View className='flex flex-row space-x-10 w-screen  justify-between'>
@@ -173,12 +147,11 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
               <SeeAll target='AllPosts' />
             </View>
           </View>
-          <ScrollView className='mx-3'>
-            {postsData?.PostsList.map((postItem, index) => {
-              if (postItem.validated == 'validated') {
-                return (
+          <View className='mx-3'>
+            {postsData?.ValidatedPostsList.map((postItem, index) => {
+              return (
+                <View key={index}>
                   <PostCard
-                    key={index}
                     id={postItem.id}
                     title={postItem.title}
                     picture={postItem.mainPicture}
@@ -186,10 +159,13 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
                     comments={postItem.comments}
                     intro={postItem.intro}
                   />
-                )
-              }
+                  {index !== postsData?.ValidatedPostsList.length - 1 && (
+                    <Divider bg='#dddddd' thickness='1' my='3' orientation='horizontal' />
+                  )}
+                </View>
+              )
             })}
-          </ScrollView>
+          </View>
           <ThemesDisplay />
         </View>
       </ScrollView>

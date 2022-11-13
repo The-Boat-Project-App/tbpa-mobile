@@ -75,7 +75,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
               {data?.Posts.title}
             </Text>
           )}
-          <View className='self-end mr-2 -mb-4 z-40'>
+          {/* <View className='self-end mr-2 -mb-4 z-40'>
             {isBookmarked ? (
               <BookmarkIcon
                 size={30}
@@ -90,7 +90,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
                 color='#0C617D'
               />
             )}
-          </View>
+          </View> */}
           <Image
             className='h-40 rounded-md '
             source={{
@@ -105,9 +105,9 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
                 avatarPicture={data?.Posts.author.avatar}
               />
             </View>
-            <View className='flex-row justify-center'>
+            {/* <View className='flex-row justify-center'>
               <Toggle isEnabled={false} />
-            </View>
+            </View> */}
           </View>
           <Text className='text-md color-deepBlue font-ralewayBold  '>
             {data?.Posts.author.firstName}
