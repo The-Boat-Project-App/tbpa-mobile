@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { View, Image, Text, useWindowDimensions, Platform } from 'react-native'
 import { boatLocationVar } from '../../variables/boatLocation'
 import { useReactiveVar } from '@apollo/client'
+import { Spinner } from 'native-base'
 
 interface HomeHeaderProps {}
 
@@ -9,32 +10,30 @@ const HomeHeader: React.FunctionComponent<HomeHeaderProps> = ({}) => {
   const { width } = useWindowDimensions()
   const [formattedCountDown, setFormattedCountDown] = useState<string>('')
   const boatData = useReactiveVar(boatLocationVar)
-  // Set the date we're counting down to
+  console.log(boatData)
   const countDownDate = new Date(boatData.start_date).getTime()
 
-  // Update the count down every 1 second
-  let x = setInterval(function () {
-    // Get today's date and time
-    let now = new Date().getTime()
+  if (boatData.start_date) {
+    // Update the count down every 1 second
+    let x = setInterval(function () {
+      // Get today's date and time
+      let now = new Date().getTime()
 
-    // Find the distance between now and the count down date
-    let distance = countDownDate - now
+      let distance = countDownDate - now
 
-    // Time calculations for days, hours, minutes and seconds
-    let days = Math.floor(distance / (1000 * 60 * 60 * 24))
-    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-    let seconds = Math.floor((distance % (1000 * 60)) / 1000)
+      let days = Math.floor(distance / (1000 * 60 * 60 * 24))
+      let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+      let seconds = Math.floor((distance % (1000 * 60)) / 1000)
 
-    // Display the result in the element with id="demo"
-    setFormattedCountDown(`J-${days} ${hours} h  ${minutes} m ${seconds} s`)
+      setFormattedCountDown(`J-${days} ${hours} h  ${minutes} m ${seconds} s`)
 
-    // If the count down is finished, write some text
-    if (distance < 0) {
-      clearInterval(x)
-      setFormattedCountDown('EXPIRED')
-    }
-  }, 1000)
+      if (distance < 0) {
+        clearInterval(x)
+        setFormattedCountDown('EXPIRED')
+      }
+    }, 1000)
+  }
 
   return (
     <View className={`flex-row bg-white mr-1 ${Platform.OS === 'ios' ? 'pb-0' : 'pb-1'} pr-1 `}>
@@ -68,7 +67,11 @@ const HomeHeader: React.FunctionComponent<HomeHeaderProps> = ({}) => {
           className='flex-row rounded-md p-2 mt-2 bg-clearBlue justify-center'
           style={{ width: width * 0.35 }}
         >
-          <Text className='color-white font-bold font-raleway'>{formattedCountDown}</Text>
+          {formattedCountDown != '' ? (
+            <Text className='color-white font-bold font-raleway'>{formattedCountDown}</Text>
+          ) : (
+            <Spinner size='sm' color='white' />
+          )}
         </View>
       </View>
     </View>
