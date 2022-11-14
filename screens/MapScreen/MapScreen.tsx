@@ -19,11 +19,6 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
   const { data: partnersData, refetch: refetchPartnersData } = useGetAllPartnersQuery()
 
   const boatLocationInApollo = useReactiveVar(boatLocationVar)
-  useEffect(() => {
-    ;(async () => {
-      // console.log(await getCoordinate())
-    })()
-  }, [])
 
   const getInitialState = () => {
     return {

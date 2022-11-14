@@ -233,8 +233,12 @@ export type PostsInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get List of All Draft Posts By User */
+  AllDraftPostsByUserList: Array<Posts>;
   /** Get List of All Posts By User */
   AllPostsByUserList: Array<Posts>;
+  /** Get List of All Submitted Posts By User */
+  AllSubmittedPostsByUserList: Array<Posts>;
   News: News;
   /** Get List of News */
   NewsList: Array<News>;
@@ -415,6 +419,11 @@ export type CreateNewPostMutationVariables = Exact<{
 
 export type CreateNewPostMutation = { __typename?: 'Mutation', createPosts: { __typename?: 'Posts', title: string, intro: string, content?: string | null, mainPicture?: string | null, likes?: number | null, submitted?: boolean | null, validated?: string | null } };
 
+export type GetAllDraftPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllDraftPostsByUserQuery = { __typename?: 'Query', AllDraftPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+
 export type GetAllNewsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -433,7 +442,12 @@ export type GetAllPostsQuery = { __typename?: 'Query', PostsList: Array<{ __type
 export type GetAllPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllPostsByUserQuery = { __typename?: 'Query', AllPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, likes?: number | null, author: { __typename?: 'Users', email?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+export type GetAllPostsByUserQuery = { __typename?: 'Query', AllPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, likes?: number | null, validated?: string | null, submitted?: boolean | null, author: { __typename?: 'Users', email?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+
+export type GetAllSubmittedPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllSubmittedPostsByUserQuery = { __typename?: 'Query', AllSubmittedPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -577,6 +591,52 @@ export function useCreateNewPostMutation(baseOptions?: ApolloReactHooks.Mutation
 export type CreateNewPostMutationHookResult = ReturnType<typeof useCreateNewPostMutation>;
 export type CreateNewPostMutationResult = Apollo.MutationResult<CreateNewPostMutation>;
 export type CreateNewPostMutationOptions = Apollo.BaseMutationOptions<CreateNewPostMutation, CreateNewPostMutationVariables>;
+export const GetAllDraftPostsByUserDocument = gql`
+    query getAllDraftPostsByUser {
+  AllDraftPostsByUserList {
+    id
+    title
+    mainPicture
+    createdAt
+    intro
+    validated
+    submitted
+    likes
+    comments {
+      author
+      content
+      date
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllDraftPostsByUserQuery__
+ *
+ * To run a query within a React component, call `useGetAllDraftPostsByUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllDraftPostsByUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllDraftPostsByUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllDraftPostsByUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllDraftPostsByUserQuery, GetAllDraftPostsByUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetAllDraftPostsByUserQuery, GetAllDraftPostsByUserQueryVariables>(GetAllDraftPostsByUserDocument, options);
+      }
+export function useGetAllDraftPostsByUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllDraftPostsByUserQuery, GetAllDraftPostsByUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetAllDraftPostsByUserQuery, GetAllDraftPostsByUserQueryVariables>(GetAllDraftPostsByUserDocument, options);
+        }
+export type GetAllDraftPostsByUserQueryHookResult = ReturnType<typeof useGetAllDraftPostsByUserQuery>;
+export type GetAllDraftPostsByUserLazyQueryHookResult = ReturnType<typeof useGetAllDraftPostsByUserLazyQuery>;
+export type GetAllDraftPostsByUserQueryResult = Apollo.QueryResult<GetAllDraftPostsByUserQuery, GetAllDraftPostsByUserQueryVariables>;
 export const GetAllNewsDocument = gql`
     query getAllNews {
   NewsList {
@@ -712,6 +772,8 @@ export const GetAllPostsByUserDocument = gql`
     createdAt
     intro
     likes
+    validated
+    submitted
     author {
       email
     }
@@ -750,6 +812,52 @@ export function useGetAllPostsByUserLazyQuery(baseOptions?: ApolloReactHooks.Laz
 export type GetAllPostsByUserQueryHookResult = ReturnType<typeof useGetAllPostsByUserQuery>;
 export type GetAllPostsByUserLazyQueryHookResult = ReturnType<typeof useGetAllPostsByUserLazyQuery>;
 export type GetAllPostsByUserQueryResult = Apollo.QueryResult<GetAllPostsByUserQuery, GetAllPostsByUserQueryVariables>;
+export const GetAllSubmittedPostsByUserDocument = gql`
+    query getAllSubmittedPostsByUser {
+  AllSubmittedPostsByUserList {
+    id
+    title
+    mainPicture
+    createdAt
+    intro
+    validated
+    submitted
+    likes
+    comments {
+      author
+      content
+      date
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllSubmittedPostsByUserQuery__
+ *
+ * To run a query within a React component, call `useGetAllSubmittedPostsByUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllSubmittedPostsByUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllSubmittedPostsByUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllSubmittedPostsByUserQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllSubmittedPostsByUserQuery, GetAllSubmittedPostsByUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetAllSubmittedPostsByUserQuery, GetAllSubmittedPostsByUserQueryVariables>(GetAllSubmittedPostsByUserDocument, options);
+      }
+export function useGetAllSubmittedPostsByUserLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllSubmittedPostsByUserQuery, GetAllSubmittedPostsByUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetAllSubmittedPostsByUserQuery, GetAllSubmittedPostsByUserQueryVariables>(GetAllSubmittedPostsByUserDocument, options);
+        }
+export type GetAllSubmittedPostsByUserQueryHookResult = ReturnType<typeof useGetAllSubmittedPostsByUserQuery>;
+export type GetAllSubmittedPostsByUserLazyQueryHookResult = ReturnType<typeof useGetAllSubmittedPostsByUserLazyQuery>;
+export type GetAllSubmittedPostsByUserQueryResult = Apollo.QueryResult<GetAllSubmittedPostsByUserQuery, GetAllSubmittedPostsByUserQueryVariables>;
 export const GetAllUsersDocument = gql`
     query getAllUsers {
   usersList {
