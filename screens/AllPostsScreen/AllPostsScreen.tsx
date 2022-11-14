@@ -12,6 +12,7 @@ import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import PostCard from '@components/PostCard/PostCard'
 import LoadingView from '@components/LoadingView/LoadingView'
 import { Divider } from 'native-base'
+import { useGetValidatedPostsQuery } from '../../graphql/graphql'
 
 interface AllPostsScreenProps {}
 

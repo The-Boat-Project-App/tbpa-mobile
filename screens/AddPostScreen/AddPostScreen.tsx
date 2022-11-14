@@ -27,6 +27,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { newPostVar } from '../../variables/newPost'
 import { flexbox } from 'native-base/lib/typescript/theme/styled-system'
 import { useReactiveVar } from '@apollo/client'
+import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 
 interface AddPostScreenProps {}
 
@@ -53,7 +54,6 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
       aspect: [4, 3],
       quality: 1,
     })
-    console.log('🖍🖍', result)
 
     if (result.cancelled) {
     }
@@ -72,16 +72,8 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   }
 
   const submitContentHandle = () => {
-    console.log('descHTML', descHTML)
-
-    console.log('title.length', title.length)
-    console.log('title', title)
-    console.log('intro', intro)
-    console.log('image', image)
-
     const replaceHTML = descHTML.replace(/<(.|\n)*?>/g, '').trim()
     const replaceWhiteSpace = replaceHTML.replace(/&nbsp;/g, '').trim()
-    console.log('replaceWhiteSpace', replaceWhiteSpace)
     if (
       replaceWhiteSpace.length <= 0 ||
       !title ||
@@ -107,7 +99,9 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
     }
   }
   return (
-    <SafeAreaView className={` bg-white ${Platform.OS === 'ios' ? 'pb-0 -mt-4' : 'pb-1 -mt-1'}  `}>
+    <SafeAreaView className={` bg-white ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 -mt-1'}  `}>
+      <ScreenHeader arrowDirection='no-arrow' />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
@@ -136,7 +130,6 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
             value={intro}
           />
         </View>
-
         {isButtonVisible && (
           <Button
             variant='outline'

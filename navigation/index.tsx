@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native'
 import { View } from 'react-native'
 import HomeStackNavigator from './HomeStack'
 import { setAccessToken, getRefreshToken } from '../accessToken'
-import LottieView from 'lottie-react-native'
 import { userDataVar } from '../variables/userData'
 import * as NavigationBar from 'expo-navigation-bar'
 
@@ -40,13 +39,6 @@ const RootNavigator = () => {
     refreshToken()
   }, [])
 
-  if (loading) {
-    return (
-      <View className='flex-1 items-center justify-center'>
-        <LottieView source={require('../assets/animations/loader.json')} autoPlay loop />
-      </View>
-    )
-  }
   return (
     <NavigationContainer>
       <HomeStackNavigator />

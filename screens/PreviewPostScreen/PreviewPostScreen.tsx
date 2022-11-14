@@ -134,7 +134,7 @@ const PreviewPostScreen: React.FunctionComponent<PreviewPostScreenProps> = ({}) 
 
   return (
     <SafeAreaView className='flex-1 bg-white'>
-      <ScreenHeader />
+      <ScreenHeader arrowDirection='down' />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className='justify-center bg-white px-3 '>
           <Text className='text-xl color-deepBlue font-ralewayBold  ml-3 mb-4 text-center'>

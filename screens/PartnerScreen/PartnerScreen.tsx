@@ -2,27 +2,23 @@ import React, { useState, useCallback } from 'react'
 import { View, Text, Image, useWindowDimensions, ScrollView, RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
-import CustomAvatar from '@components/CustomAvatar/CustomAvatar'
-import Toggle from '@components/Toggle/Toggle'
-import { useGetUsersByIdQuery, useGetPostsByUserQuery } from '../../graphql/graphql'
+
+import { useGetPartnerByIdQuery } from '../../graphql/graphql'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
 import LoadingView from '@components/LoadingView/LoadingView'
 
-import PostCard from '@components/PostCard/PostCard'
-
 import { HomeModernIcon, ChatBubbleLeftIcon } from 'react-native-heroicons/outline'
 
-interface UserScreenProps {}
+interface PartnerScreenProps {}
 
-const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
-  const { data, refetch } = useGetUsersByIdQuery({
-    variables: { id: props.route.params.userId },
+const PartnerScreen: React.FunctionComponent<PartnerScreenProps> = (props) => {
+  console.log(props.route.params.partnerId)
+  const { data: partnersData, refetch: refetchPartnersData } = useGetPartnerByIdQuery({
+    variables: { id: props.route.params.partnerId },
   })
 
-  const { data: userPostsData, refetch: refetchUserPostsData } = useGetPostsByUserQuery({
-    variables: { id: props.route.params.userId },
-  })
+  console.log('data dans partnerScreen', partnersData)
 
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
@@ -30,21 +26,23 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
+  console.log('rerender data dans partnerscreen', partnersData)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
+    console.log('data dans onrefresh sur partnerScreen', partnersData)
 
     wait(2000).then(() => {
-      refetch(), refetchUserPostsData(), setRefreshing(false)
+      refetchPartnersData(), setRefreshing(false)
     })
   }, [])
 
-  if (!data) {
+  if (!partnersData) {
     return <LoadingView />
   }
 
   return (
     <SafeAreaView className='flex-1 bg-white'>
-      <ScreenHeader />
+      <ScreenHeader arrowDirection='down' />
       <ScrollView
         className=' px-3 '
         showsVerticalScrollIndicator={false}
@@ -57,7 +55,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
           />
         }
       >
-        <View className=' bg-white flex flex-row mb-4 mt-2 justify-center'>
+        {/* <View className=' bg-white flex flex-row mb-4 mt-2 justify-center'>
           {data?.user.firstName && (
             <View className='w-1/2 justify-center '>
               <Text className='text-xl color-deepBlue font-ralewayBold '>
@@ -77,10 +75,10 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
             }}
           />
         </View>
-        <View className='px-4'>
-          {/* <View className='flex-row justify-center'>
+        <View className='px-4'> */}
+        {/* <View className='flex-row justify-center'>
             <Toggle isEnabled={false} />
-          </View> */}
+          </View>
           <Text className='text-xl color-deepBlue font-ralewayBold mb-2'>À propos</Text>
           <Text className='text-sm color-grey font-raleway mb-6'>{data?.user.bio}</Text>
           <View className='flex flex-row items-center mb-6'>
@@ -142,10 +140,10 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
               />
             )
           })}
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   )
 }
 
-export default UserScreen
+export default PartnerScreen
