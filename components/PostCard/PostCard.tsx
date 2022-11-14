@@ -1,7 +1,7 @@
 import { View, Image, TouchableOpacity, Text, ImageBackground } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
-
+import { Badge } from 'native-base'
 interface PostCardProps {
   id: string
   picture: string
@@ -10,6 +10,8 @@ interface PostCardProps {
   likes: number
   intro: string
   setIsLoading: Function
+  validated: String
+  authorView: Boolean
   comments: [
     {
       author: string
@@ -27,7 +29,10 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
   likes,
   comments,
   intro,
+  authorView = false,
+  validated,
 }) => {
+  console.log('validated in PostCard', validated)
   //* Regex to shorten text content
   const shortenedContent = intro.replace(/^(.{70}[^\s]*).*/, '$1') + ' ...'
   const navigation = useNavigation()
@@ -50,14 +55,27 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
       <View className='w-3/5 pl-3 flex-col '>
         <Text className='color-deepBlue font-ralewayBold'>{title}</Text>
         <Text className='text-xs  color-grey font-raleway text-justify'>{shortenedContent}</Text>
-        <View className='flex-row mt-2  self-end'>
+        <View
+          className={`flex-row mt-2   self-end items-center  w-full   ${
+            authorView ? 'justify-between' : 'justify-end'
+          }`}
+        >
+          {authorView && (
+            <Badge
+              colorScheme={validated == 'validated' ? 'green' : 'coolGray'}
+              alignSelf='center'
+              variant='subtle'
+            >
+              {validated == 'validated' ? 'Validée' : 'En attente de validation'}
+            </Badge>
+          )}
           {likes > 0 && (
-            <>
+            <View className='ml-4 flex flex-row'>
               <MaterialCommunityIcons name='hand-clap' color='#87BC23' size={16} />
               <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-2'>
                 {likes}
               </Text>
-            </>
+            </View>
           )}
           {comments.length > 0 && (
             <>

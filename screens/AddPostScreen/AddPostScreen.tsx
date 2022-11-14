@@ -8,6 +8,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
+  Keyboard,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 // import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -22,7 +23,18 @@ import {
   PhotoIcon,
   EyeIcon,
 } from 'react-native-heroicons/outline'
-import { Input, Image, TextArea, Button, Text, Icon, useToast, Box, IconButton } from 'native-base'
+import {
+  Input,
+  Image,
+  TextArea,
+  Button,
+  Text,
+  Icon,
+  useToast,
+  Box,
+  IconButton,
+  keyboardDismissHandlerManager,
+} from 'native-base'
 import * as ImagePicker from 'expo-image-picker'
 import { newPostVar } from '../../variables/newPost'
 import { flexbox } from 'native-base/lib/typescript/theme/styled-system'
@@ -35,7 +47,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   const richText = useRef()
   const navigation = useNavigation()
   const existingNewPostData = useReactiveVar(newPostVar)
-
+  const [formProgress, setFormProgress] = useState(1)
   const [descHTML, setDescHTML] = useState('')
   const [title, setTitle] = useState(existingNewPostData.title)
   const [intro, setIntro] = useState(existingNewPostData.intro)
@@ -44,7 +56,8 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   const [showDescError, setShowDescError] = useState(false)
   const [image, setImage] = useState('')
   const toast = useToast()
-  const id = 'test-toast'
+  const id = 'error'
+  const scrollViewRef = useRef(null)
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -92,145 +105,225 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
       newPostVar({
         title: title,
         image: image,
-        content: descHTML,
+        content: '',
         intro: intro,
       })
-      navigation.navigate('PreviewPost')
+      setFormProgress(2)
     }
   }
-  return (
-    <SafeAreaView className={` bg-white ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 -mt-1'}  `}>
-      <ScreenHeader arrowDirection='no-arrow' />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
+  if (formProgress === 1) {
+    return (
+      <SafeAreaView
+        className={` bg-white ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 -mt-1'}  `}
       >
-        <Text className='text-xl color-deepBlue font-ralewayBold  mt-4 ml-3 mb-2 text-center'>
-          Proposer une publication
-        </Text>
-        <Input
-          size='xl'
-          maxLength={40}
-          placeholder='Titre'
-          placeholderTextColor='#272E67'
-          onChangeText={(val) => setTitle(val)}
-          value={title}
-        />
-        <View className='mb-2 mt-2'>
-          <TextArea
-            h={20}
-            size='xl'
-            maxLength={150}
-            placeholder='Introduction'
-            placeholderTextColor='#272E67'
-            w='100%'
-            // fontSize='md'
-            onChangeText={(val) => setIntro(val)}
-            value={intro}
-          />
-        </View>
-        {isButtonVisible && (
-          <Button
-            variant='outline'
-            onPress={pickImage}
-            className='flex flex-row items-center justify-center'
-          >
-            <View>
-              <Text className='color-grey font-bold '>
-                <PhotoIcon size='24' color='grey' />
-                Sélectionnez l'image principale
-              </Text>
-            </View>
-          </Button>
-        )}
-        {image && image !== '' && (
-          <>
-            <TouchableOpacity onPress={pickImage}>
-              <Image
-                className='self-center m-2 rounded-md'
-                width='200'
-                alt='uploaded image'
-                height='100'
-                resizeMode='cover'
-                source={{
-                  uri: image,
-                }}
-              />
-            </TouchableOpacity>
-            <Button onPress={submitContentHandle}>
-              <Text className='color-white'>
-                <EyeIcon size='24' color='white' />
-                Prévisualiser votre publication
-              </Text>
-            </Button>
-          </>
-        )}
-        {/* {showDescError && (
-          <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
-        )} */}
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1 }}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        <ScreenHeader arrowDirection='no-arrow' />
+
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() => {
+            scrollViewRef.current?.scrollToEnd()
+          }}
+          showsVerticalScrollIndicator={false}
+          className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
         >
-          <View style={styles.richTextContainer}>
-            <RichEditor
-              ref={richText}
-              onChange={richTextHandle}
-              placeholder='Rédigez votre publication ici ...'
-              androidHardwareAccelerationDisabled={true}
-              initialHeight={400}
+          {/* <Text className='text-xl color-deepBlue font-ralewayBold  mt-4 ml-3 mb-2 text-center'>
+            Proposer une publication
+          </Text> */}
+          <Input
+            size='xl'
+            maxLength={40}
+            placeholder='Titre'
+            placeholderTextColor='#272E67'
+            onChangeText={(val) => setTitle(val)}
+            value={title}
+          />
+          <View className='mb-2 mt-2'>
+            <TextArea
+              h={20}
+              size='xl'
+              maxLength={150}
+              placeholder='Introduction'
               placeholderTextColor='#272E67'
-            />
-            <RichToolbar
-              editor={richText}
-              actions={[
-                actions.undo,
-                actions.redo,
-                actions.setBold,
-                actions.setItalic,
-                actions.setUnderline,
-                actions.heading1,
-                actions.insertBulletsList,
-                actions.insertLink,
-              ]}
-              iconMap={{
-                [actions.undo]: ({ tintColor }) => (
-                  <ArrowUturnLeftIcon size='16' color={tintColor} />
-                ),
-                [actions.redo]: ({ tintColor }) => (
-                  <ArrowUturnRightIcon size='16' color={tintColor} />
-                ),
-                [actions.heading1]: ({ tintColor }) => (
-                  <Text style={[{ color: tintColor, textAlign: 'center' }]}>Sous-titre</Text>
-                ),
-                [actions.setBold]: ({ tintColor }) => (
-                  <Text style={[{ color: tintColor, fontWeight: 'bold' }]}>B</Text>
-                ),
-                [actions.setItalic]: ({ tintColor }) => (
-                  <Text style={[{ color: tintColor, fontStyle: 'italic' }]}>i</Text>
-                ),
-                [actions.setUnderline]: ({ tintColor }) => (
-                  <Text style={[{ color: tintColor, textDecorationLine: 'underline' }]}>U</Text>
-                ),
-                [actions.insertBulletsList]: ({ tintColor }) => (
-                  <ListBulletIcon size='16' color={tintColor} />
-                ),
-                [actions.insertLink]: ({ tintColor }) => <LinkIcon size='16' color={tintColor} />,
-              }}
+              w='100%'
+              // fontSize='md'
+              onChangeText={(val) => setIntro(val)}
+              value={intro}
             />
           </View>
+          {isButtonVisible && (
+            <Button
+              variant='outline'
+              onPress={pickImage}
+              className='flex flex-row items-center justify-center'
+            >
+              <View>
+                <Text className='color-grey font-bold '>
+                  <PhotoIcon size='24' color='grey' />
+                  Sélectionnez l'image principale
+                </Text>
+              </View>
+            </Button>
+          )}
+          {image && image !== '' && (
+            <>
+              <TouchableOpacity onPress={pickImage}>
+                <Image
+                  className='self-center m-2 rounded-md'
+                  width='200'
+                  alt='uploaded image'
+                  height='100'
+                  resizeMode='cover'
+                  source={{
+                    uri: image,
+                  }}
+                />
+              </TouchableOpacity>
+              <Button
+                onPress={() => {
+                  Keyboard.dismiss()
+                  submitContentHandle()
+                }}
+                className='mx-20 my-4'
+              >
+                <Text className='color-white'>
+                  <EyeIcon size='40' color='white' />
+                </Text>
+              </Button>
+            </>
+          )}
           {/* {showDescError && (
             <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
           )} */}
-          <Button onPress={submitContentHandle}>
-            <Text className='color-white'>Prévisualiser votre publication</Text>
-          </Button>
-        </KeyboardAvoidingView>
-      </ScrollView>
-    </SafeAreaView>
-  )
+        </ScrollView>
+      </SafeAreaView>
+    )
+  } else if (formProgress == 2) {
+    return (
+      <SafeAreaView
+        className={` bg-white ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 -mt-1'}  `}
+      >
+        <ScreenHeader arrowDirection='no-arrow' />
+
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() => {
+            scrollViewRef.current?.scrollToEnd()
+          }}
+          showsVerticalScrollIndicator={false}
+          className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
+        >
+          {/* <Text className='text-xl color-deepBlue font-ralewayBold  mt-4 ml-3 mb-2 text-center'>
+            Proposer une publication
+          </Text> */}
+
+          {isButtonVisible && (
+            <Button
+              variant='outline'
+              onPress={pickImage}
+              className='flex flex-row items-center justify-center'
+            >
+              <View>
+                <Text className='color-grey font-bold '>
+                  <PhotoIcon size='24' color='grey' />
+                  Sélectionnez l'image principale
+                </Text>
+              </View>
+            </Button>
+          )}
+          {image && image !== '' && (
+            <>
+              <TouchableOpacity onPress={pickImage}>
+                <Image
+                  className='self-center m-2 rounded-md'
+                  width='200'
+                  alt='uploaded image'
+                  height='100'
+                  resizeMode='cover'
+                  source={{
+                    uri: image,
+                  }}
+                />
+              </TouchableOpacity>
+              <Button
+                onPress={() => {
+                  Keyboard.dismiss()
+                  submitContentHandle()
+                }}
+                className='mx-20 my-4'
+              >
+                <Text className='color-white'>
+                  <EyeIcon size='40' color='white' />
+                </Text>
+              </Button>
+            </>
+          )}
+          {/* {showDescError && (
+            <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
+          )} */}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1 }}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+          >
+            <View style={styles.richTextContainer}>
+              <RichEditor
+                ref={richText}
+                onChange={richTextHandle}
+                placeholder='Rédigez votre publication ici ...'
+                androidHardwareAccelerationDisabled={true}
+                initialHeight={300}
+                placeholderTextColor='#272E67'
+              />
+              <RichToolbar
+                editor={richText}
+                actions={[
+                  actions.undo,
+                  actions.redo,
+                  actions.setBold,
+                  actions.setItalic,
+                  actions.setUnderline,
+                  actions.heading1,
+                  actions.insertBulletsList,
+                  actions.insertLink,
+                ]}
+                iconMap={{
+                  [actions.undo]: ({ tintColor }) => (
+                    <ArrowUturnLeftIcon size='16' color={tintColor} />
+                  ),
+                  [actions.redo]: ({ tintColor }) => (
+                    <ArrowUturnRightIcon size='16' color={tintColor} />
+                  ),
+                  [actions.heading1]: ({ tintColor }) => (
+                    <Text style={[{ color: tintColor, textAlign: 'center' }]}>Sous-titre</Text>
+                  ),
+                  [actions.setBold]: ({ tintColor }) => (
+                    <Text style={[{ color: tintColor, fontWeight: 'bold' }]}>B</Text>
+                  ),
+                  [actions.setItalic]: ({ tintColor }) => (
+                    <Text style={[{ color: tintColor, fontStyle: 'italic' }]}>i</Text>
+                  ),
+                  [actions.setUnderline]: ({ tintColor }) => (
+                    <Text style={[{ color: tintColor, textDecorationLine: 'underline' }]}>U</Text>
+                  ),
+                  [actions.insertBulletsList]: ({ tintColor }) => (
+                    <ListBulletIcon size='16' color={tintColor} />
+                  ),
+                  [actions.insertLink]: ({ tintColor }) => <LinkIcon size='16' color={tintColor} />,
+                }}
+              />
+            </View>
+            {/* {showDescError && (
+              <Text style={styles.errorTextStyle}>Veuillez remplir tous les champs 🤔</Text>
+            )} */}
+            {/* <Button onPress={submitContentHandle}>
+              <Text className='color-white'>Prévisualiser votre publication</Text>
+            </Button> */}
+          </KeyboardAvoidingView>
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
