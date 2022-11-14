@@ -1,11 +1,14 @@
-query getAllPostsByUser($id: String!) {
-  AllPostsByUserList(id: $id) {
+query getAllPostsByUser {
+  AllPostsByUserList {
     id
     title
     mainPicture
     createdAt
     intro
     likes
+    author {
+      email
+    }
     comments {
       author
       content

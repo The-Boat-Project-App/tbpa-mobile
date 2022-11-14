@@ -1,0 +1,12 @@
+query getPartnerById($id: String!) {
+  Partner(id: $id) {
+    id
+    name {
+      FR
+    }
+    content {
+      FR
+    }
+    main_picture
+  }
+}

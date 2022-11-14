@@ -1,10 +1,15 @@
 import { View, Image, Text, useWindowDimensions, Platform, TouchableOpacity } from 'react-native'
-import { ArrowLeftCircleIcon as ArrowLeftCircleIconOutline } from 'react-native-heroicons/outline'
+import {
+  ArrowLeftCircleIcon as ArrowLeftCircleIconOutline,
+  ArrowDownCircleIcon as ArrowDownCircleIconOutline,
+} from 'react-native-heroicons/outline'
 import { useNavigation } from '@react-navigation/native'
 
-interface ScreenHeaderProps {}
+interface ScreenHeaderProps {
+  arrowDirection: String
+}
 
-const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({}) => {
+const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({ arrowDirection = 'left' }) => {
   const { height, width } = useWindowDimensions()
   const navigation = useNavigation()
 
@@ -14,7 +19,11 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({}) => {
         className=' justify-center align-middle flex-1 ml-4 '
         onPress={() => navigation.goBack()}
       >
-        <ArrowLeftCircleIconOutline size='42' color='#0C617D' />
+        {arrowDirection == 'down' ? (
+          <ArrowDownCircleIconOutline size='42' color='#0C617D' />
+        ) : (
+          <ArrowLeftCircleIconOutline size='42' color='#0C617D' />
+        )}
       </TouchableOpacity>
       <View className='mr-2'>
         <Image

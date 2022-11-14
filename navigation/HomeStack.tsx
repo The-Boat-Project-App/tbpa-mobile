@@ -12,7 +12,8 @@ import PreviewPostScreen from '@screens/PreviewPostScreen/PreviewPostScreen'
 import NewsScreen from '@screens/NewsScreen/NewsScreen'
 import AllPostsScreen from '@screens/AllPostsScreen/AllPostsScreen'
 import AllNewsScreen from '@screens/AllNewsScreen/AllNewsScreen'
-
+import PartnerScreen from '@screens/PartnerScreen/PartnerScreen'
+import AddPostScreen from '@screens/AddPostScreen/AddPostScreen'
 import BottomTabs from './Tabs'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
@@ -50,6 +51,14 @@ const HomeStackNavigator = () => {
         }}
       >
         <HomeStack.Screen name='BottomTabs' component={BottomTabs} />
+        <HomeStack.Screen
+          name='AddNewPost'
+          component={AddPostScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_left',
+          }}
+        />
         <HomeStack.Screen name='SignIn' component={SignInScreen} />
         <HomeStack.Screen name='SignUp' component={SignUpScreen} />
         <HomeStack.Screen
@@ -103,7 +112,15 @@ const HomeStackNavigator = () => {
             animation: 'slide_from_right',
           }}
         />
-
+        <HomeStack.Screen
+          name='Partner'
+          component={PartnerScreen}
+          options={{
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_bottom',
+          }}
+        />
         <HomeStack.Screen name='Dev' component={DevScreen} />
         <HomeStack.Screen name='Mika' component={MikaScreen} />
         <HomeStack.Screen name='Aboubacar' component={AboubacarScreen} />

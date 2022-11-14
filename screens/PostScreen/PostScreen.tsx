@@ -29,10 +29,8 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
-  console.log('rerender data dans postscreen', data)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    console.log('data dans onrefresh sur PostScreen', data)
 
     wait(2000).then(() => {
       refetch(), setRefreshing(false)

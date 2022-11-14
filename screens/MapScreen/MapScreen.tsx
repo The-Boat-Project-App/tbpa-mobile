@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
-import { View, Dimensions, StyleSheet } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
+import { View, Dimensions, StyleSheet, Text } from 'react-native'
+import MapView, { Marker, Callout } from 'react-native-maps'
 import { useReactiveVar } from '@apollo/client'
 import { boatLocationVar } from '../../variables/boatLocation'
 import { useGetAllPartnersQuery } from '../../graphql/graphql'
 import LoadingView from '@components/LoadingView/LoadingView'
+import { useNavigation } from '@react-navigation/native'
 
 interface MapScreenProps {}
 
 const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
+  const navigation = useNavigation()
+
   // const size = useWindowDimensions()
   // const { width, height } = size
 
@@ -65,13 +68,25 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
           return (
             <Marker
               key={index}
-              pinColor={'green'}
+              pinColor={'#0C617D'}
               title={partnerItem.name.FR}
               coordinate={{
                 latitude: partnerItem.latitude,
                 longitude: partnerItem.longitude,
               }}
-            />
+            >
+              <Callout>
+                <View>
+                  <Text
+                    onPress={() => {
+                      navigation.navigate('Partner', { partnerId: partnerItem.id })
+                    }}
+                  >
+                    {partnerItem.name.FR}
+                  </Text>
+                </View>
+              </Callout>
+            </Marker>
           )
         })}
       </MapView>
