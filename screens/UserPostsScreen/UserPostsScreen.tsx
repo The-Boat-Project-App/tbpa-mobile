@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   ScrollView,
@@ -8,8 +8,10 @@ import {
   Text,
   TouchableOpacity,
   RefreshControl,
+  Platform,
+  SnapshotViewIOSComponent,
 } from 'react-native'
-import { Button, Divider, Badge } from 'native-base'
+import { Button, Divider, Badge, Modal } from 'native-base'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import {
   useGetAllSubmittedPostsByUserQuery,
@@ -22,54 +24,81 @@ import {
   InboxIcon as InboxIconOutline,
 } from 'react-native-heroicons/outline'
 import { useNavigation } from '@react-navigation/native'
+import { useReactiveVar } from '@apollo/client'
+import { userDataVar } from '../../variables/userData'
+import { useIsFocused } from '@react-navigation/native'
 
 interface UserPostsScreenProps {}
 
 const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) => {
-  // const { data, refetch } = useGetPostsByIdQuery({
-  //   variables: { id: props.route.params.postId },
-  // })
-  // console.log(props.route.params.postId)
-  const [refreshing, setRefreshing] = useState<boolean>(false)
+  //Check if user is connected => if not, display modal
+  const isFocused = useIsFocused()
 
+  const userDataInApollo = useReactiveVar(userDataVar)
+  console.log('userdateinapollo', userDataInApollo)
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const navigation = useNavigation()
   const [isDraftSelected, setIsDraftSelected] = useState<boolean>(false)
   const { data: submittedPostsData, refetch: refetchSubmittedPostsData } =
     useGetAllSubmittedPostsByUserQuery()
   const { data: draftPostsData, refetch: refetchDraftPostsData } = useGetAllDraftPostsByUserQuery()
-  console.log('isDraftSelected', isDraftSelected)
-  const navigation = useNavigation()
   const { height, width } = useWindowDimensions()
   const wait = (timeout: number) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
+
   const onRefresh = useCallback(() => {
     setRefreshing(true)
     wait(2000).then(() => {
       refetchSubmittedPostsData(), setRefreshing(false)
     })
   }, [])
+  console.log('🍭submittedPostsData', submittedPostsData)
+  console.log('🍭draftPostsData', draftPostsData)
+
+  useEffect(() => {
+    isFocused && setIsOpen(userDataInApollo.firstName ? false : true)
+  }, [userDataInApollo.email, isFocused])
+
   if (!submittedPostsData || !draftPostsData) {
-    return <LoadingView />
+    if (userDataInApollo.email || userDataInApollo.firstName) {
+      return <LoadingView />
+    }
   }
 
+  // let isConnected
+  // if (userDataInApollo.email !== '' || !userDataInApollo.email) {
+  //   isConnected = false
+  // }
   const emptyDraftDisplay =
     draftPostsData?.AllDraftPostsByUserList.length == 0 ? (
-      <View className='w-2/2 flex flex-row justify-center items-center min-h-full'>
+      <View
+        style={{ flex: 1, minHeight: height * 0.5, justifyContent: 'center', alignItems: 'center' }}
+      >
         <InboxIconOutline size={40} color='grey' />
+        <Text className='text-sm color-grey font-raleway'>Vous n'avez pas de brouillons.</Text>
       </View>
     ) : null
 
   const emptySumbittedDisplay =
     submittedPostsData?.AllSubmittedPostsByUserList.length == 0 ? (
-      <View className='w-2/2 flex flex-row justify-center items-center min-h-full'>
+      <View
+        style={{ flex: 1, minHeight: height * 0.5, justifyContent: 'center', alignItems: 'center' }}
+      >
         <InboxIconOutline size={40} color='grey' />
+        <Text className='text-sm color-grey font-raleway'>Vous n'avez pas encore publié.</Text>
       </View>
     ) : null
 
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <View className='flex flex-row justify-center'>
-        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-5 mt-6'>
+        <Text
+          className={`text-xl  color-deepBlue font-ralewayBold ml-3 mb-5  ${
+            Platform.OS === 'ios' ? 'mt-6' : 'mt-12'
+          }`}
+        >
           Vos publications
         </Text>
       </View>
@@ -193,7 +222,7 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
         )}
       </ScrollView>
       <View className='flex flex-row justify-center'>
-        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-1 mt-4'>
+        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-1 mt-4 text-center'>
           {draftPostsData?.AllDraftPostsByUserList.length == 0 &&
           submittedPostsData?.AllSubmittedPostsByUserList.length == 0
             ? `Proposez votre première publication !`
@@ -209,6 +238,40 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
       >
         <PlusCircleIconOutline size={40} color='white' />
       </Button>
+
+      <Modal isOpen={isOpen} safeAreaTop={true}>
+        <Modal.Content maxWidth='350'>
+          <Modal.Header>
+            <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 text-center'>
+              Connectez-vous pour découvrir toutes les fonctionnalités
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('BottomTabs', { screen: 'Profile' })
+                setIsOpen(false)
+              }}
+            >
+              <Text className='text-md  color-deepBlue font-ralewayBold ml-3 text-center'>
+                Se connecter ou s'inscrire
+              </Text>
+            </TouchableOpacity>
+          </Modal.Body>
+          <Modal.Footer onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('BottomTabs', { screen: 'Home' })
+                setIsOpen(false)
+              }}
+            >
+              <Text className='text-xs  color-deepBlue font-raleway ml-3 text-center'>
+                Non merci
+              </Text>
+            </TouchableOpacity>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </SafeAreaView>
   )
 }

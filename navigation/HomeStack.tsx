@@ -14,6 +14,7 @@ import AllPostsScreen from '@screens/AllPostsScreen/AllPostsScreen'
 import AllNewsScreen from '@screens/AllNewsScreen/AllNewsScreen'
 import PartnerScreen from '@screens/PartnerScreen/PartnerScreen'
 import AddPostScreen from '@screens/AddPostScreen/AddPostScreen'
+import PictureScreen from '@screens/PictureScreen/PictureScreen'
 import BottomTabs from './Tabs'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
@@ -93,6 +94,15 @@ const HomeStackNavigator = () => {
             presentation: 'modal',
             animationTypeForReplace: 'push',
             animation: 'slide_from_right',
+          }}
+        />
+        <HomeStack.Screen
+          name='Picture'
+          component={PictureScreen}
+          options={{
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_bottom',
           }}
         />
 
