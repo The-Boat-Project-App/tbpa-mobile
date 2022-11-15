@@ -55,7 +55,7 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
     })
   }, [])
   console.log('🍭submittedPostsData', submittedPostsData)
-  console.log('🍭draftPostsData', draftPostsData)
+  console.log('🍭draftPostsData ', draftPostsData)
 
   useEffect(() => {
     isFocused && setIsOpen(userDataInApollo.firstName ? false : true)
