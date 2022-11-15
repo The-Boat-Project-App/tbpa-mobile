@@ -118,6 +118,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
         className={` bg-white ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 -mt-1'}  `}
       >
         <ScreenHeader arrowDirection='no-arrow' />
+        <Text>{formProgress}</Text>
 
         <ScrollView
           ref={scrollViewRef}

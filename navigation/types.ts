@@ -14,6 +14,7 @@ export type HomeStackNavigatorParamList = {
   Allan: undefined
   AllPosts: undefined
   AddPoste: undefined
+  Picture: undefined
 }
 
 export type BottomTabNavigatorParamList = {

@@ -82,7 +82,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
               />
             ) : (
               <BookmarkIconOutline
-                size={30}
+screens/UserScreen/UserScreen.tsx                size={30}
                 fill='white'
                 onPress={() => setIsBookmarked(!isBookmarked)}
                 color='#0C617D'
