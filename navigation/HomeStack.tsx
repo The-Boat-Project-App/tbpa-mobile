@@ -21,12 +21,7 @@ import { StatusBar } from 'expo-status-bar'
 
 //* DEV SCREENS
 import DevScreen from '@screens/DevScreen/DevScreen'
-import AllanScreen from '@screens/DevScreens/AllanScreen/AllanScreen'
-import CamilleScreen from '@screens/DevScreens/CamilleScreen/CamilleScreen'
-import MatthieuScreen from '@screens/DevScreens/MatthieuScreen/MatthieuScreen'
-import PierreScreen from '@screens/DevScreens/PierreScreen/PierreScreen'
-import AboubacarScreen from '@screens/DevScreens/AboubacarScreen/AboubacarScreen'
-import MikaScreen from '@screens/DevScreens/MikaScreen/MikaScreen'
+
 //* DEV SCREENS
 const HomeStack = createNativeStackNavigator<HomeStackNavigatorParamList>()
 const config = {
@@ -61,7 +56,14 @@ const HomeStackNavigator = () => {
           }}
         />
         <HomeStack.Screen name='SignIn' component={SignInScreen} />
-        <HomeStack.Screen name='SignUp' component={SignUpScreen} />
+        <HomeStack.Screen
+          name='SignUp'
+          component={SignUpScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
         <HomeStack.Screen
           name='Post'
           component={PostScreen}
@@ -131,13 +133,6 @@ const HomeStackNavigator = () => {
             animation: 'slide_from_bottom',
           }}
         />
-        <HomeStack.Screen name='Dev' component={DevScreen} />
-        <HomeStack.Screen name='Mika' component={MikaScreen} />
-        <HomeStack.Screen name='Aboubacar' component={AboubacarScreen} />
-        <HomeStack.Screen name='Pierre' component={PierreScreen} />
-        <HomeStack.Screen name='Matthieu' component={MatthieuScreen} />
-        <HomeStack.Screen name='Allan' component={AllanScreen} />
-        <HomeStack.Screen name='Camille' component={CamilleScreen} />
       </HomeStack.Navigator>
     </SafeAreaProvider>
   )
