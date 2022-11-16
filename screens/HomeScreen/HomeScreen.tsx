@@ -87,7 +87,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-white'>
+    <SafeAreaView className='flex-1 bg-white' edges={['top', 'left', 'right']}>
       <HomeHeader />
       <ScrollView
         showsVerticalScrollIndicator={false}

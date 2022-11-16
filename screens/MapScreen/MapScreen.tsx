@@ -16,9 +16,13 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
   // const { width, height } = size
 
   const [region, setRegion] = useState({})
+  const [isMapReady, setIsMapReady] = useState(false)
   const { data: partnersData, refetch: refetchPartnersData } = useGetAllPartnersQuery()
 
   const boatLocationInApollo = useReactiveVar(boatLocationVar)
+  const onMapReady = () => {
+    setIsMapReady(true)
+  }
 
   const getInitialState = () => {
     return {
@@ -48,6 +52,7 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
           longitudeDelta: 8,
         }}
         style={styles.map}
+        onMapReady={() => onMapReady()}
       >
         <Marker
           coordinate={{
