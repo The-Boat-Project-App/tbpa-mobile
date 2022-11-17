@@ -29,13 +29,12 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
   const navigation = useNavigation()
   const tokeninstate = useReactiveVar(accessTokenVar)
   const userDataInApollo = useReactiveVar(userDataVar)
-  console.log('userDataInApollo', userDataInApollo)
 
   const emptySecureStore = async () => {
     console.log('suppression de l access token et retour à SignInScreen')
     await deleteAccessToken()
     accessTokenVar('')
-    userDataVar({ firstName: '', lastName: '', avatar: '', status: '' })
+    userDataVar({ firstName: '', lastName: '', avatar: '', status: '', email: '' })
     setUserToken(null)
   }
 

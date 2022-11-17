@@ -1,5 +1,13 @@
-import { useState } from 'react'
-import { View, TextInput, StyleSheet, Dimensions, Image } from 'react-native'
+import { useState, useRef } from 'react'
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  useWindowDimensions,
+  Image,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import CustomButton from '@components/CustomButton/CustomButton'
 import { useLoginMutation } from '../../graphql/graphql'
@@ -11,21 +19,18 @@ import { userDataVar } from '../../variables/userData'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 // Native Base
 import {
-  NativeBaseProvider,
   Input,
-  Stack,
   Icon,
   Center,
   Box,
-  Heading,
   VStack,
   FormControl,
   Link,
   HStack,
   Text,
   ScrollView,
-  Badge,
   Button,
+  useToast,
 } from 'native-base'
 
 interface SignInScreenProps {}
@@ -34,13 +39,18 @@ const SignInScreen: React.FunctionComponent<SignInScreenProps> = ({}) => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [show, setShow] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
+  const { height, width } = useWindowDimensions()
+  const toast = useToast()
+  const id = 'error'
 
   const [login] = useLoginMutation()
 
   const navigation = useNavigation()
 
   const signIn = async () => {
+    setIsLoading(true)
     try {
       if (validateEmail(email)) {
         const response = await login({
@@ -65,11 +75,31 @@ const SignInScreen: React.FunctionComponent<SignInScreenProps> = ({}) => {
             email: response.data.loginUsers.email,
             status: response.data.loginUsers.status,
           })
+          setIsLoading(false)
+
+          toast.show({
+            placement: 'bottom',
+            render: () => {
+              return (
+                <Box bg='#139DB8' p={2} rounded='sm' mb={5}>
+                  <Text className='text-sm  color-white font-ralewayBold  '>{`👋 Bienvenue ${response.data?.loginUsers.firstName}`}</Text>
+                </Box>
+              )
+            },
+          })
           navigation.navigate('BottomTabs', { screen: 'Home' })
         }
       }
     } catch (error) {
-      setErrorMessage('Votre e-mail ou mot de passe incorrect')
+      if (!toast.isActive(id)) {
+        toast.show({
+          id,
+          description: ` 🤔 E-mail ou mot de passe incorrect`,
+        })
+      }
+      setIsLoading(false)
+
+      // setErrorMessage('Votre e-mail ou mot de passe incorrect')
     }
   }
 
@@ -85,61 +115,59 @@ const SignInScreen: React.FunctionComponent<SignInScreenProps> = ({}) => {
   }
 
   const goSignUp = () => navigation.navigate('SignUp')
+  const emailRef = useRef()
+  const passwordRef = useRef()
+  const scrollRef = useRef()
 
   return (
     <View
       className='text-xl  color-deepBlue font-ralewayBold'
       style={{ backgroundColor: '#fff', height: '100%' }}
     >
-      <ScrollView>
+      <ScrollView ref={scrollRef}>
         <View style={styles.container}>
-          <Image source={require('../../assets/logoTBP.png')} style={styles.logo} />
+          <Image
+            source={require('../../assets/logoTBP.png')}
+            className='w-4'
+            style={{ width: width * 0.5, height: width * 0.2, resizeMode: 'contain' }}
+          />
           <Center w='100%'>
             <Box safeArea w='90%' maxW='290'>
               <Center>
-                <Heading
-                  size='lg'
-                  fontWeight='600'
-                  color='coolGray.800'
-                  _dark={{
-                    color: 'warmGray.50',
-                  }}
-                  textAlign='center'
-                >
-                  Bienvenue dans chez boatProject
-                </Heading>
+                <Text className='text-xl  color-deepBlue font-ralewayBold  mt-2  text-center'>
+                  Se connecter
+                </Text>
 
-                <Heading
-                  mt='1'
-                  _dark={{
-                    color: 'warmGray.200',
-                  }}
-                  color='coolGray.600'
-                  fontWeight='medium'
-                  size='xs'
-                >
-                  Connectez-vous pour continuer
-                </Heading>
+                <Text className='text-sm  color-deepBlue font-raleway  ml-3 my-4 text-center'>
+                  Connectez-vous pour utiliser toutes les fonctionnalités de l'application et
+                  intéragir avec les Compagnons de la Méditerranée.
+                </Text>
               </Center>
 
               <VStack space={3} mt='5'>
                 <FormControl>
-                  <FormControl.Label>Email</FormControl.Label>
                   <Input
+                    autoCapitalize='none'
                     value={email}
+                    placeholder='E-mail'
+                    returnKeyType='next'
+                    onSubmitEditing={() => passwordRef.current.focus()}
+                    style={{ color: '#0991b2', fontWeight: 'bold', fontFamily: 'Open-Sans' }}
                     onChangeText={(text) => setEmail(text)}
-                    size='2xl'
+                    size='lg'
                     InputLeftElement={
                       <Icon as={<Ionicons name='mail' />} size={5} ml='2' color='muted.400' />
                     }
                   />
                 </FormControl>
                 <FormControl>
-                  <FormControl.Label>Mot de passe</FormControl.Label>
                   <Input
                     value={password}
+                    style={{ color: '#0991b2', fontWeight: 'bold', fontFamily: 'Open-Sans' }}
+                    placeholder='Mot de passe'
                     onChangeText={(password) => setPassword(password)}
-                    size='2xl'
+                    size='lg'
+                    ref={passwordRef}
                     type={show ? 'text' : 'password'}
                     InputRightElement={
                       <Icon
@@ -151,55 +179,29 @@ const SignInScreen: React.FunctionComponent<SignInScreenProps> = ({}) => {
                       />
                     }
                   />
-                  <Link
-                    _text={{
-                      fontSize: 'xs',
-                      fontWeight: '500',
-                      color: 'blue.500',
-                    }}
-                    alignSelf='flex-end'
-                    mt='1'
-                  >
-                    Mot de passe oublié?
+                  <Link alignSelf='flex-end' mt='2'>
+                    <Text className='text-xs  color-deepBlue font-raleway  ml-3 '>
+                      Mot de passe oublié ?
+                    </Text>
                   </Link>
                 </FormControl>
-                <Button
-                  bg='blue.500'
-                  _text={{
-                    fontSize: 'lg',
-                    fontWeight: '500',
-                  }}
-                  onPressIn={() => signIn()}
-                  mt='2'
-                >
-                  Se connecter
+                <Button onPressIn={() => signIn()} mt='2' isLoading={isLoading}>
+                  <Text className='color-white font-ralewayBold'>Se connecter</Text>
                 </Button>
                 {errorMessage && (
                   <Text style={{ textAlign: 'center' }} color='red.900'>
                     {errorMessage}
                   </Text>
                 )}
-                <HStack mt='1' justifyContent='center'>
-                  <Text
-                    fontSize='sm'
-                    color='coolGray.600'
-                    _dark={{
-                      color: 'warmGray.200',
-                    }}
-                  >
-                    Pas encore de compte?{' '}
-                  </Text>
-                  <Link
-                    onPress={() => navigation.navigate('SignUp')}
-                    _text={{
-                      color: 'blue.500',
-                      fontWeight: 'medium',
-                      fontSize: 'sm',
-                    }}
-                    href='#'
-                  >
-                    Créer un compte
-                  </Link>
+                <HStack mt='6' justifyContent='center'>
+                  <TouchableOpacity onPress={() => navigation.navigate('SignUp')} className='flex'>
+                    <Text className='text-sm  color-deepBlue font-raleway text-center  '>
+                      Pas encore inscrit ?
+                    </Text>
+                    <Text className='text-sm  color-deepBlue   font-ralewayBold  text-center'>
+                      Créer un compte
+                    </Text>
+                  </TouchableOpacity>
                 </HStack>
               </VStack>
             </Box>
@@ -220,11 +222,5 @@ const styles = StyleSheet.create({
     // backgroundColor: '#fff',
     alignItems: 'center',
     // justifyContent: "center",
-  },
-  logo: {
-    marginTop: 10,
-    width: '95%',
-    height: 80,
-    backgroundSize: 'cover',
   },
 })

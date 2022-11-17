@@ -13,12 +13,9 @@ const DevController: React.FunctionComponent<DevControllerProps> = ({}) => {
   const toast = useToast()
 
   const scrapeLocation = async () => {
-    console.log('clic detecté')
     setIsLoading(true)
 
     const response = await scrapeBoatData()
-
-    console.log('response', response)
 
     if (response.data?.updateTrip) {
       setIsLoading(false)

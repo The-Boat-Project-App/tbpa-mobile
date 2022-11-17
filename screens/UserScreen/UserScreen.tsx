@@ -1,5 +1,13 @@
 import React, { useState, useCallback } from 'react'
-import { View, Text, Image, useWindowDimensions, ScrollView, RefreshControl } from 'react-native'
+import {
+  View,
+  Text,
+  Image,
+  useWindowDimensions,
+  Platform,
+  ScrollView,
+  RefreshControl,
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import CustomAvatar from '@components/CustomAvatar/CustomAvatar'
@@ -46,7 +54,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader />
       <ScrollView
-        className=' px-3 '
+        className='px-2'
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -60,7 +68,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
         <View className=' bg-white flex flex-row mb-4 mt-2 justify-center'>
           {data?.user.firstName && (
             <View className='w-1/2 justify-center '>
-              <Text className='text-xl color-deepBlue font-ralewayBold '>
+              <Text className='text-xl color-deepBlue font-ralewayBold'>
                 👋 Bonjour !{'\n'}Je m'appelle{'\n'}
                 {data?.user.firstName}
               </Text>
@@ -77,7 +85,7 @@ const UserScreen: React.FunctionComponent<UserScreenProps> = (props) => {
             }}
           />
         </View>
-        <View className='px-4'>
+        <View className={`${Platform.OS === 'ios' ? 'px-3' : 'px-2'}`}>
           {/* <View className='flex-row justify-center'>
             <Toggle isEnabled={false} />
           </View> */}

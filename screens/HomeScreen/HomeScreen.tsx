@@ -137,7 +137,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
           )}
 
           <Text className='text-xl color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
-            Les compagnons
+            Les Compagnons de la Méditerranée
           </Text>
           <CrewDisplay />
           <View className='flex flex-row space-x-10 w-screen  justify-between'>
