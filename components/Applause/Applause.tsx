@@ -13,9 +13,7 @@ const Applause = ({ likes, postId }) => {
         id: postId,
       },
     })
-    console.log('RESPONSEEEEEE', response)
     if (response && response.data) {
-      console.log('REPONSE', response)
       setLikesDisplay(Number(response.data.addLikes))
     }
   }

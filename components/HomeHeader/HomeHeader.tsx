@@ -10,7 +10,6 @@ const HomeHeader: React.FunctionComponent<HomeHeaderProps> = ({}) => {
   const { width } = useWindowDimensions()
   const [formattedCountDown, setFormattedCountDown] = useState<string>('')
   const boatData = useReactiveVar(boatLocationVar)
-  console.log(boatData)
   const countDownDate = new Date(boatData.start_date).getTime()
 
   if (boatData.start_date) {

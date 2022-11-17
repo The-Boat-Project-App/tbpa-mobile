@@ -9,6 +9,7 @@ import {
   useWindowDimensions,
   TouchableWithoutFeedback,
   Keyboard,
+  TouchableOpacity,
 } from 'react-native'
 import { useReactiveVar } from '@apollo/client'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
@@ -36,6 +37,7 @@ import {
   ScrollView,
   Modal,
   Button,
+  useToast,
 } from 'native-base'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 
@@ -43,11 +45,12 @@ interface SignUpScreenProps {}
 
 const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
   const { height, width } = useWindowDimensions()
-
+  const toast = useToast()
+  const id = 'error'
   const [email, setEmail] = useState<string>('')
   const [show, setShow] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>()
-
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [password, setPassword] = useState<string>('')
   const [verifiedPassword, setVerifiedPassword] = useState<string>('')
   const [firstName, setFirstName] = useState<string>('')
@@ -63,19 +66,30 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
 
   const validateEmail = (email: string) => {
     if (email_pattern.test(email.trim().toLowerCase())) return true
-    setErrorMessage('Email incorrect, verifiez bien votre email et ressayer ')
+    if (!toast.isActive(id)) {
+      toast.show({
+        id,
+        description: ` 🤔 L'email est incorrect.`,
+      })
+    }
     return false
   }
 
-  const validatePassword = (password: string) => {
-    if (password_pattern.test(password)) return true
-    setErrorMessage(
-      'Mot de passe incorrect, Votre mot de passe doit contenir au moins [8 caracteres avec au moins 1 caractere special]',
-    )
+  const validatePassword = (passwd: string) => {
+    if (password_pattern.test(passwd) && password === verifiedPassword) return true
+
+    if (!toast.isActive(id)) {
+      toast.show({
+        id,
+        description: ` 🤔 Mot de passe incorrect : le mot de passe doit contenir au moins 8 caractères dont 1 caractère spécial.`,
+      })
+    }
     return false
   }
   const signUp = async () => {
     if (validateEmail(email) && validatePassword(password)) {
+      setIsLoading(true)
+
       const response = await register({
         variables: {
           newUsersInput: {
@@ -100,7 +114,18 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
           status: response.data.createUsers.status,
           email: response.data.createUsers.email,
         })
+        setIsLoading(false)
 
+        toast.show({
+          placement: 'bottom',
+          render: () => {
+            return (
+              <Box bg='#139DB8' p={2} rounded='sm' mb={5}>
+                <Text className='text-sm  color-white font-ralewayBold  '>{`👋 Bienvenue ${response.data?.createUsers.firstName}`}</Text>
+              </Box>
+            )
+          },
+        })
         navigation.navigate('BottomTabs')
       }
     }
@@ -115,10 +140,11 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader arrowDirection='left' />
-      <Text className='text-xl  color-deepBlue font-ralewayBold  ml-3  text-center'>
-        Créer un compte
-      </Text>
+
       <ScrollView ref={scrollRef}>
+        <Text className='text-xl  color-deepBlue font-ralewayBold  ml-3  text-center'>
+          Créer un compte
+        </Text>
         <KeyboardAvoidingView
           // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           behavior='padding'
@@ -127,7 +153,7 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
             <Box safeArea w='90%' maxWidth='290'>
               <Center>
                 <Text className='text-sm  color-deepBlue font-raleway  ml-3 my-4 text-center'>
-                  Inscrivez-vous pour découvrir toutes les fonctionnalités de l'application et
+                  Inscrivez-vous pour utiliser toutes les fonctionnalités de l'application et
                   intéragir avec les Compagnons de la Méditerranée.
                 </Text>
               </Center>
@@ -189,6 +215,7 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
                       })
                     }
                     value={email}
+                    autoCapitalize='none'
                     ref={emailRef}
                     onSubmitEditing={() => passwordRef.current.focus()}
                     placeholder='E-mail*'
@@ -257,19 +284,22 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
                     }
                   />
                 </FormControl>
-                <Button onPressIn={() => signUp()} mt='4'>
+                <Button onPressIn={() => signUp()} mt='4' isLoading={isLoading}>
                   <Text className='color-white font-ralewayBold'>S'inscrire</Text>
                 </Button>
                 {errorMessage && <Text color='red.900'>{errorMessage}</Text>}
                 <HStack mt='6' mb='6' justifyContent='center'>
-                  <Text className='text-sm  color-deepBlue font-raleway  ml-3 '>
-                    Déjà inscrit ?
-                  </Text>
-                  <Link onPress={() => navigation.navigate('Profile')} href='#'>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('Profile')}
+                    className='flex flex-row'
+                  >
+                    <Text className='text-sm  color-deepBlue font-raleway  ml-3 '>
+                      Déjà inscrit ?
+                    </Text>
                     <Text className='text-sm  color-deepBlue   ml-2 font-ralewayBold '>
                       Se connecter
                     </Text>
-                  </Link>
+                  </TouchableOpacity>
                 </HStack>
               </VStack>
             </Box>
