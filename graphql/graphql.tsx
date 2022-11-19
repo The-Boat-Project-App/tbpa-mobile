@@ -50,9 +50,28 @@ export type LoginResponse = {
   status: Scalars['String'];
 };
 
+/** The Messages Model */
+export type Messages = {
+  __typename?: 'Messages';
+  author?: Maybe<Users>;
+  content?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id?: Maybe<Scalars['ID']>;
+  mainPicture?: Maybe<Scalars['String']>;
+};
+
+export type MessagesInput = {
+  author?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  id?: InputMaybe<Scalars['ID']>;
+  mainPicture?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addLikes: Scalars['String'];
+  createMessages: Messages;
   createNews: News;
   createNotes: Notes;
   createPosts: Posts;
@@ -72,6 +91,11 @@ export type Mutation = {
 
 export type MutationAddLikesArgs = {
   id: Scalars['String'];
+};
+
+
+export type MutationCreateMessagesArgs = {
+  newMessagesInput: MessagesInput;
 };
 
 
@@ -239,6 +263,8 @@ export type Query = {
   AllPostsByUserList: Array<Posts>;
   /** Get List of All Submitted Posts By User */
   AllSubmittedPostsByUserList: Array<Posts>;
+  /** Get List of Messages */
+  MessagesList: Array<Messages>;
   News: News;
   /** Get List of News */
   NewsList: Array<News>;
@@ -310,6 +336,8 @@ export type RegisterResponse = {
 export type Subscription = {
   __typename?: 'Subscription';
   likeAdded: Posts;
+  messageInRealTime: Array<Messages>;
+  messageSent: Messages;
 };
 
 export type ThemeCreatedResponse = {
@@ -412,6 +440,13 @@ export type AddLikesMutationVariables = Exact<{
 
 export type AddLikesMutation = { __typename?: 'Mutation', addLikes: string };
 
+export type CreateMessagesMutationVariables = Exact<{
+  newMessagesInput: MessagesInput;
+}>;
+
+
+export type CreateMessagesMutation = { __typename?: 'Mutation', createMessages: { __typename?: 'Messages', id?: string | null, content?: string | null } };
+
 export type CreateNewPostMutationVariables = Exact<{
   newPostsInput: PostsInput;
 }>;
@@ -423,6 +458,16 @@ export type GetAllDraftPostsByUserQueryVariables = Exact<{ [key: string]: never;
 
 
 export type GetAllDraftPostsByUserQuery = { __typename?: 'Query', AllDraftPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+
+export type GetAllMessagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllMessagesQuery = { __typename?: 'Query', MessagesList: Array<{ __typename?: 'Messages', id?: string | null, content?: string | null, mainPicture?: string | null, author?: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null } | null }> };
+
+export type GetAllMessagesInRealTimeSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllMessagesInRealTimeSubscription = { __typename?: 'Subscription', messageInRealTime: Array<{ __typename?: 'Messages', id?: string | null, content?: string | null, createdAt?: any | null, mainPicture?: string | null, author?: { __typename?: 'Users', firstName: string, avatar?: string | null } | null }> };
 
 export type GetAllNewsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -508,6 +553,11 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', loginUsers: { __typename?: 'LoginResponse', accessToken: string, refreshToken: string, firstName: string, lastName: string, avatar: string, status: string, email: string } };
 
+export type OnMessageAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnMessageAddedSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Messages', id?: string | null, content?: string | null, createdAt?: any | null, mainPicture?: string | null, author?: { __typename?: 'Users', firstName: string, avatar?: string | null } | null } };
+
 export type RegisterMutationVariables = Exact<{
   newUsersInput: UsersInput;
 }>;
@@ -552,6 +602,40 @@ export function useAddLikesMutation(baseOptions?: ApolloReactHooks.MutationHookO
 export type AddLikesMutationHookResult = ReturnType<typeof useAddLikesMutation>;
 export type AddLikesMutationResult = Apollo.MutationResult<AddLikesMutation>;
 export type AddLikesMutationOptions = Apollo.BaseMutationOptions<AddLikesMutation, AddLikesMutationVariables>;
+export const CreateMessagesDocument = gql`
+    mutation createMessages($newMessagesInput: MessagesInput!) {
+  createMessages(newMessagesInput: $newMessagesInput) {
+    id
+    content
+  }
+}
+    `;
+export type CreateMessagesMutationFn = Apollo.MutationFunction<CreateMessagesMutation, CreateMessagesMutationVariables>;
+
+/**
+ * __useCreateMessagesMutation__
+ *
+ * To run a mutation, you first call `useCreateMessagesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessagesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessagesMutation, { data, loading, error }] = useCreateMessagesMutation({
+ *   variables: {
+ *      newMessagesInput: // value for 'newMessagesInput'
+ *   },
+ * });
+ */
+export function useCreateMessagesMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateMessagesMutation, CreateMessagesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<CreateMessagesMutation, CreateMessagesMutationVariables>(CreateMessagesDocument, options);
+      }
+export type CreateMessagesMutationHookResult = ReturnType<typeof useCreateMessagesMutation>;
+export type CreateMessagesMutationResult = Apollo.MutationResult<CreateMessagesMutation>;
+export type CreateMessagesMutationOptions = Apollo.BaseMutationOptions<CreateMessagesMutation, CreateMessagesMutationVariables>;
 export const CreateNewPostDocument = gql`
     mutation createNewPost($newPostsInput: PostsInput!) {
   createPosts(newPostsInput: $newPostsInput) {
@@ -637,6 +721,84 @@ export function useGetAllDraftPostsByUserLazyQuery(baseOptions?: ApolloReactHook
 export type GetAllDraftPostsByUserQueryHookResult = ReturnType<typeof useGetAllDraftPostsByUserQuery>;
 export type GetAllDraftPostsByUserLazyQueryHookResult = ReturnType<typeof useGetAllDraftPostsByUserLazyQuery>;
 export type GetAllDraftPostsByUserQueryResult = Apollo.QueryResult<GetAllDraftPostsByUserQuery, GetAllDraftPostsByUserQueryVariables>;
+export const GetAllMessagesDocument = gql`
+    query getAllMessages {
+  MessagesList {
+    id
+    content
+    mainPicture
+    author {
+      avatar
+      firstName
+      id
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllMessagesQuery__
+ *
+ * To run a query within a React component, call `useGetAllMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMessagesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllMessagesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetAllMessagesQuery, GetAllMessagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetAllMessagesQuery, GetAllMessagesQueryVariables>(GetAllMessagesDocument, options);
+      }
+export function useGetAllMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetAllMessagesQuery, GetAllMessagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetAllMessagesQuery, GetAllMessagesQueryVariables>(GetAllMessagesDocument, options);
+        }
+export type GetAllMessagesQueryHookResult = ReturnType<typeof useGetAllMessagesQuery>;
+export type GetAllMessagesLazyQueryHookResult = ReturnType<typeof useGetAllMessagesLazyQuery>;
+export type GetAllMessagesQueryResult = Apollo.QueryResult<GetAllMessagesQuery, GetAllMessagesQueryVariables>;
+export const GetAllMessagesInRealTimeDocument = gql`
+    subscription getAllMessagesInRealTime {
+  messageInRealTime {
+    id
+    content
+    createdAt
+    mainPicture
+    author {
+      firstName
+      avatar
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllMessagesInRealTimeSubscription__
+ *
+ * To run a query within a React component, call `useGetAllMessagesInRealTimeSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllMessagesInRealTimeSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllMessagesInRealTimeSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllMessagesInRealTimeSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<GetAllMessagesInRealTimeSubscription, GetAllMessagesInRealTimeSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useSubscription<GetAllMessagesInRealTimeSubscription, GetAllMessagesInRealTimeSubscriptionVariables>(GetAllMessagesInRealTimeDocument, options);
+      }
+export type GetAllMessagesInRealTimeSubscriptionHookResult = ReturnType<typeof useGetAllMessagesInRealTimeSubscription>;
+export type GetAllMessagesInRealTimeSubscriptionResult = Apollo.SubscriptionResult<GetAllMessagesInRealTimeSubscription>;
 export const GetAllNewsDocument = gql`
     query getAllNews {
   NewsList {
@@ -1253,6 +1415,42 @@ export function useLoginMutation(baseOptions?: ApolloReactHooks.MutationHookOpti
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const OnMessageAddedDocument = gql`
+    subscription onMessageAdded {
+  messageSent {
+    id
+    content
+    createdAt
+    mainPicture
+    author {
+      firstName
+      avatar
+    }
+  }
+}
+    `;
+
+/**
+ * __useOnMessageAddedSubscription__
+ *
+ * To run a query within a React component, call `useOnMessageAddedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnMessageAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnMessageAddedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnMessageAddedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<OnMessageAddedSubscription, OnMessageAddedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useSubscription<OnMessageAddedSubscription, OnMessageAddedSubscriptionVariables>(OnMessageAddedDocument, options);
+      }
+export type OnMessageAddedSubscriptionHookResult = ReturnType<typeof useOnMessageAddedSubscription>;
+export type OnMessageAddedSubscriptionResult = Apollo.SubscriptionResult<OnMessageAddedSubscription>;
 export const RegisterDocument = gql`
     mutation Register($newUsersInput: UsersInput!) {
   createUsers(newUsersInput: $newUsersInput) {

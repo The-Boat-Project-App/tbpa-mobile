@@ -1,0 +1,13 @@
+query getAllMessages {
+  MessagesList {
+    id
+    content
+    mainPicture
+    author {
+      avatar
+      firstName
+      id
+      status
+    }
+  }
+}
