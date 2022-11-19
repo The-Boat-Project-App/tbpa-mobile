@@ -43,7 +43,6 @@ const NewsScreen: React.FunctionComponent<NewsScreenProps> = (props) => {
   console.log('rerender data dans newscreen', data)
   const onRefresh = useCallback(() => {
     setRefreshing(true)
-    console.log('data dans onrefresh sur newsScreen', data)
 
     wait(2000).then(() => {
       refetch(), setRefreshing(false)

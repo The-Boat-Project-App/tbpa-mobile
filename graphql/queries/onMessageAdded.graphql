@@ -1,0 +1,12 @@
+subscription onMessageAdded {
+  messageSent {
+    id
+    content
+    createdAt
+    mainPicture
+    author {
+      firstName
+      avatar
+    }
+  }
+}

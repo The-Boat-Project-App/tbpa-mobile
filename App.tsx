@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import RootNavigator from './navigation'
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, split } from '@apollo/client'
+import { WebSocketLink } from '@apollo/client/link/ws'
+import { getMainDefinition } from '@apollo/client/utilities'
+
 import { setContext } from '@apollo/client/link/context'
 import { LogBox } from 'react-native'
 LogBox.ignoreAllLogs()
@@ -13,10 +16,25 @@ import { getAccessToken } from './accessToken'
 
 export default function App() {
   console.log(process.env.API_URL)
+
+  const wsLink = new WebSocketLink({
+    uri: 'ws://localhost:3333/subscriptions',
+    options: {
+      reconnect: true,
+    },
+  })
   // Initialize Apollo Client
   const httpLink = createHttpLink({
     uri: `${process.env.API_URL}/graphql`,
   })
+  const link = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query)
+      return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+    },
+    wsLink,
+    httpLink,
+  )
   //* On passe l'accesstoken dans les headers
   const authLink = setContext(async (_, { headers }) => {
     // get the authentication token from local storage if it exists
@@ -31,7 +49,7 @@ export default function App() {
   })
   const cache = new InMemoryCache()
   const client = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: authLink.concat(link.concat(httpLink)),
     cache: cache,
     credentials: 'include',
   })
