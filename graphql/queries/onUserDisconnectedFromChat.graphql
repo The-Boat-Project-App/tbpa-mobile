@@ -1,0 +1,5 @@
+subscription newUserDisconnected {
+  newUserDisconnected {
+    id
+  }
+}
