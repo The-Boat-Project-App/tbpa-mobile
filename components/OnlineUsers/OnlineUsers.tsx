@@ -26,7 +26,7 @@ const OnlineUsers: React.FunctionComponent<OnlineUsersProps> = ({}) => {
 
   //   if (!loading) {
   //     console.log('nouveau user connecté ! ', newUserConnectedData?.newUserConnected?.firstName)
-
+  //
   //     // const copy = [...usersConnected, newUserConnectedData?.newUserConnected?.firstName]
   //     // setUsersConnected(copy)
   //   }
