@@ -82,6 +82,10 @@ export type Mutation = {
   deletePosts: Scalars['String'];
   deleteUsers: Scalars['String'];
   loginUsers: LoginResponse;
+  /** user connecting to chat */
+  newUserConnected: Users;
+  /** user disconnecting from chat */
+  newUserDisconnected: Users;
   revokeRefreshTokensForUser: Scalars['Boolean'];
   updateNotes: Notes;
   updatePosts: Posts;
@@ -336,8 +340,9 @@ export type RegisterResponse = {
 export type Subscription = {
   __typename?: 'Subscription';
   likeAdded: Posts;
-  messageInRealTime: Array<Messages>;
   messageSent: Messages;
+  newUserConnected: Users;
+  newUserDisconnected: Users;
 };
 
 export type ThemeCreatedResponse = {
@@ -462,12 +467,7 @@ export type GetAllDraftPostsByUserQuery = { __typename?: 'Query', AllDraftPostsB
 export type GetAllMessagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMessagesQuery = { __typename?: 'Query', MessagesList: Array<{ __typename?: 'Messages', id?: string | null, content?: string | null, mainPicture?: string | null, author?: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null } | null }> };
-
-export type GetAllMessagesInRealTimeSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllMessagesInRealTimeSubscription = { __typename?: 'Subscription', messageInRealTime: Array<{ __typename?: 'Messages', id?: string | null, content?: string | null, createdAt?: any | null, mainPicture?: string | null, author?: { __typename?: 'Users', firstName: string, avatar?: string | null } | null }> };
+export type GetAllMessagesQuery = { __typename?: 'Query', MessagesList: Array<{ __typename?: 'Messages', id?: string | null, content?: string | null, mainPicture?: string | null, author?: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null, email?: string | null } | null }> };
 
 export type GetAllNewsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -498,6 +498,16 @@ export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllUsersQuery = { __typename?: 'Query', usersList: Array<{ __typename?: 'Users', id: string, email?: string | null, firstName: string, lastName: string, status?: string | null, avatar?: string | null }> };
+
+export type ConnectToChatMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ConnectToChatMutation = { __typename?: 'Mutation', newUserConnected: { __typename?: 'Users', id: string } };
+
+export type DisconnectFromChatMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DisconnectFromChatMutation = { __typename?: 'Mutation', newUserDisconnected: { __typename?: 'Users', id: string } };
 
 export type GetNewsByIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -556,7 +566,17 @@ export type LoginMutation = { __typename?: 'Mutation', loginUsers: { __typename?
 export type OnMessageAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OnMessageAddedSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Messages', id?: string | null, content?: string | null, createdAt?: any | null, mainPicture?: string | null, author?: { __typename?: 'Users', firstName: string, avatar?: string | null } | null } };
+export type OnMessageAddedSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Messages', id?: string | null, content?: string | null, createdAt?: any | null, mainPicture?: string | null, author?: { __typename?: 'Users', firstName: string, avatar?: string | null, email?: string | null, status?: string | null } | null } };
+
+export type NewUserConnectedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewUserConnectedSubscription = { __typename?: 'Subscription', newUserConnected: { __typename?: 'Users', id: string, firstName: string, avatar?: string | null, email?: string | null, status?: string | null } };
+
+export type NewUserDisconnectedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewUserDisconnectedSubscription = { __typename?: 'Subscription', newUserDisconnected: { __typename?: 'Users', id: string } };
 
 export type RegisterMutationVariables = Exact<{
   newUsersInput: UsersInput;
@@ -732,6 +752,7 @@ export const GetAllMessagesDocument = gql`
       firstName
       id
       status
+      email
     }
   }
 }
@@ -763,42 +784,6 @@ export function useGetAllMessagesLazyQuery(baseOptions?: ApolloReactHooks.LazyQu
 export type GetAllMessagesQueryHookResult = ReturnType<typeof useGetAllMessagesQuery>;
 export type GetAllMessagesLazyQueryHookResult = ReturnType<typeof useGetAllMessagesLazyQuery>;
 export type GetAllMessagesQueryResult = Apollo.QueryResult<GetAllMessagesQuery, GetAllMessagesQueryVariables>;
-export const GetAllMessagesInRealTimeDocument = gql`
-    subscription getAllMessagesInRealTime {
-  messageInRealTime {
-    id
-    content
-    createdAt
-    mainPicture
-    author {
-      firstName
-      avatar
-    }
-  }
-}
-    `;
-
-/**
- * __useGetAllMessagesInRealTimeSubscription__
- *
- * To run a query within a React component, call `useGetAllMessagesInRealTimeSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetAllMessagesInRealTimeSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllMessagesInRealTimeSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllMessagesInRealTimeSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<GetAllMessagesInRealTimeSubscription, GetAllMessagesInRealTimeSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useSubscription<GetAllMessagesInRealTimeSubscription, GetAllMessagesInRealTimeSubscriptionVariables>(GetAllMessagesInRealTimeDocument, options);
-      }
-export type GetAllMessagesInRealTimeSubscriptionHookResult = ReturnType<typeof useGetAllMessagesInRealTimeSubscription>;
-export type GetAllMessagesInRealTimeSubscriptionResult = Apollo.SubscriptionResult<GetAllMessagesInRealTimeSubscription>;
 export const GetAllNewsDocument = gql`
     query getAllNews {
   NewsList {
@@ -1059,6 +1044,70 @@ export function useGetAllUsersLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
 export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
 export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
+export const ConnectToChatDocument = gql`
+    mutation connectToChat {
+  newUserConnected {
+    id
+  }
+}
+    `;
+export type ConnectToChatMutationFn = Apollo.MutationFunction<ConnectToChatMutation, ConnectToChatMutationVariables>;
+
+/**
+ * __useConnectToChatMutation__
+ *
+ * To run a mutation, you first call `useConnectToChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConnectToChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [connectToChatMutation, { data, loading, error }] = useConnectToChatMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useConnectToChatMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ConnectToChatMutation, ConnectToChatMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<ConnectToChatMutation, ConnectToChatMutationVariables>(ConnectToChatDocument, options);
+      }
+export type ConnectToChatMutationHookResult = ReturnType<typeof useConnectToChatMutation>;
+export type ConnectToChatMutationResult = Apollo.MutationResult<ConnectToChatMutation>;
+export type ConnectToChatMutationOptions = Apollo.BaseMutationOptions<ConnectToChatMutation, ConnectToChatMutationVariables>;
+export const DisconnectFromChatDocument = gql`
+    mutation disconnectFromChat {
+  newUserDisconnected {
+    id
+  }
+}
+    `;
+export type DisconnectFromChatMutationFn = Apollo.MutationFunction<DisconnectFromChatMutation, DisconnectFromChatMutationVariables>;
+
+/**
+ * __useDisconnectFromChatMutation__
+ *
+ * To run a mutation, you first call `useDisconnectFromChatMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDisconnectFromChatMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [disconnectFromChatMutation, { data, loading, error }] = useDisconnectFromChatMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDisconnectFromChatMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DisconnectFromChatMutation, DisconnectFromChatMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DisconnectFromChatMutation, DisconnectFromChatMutationVariables>(DisconnectFromChatDocument, options);
+      }
+export type DisconnectFromChatMutationHookResult = ReturnType<typeof useDisconnectFromChatMutation>;
+export type DisconnectFromChatMutationResult = Apollo.MutationResult<DisconnectFromChatMutation>;
+export type DisconnectFromChatMutationOptions = Apollo.BaseMutationOptions<DisconnectFromChatMutation, DisconnectFromChatMutationVariables>;
 export const GetNewsByIdDocument = gql`
     query getNewsById($id: String!) {
   News(id: $id) {
@@ -1425,6 +1474,8 @@ export const OnMessageAddedDocument = gql`
     author {
       firstName
       avatar
+      email
+      status
     }
   }
 }
@@ -1451,6 +1502,68 @@ export function useOnMessageAddedSubscription(baseOptions?: ApolloReactHooks.Sub
       }
 export type OnMessageAddedSubscriptionHookResult = ReturnType<typeof useOnMessageAddedSubscription>;
 export type OnMessageAddedSubscriptionResult = Apollo.SubscriptionResult<OnMessageAddedSubscription>;
+export const NewUserConnectedDocument = gql`
+    subscription newUserConnected {
+  newUserConnected {
+    id
+    firstName
+    avatar
+    email
+    status
+  }
+}
+    `;
+
+/**
+ * __useNewUserConnectedSubscription__
+ *
+ * To run a query within a React component, call `useNewUserConnectedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewUserConnectedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewUserConnectedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewUserConnectedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewUserConnectedSubscription, NewUserConnectedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useSubscription<NewUserConnectedSubscription, NewUserConnectedSubscriptionVariables>(NewUserConnectedDocument, options);
+      }
+export type NewUserConnectedSubscriptionHookResult = ReturnType<typeof useNewUserConnectedSubscription>;
+export type NewUserConnectedSubscriptionResult = Apollo.SubscriptionResult<NewUserConnectedSubscription>;
+export const NewUserDisconnectedDocument = gql`
+    subscription newUserDisconnected {
+  newUserDisconnected {
+    id
+  }
+}
+    `;
+
+/**
+ * __useNewUserDisconnectedSubscription__
+ *
+ * To run a query within a React component, call `useNewUserDisconnectedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewUserDisconnectedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewUserDisconnectedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNewUserDisconnectedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<NewUserDisconnectedSubscription, NewUserDisconnectedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useSubscription<NewUserDisconnectedSubscription, NewUserDisconnectedSubscriptionVariables>(NewUserDisconnectedDocument, options);
+      }
+export type NewUserDisconnectedSubscriptionHookResult = ReturnType<typeof useNewUserDisconnectedSubscription>;
+export type NewUserDisconnectedSubscriptionResult = Apollo.SubscriptionResult<NewUserDisconnectedSubscription>;
 export const RegisterDocument = gql`
     mutation Register($newUsersInput: UsersInput!) {
   createUsers(newUsersInput: $newUsersInput) {

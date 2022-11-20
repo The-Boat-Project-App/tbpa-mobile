@@ -31,7 +31,7 @@ import {
   useGetTripByIdQuery,
 } from '../../graphql/graphql'
 import { boatLocationVar } from '../../variables/boatLocation'
-import LottieView from 'lottie-react-native'
+import { userDataVar } from '../../variables/userData'
 import { Divider } from 'native-base'
 
 interface HomeScreenProps {}

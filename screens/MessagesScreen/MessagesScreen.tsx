@@ -1,19 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
-import {
-  View,
-  Text,
-  Image,
-  useWindowDimensions,
-  Platform,
-  ScrollView,
-  RefreshControl,
-  FlatList,
-} from 'react-native'
+import { Platform, RefreshControl, FlatList, Keyboard, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Input, KeyboardAvoidingView, IconButton, Icon } from 'native-base'
-import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
-import { Ionicons, FontAwesome } from '@expo/vector-icons'
-import { gql, useQuery, useSubscription } from '@apollo/client'
+import { FontAwesome } from '@expo/vector-icons'
+import OnlineUsers from '@components/OnlineUsers/OnlineUsers'
 
 import MessageCard from '@components/MessageCard/MessageCard'
 import {
@@ -25,8 +15,8 @@ import {
 import moment from 'moment'
 import localization from 'moment/locale/fr'
 import LoadingView from '@components/LoadingView/LoadingView'
-
-import { HomeModernIcon, ChatBubbleLeftIcon } from 'react-native-heroicons/outline'
+import { userDataVar } from '../../variables/userData'
+import { useReactiveVar } from '@apollo/client'
 
 interface MessagesScreenProps {}
 
@@ -44,6 +34,8 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   //   }
   // `
   const inputRef = useRef()
+  const chatFlatListRef = useRef<FlatList<any>>()
+  const userDataInApollo = useReactiveVar(userDataVar)
   const [message, setMessage] = useState<string>('')
 
   const [sendMessage] = useCreateMessagesMutation()
@@ -52,7 +44,6 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   // const { data, loading } = useSubscription(MESSAGES_SUBSCRIPTION)
   const { data: newMessageData, loading } = useOnMessageAddedSubscription()
   const [refreshing, setRefreshing] = useState<boolean>(false)
-  // console.log(newMessageData)
   useEffect(() => {
     if (messagesData?.MessagesList) {
       if (chat.length && newMessageData) {
@@ -66,10 +57,18 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
       }
     }
   }, [messagesData, newMessageData])
-  console.log('newMessageData', newMessageData, 'loading', loading)
+
+  // useEffect(() => {
+  //   chatFlatListRef?.current?.scrollTo({
+  //     y: 0,
+  //     animated: true,
+  //   })
+  // }, [chat])
+  // console.log('newMessageData', newMessageData, 'loading', loading)
   // console.log('data from sub', data)
   const saveMessage = async () => {
     if (message && message !== '') {
+      inputRef?.current?.clear()
       const response = await sendMessage({
         variables: {
           newMessagesInput: {
@@ -82,6 +81,10 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
       setMessage('')
     }
   }
+  // Scroll to end when keyboard is closed.
+  const keyboardHideListener = Keyboard.addListener('keyboardDidHide', () => {
+    chatFlatListRef.current?.scrollToEnd({ animated: true })
+  })
   // console.log('liste de mess', messagesData)
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
@@ -123,7 +126,10 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
 
   return (
     <SafeAreaView className='flex-1 bg-white'>
+      <OnlineUsers />
       <FlatList
+        ref={chatFlatListRef}
+        onContentSizeChange={() => chatFlatListRef.current?.scrollToEnd({ animated: true })}
         className='mb-3 mx-3'
         horizontal={false}
         showsHorizontalScrollIndicator={false}
@@ -139,7 +145,12 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
           />
         }
         renderItem={({ item, index }) => (
-          <MessageCard key={index} content={item.content} author={item.author} />
+          <MessageCard
+            key={index}
+            content={item.content}
+            author={item.author}
+            isAuthor={item.author.email == userDataInApollo.email}
+          />
         )}
       />
 
@@ -230,10 +241,16 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
           })}
         </View> */}
       <KeyboardAvoidingView
-        className='mx-3 flex flex-row justify-between'
+        className='mx-3 flex flex-row justify-between border-b-4 border-white'
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Input placeholder='Input' w='82%' onChangeText={(msg) => setMessage(msg)} ref={inputRef} />
+        <Input
+          placeholder='Message'
+          w='82%'
+          size='lg'
+          onChangeText={(msg) => setMessage(msg)}
+          ref={inputRef}
+        />
         <IconButton
           w='15%'
           size='sm'

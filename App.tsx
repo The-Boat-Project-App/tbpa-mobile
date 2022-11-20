@@ -17,8 +17,14 @@ import { getAccessToken } from './accessToken'
 export default function App() {
   console.log(process.env.API_URL)
 
+  // const wsLink = new WebSocketLink({
+  //   uri: 'ws://localhost:3333/subscriptions',
+  //   options: {
+  //     reconnect: true,
+  //   },
+  // })
   const wsLink = new WebSocketLink({
-    uri: 'ws://localhost:3333/subscriptions',
+    uri: 'ws://tbpa-backend.herokuapp.com/subscriptions',
     options: {
       reconnect: true,
     },
@@ -39,6 +45,9 @@ export default function App() {
   const authLink = setContext(async (_, { headers }) => {
     // get the authentication token from local storage if it exists
     const accessToken = await getAccessToken()
+    // if (accessToken) {
+
+    // }
     // return the headers to the context so httpLink can read them
     return {
       headers: {

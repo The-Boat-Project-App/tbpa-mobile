@@ -1,0 +1,9 @@
+subscription newUserConnected {
+  newUserConnected {
+    id
+    firstName
+    avatar
+    email
+    status
+  }
+}
