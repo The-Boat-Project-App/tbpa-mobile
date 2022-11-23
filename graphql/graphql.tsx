@@ -77,6 +77,7 @@ export type Mutation = {
   createPosts: Posts;
   createThemes: ThemeCreatedResponse;
   createUsers: RegisterResponse;
+  deleteMessages: Messages;
   deleteNews: Scalars['String'];
   deleteNotes: Scalars['String'];
   deletePosts: Scalars['String'];
@@ -125,6 +126,11 @@ export type MutationCreateThemesArgs = {
 
 export type MutationCreateUsersArgs = {
   newUsersInput: UsersInput;
+};
+
+
+export type MutationDeleteMessagesArgs = {
+  messageId: Scalars['String'];
 };
 
 
@@ -340,6 +346,7 @@ export type RegisterResponse = {
 export type Subscription = {
   __typename?: 'Subscription';
   likeAdded: Posts;
+  messageDeleted: Messages;
   messageSent: Messages;
   newUserConnected: Users;
   newUserDisconnected: Users;
@@ -382,6 +389,8 @@ export type Users = {
   email?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['ID'];
+  isOnChat: Scalars['Boolean'];
+  isOnline: Scalars['Boolean'];
   lang: Array<Scalars['String']>;
   lastLogin: Scalars['DateTime'];
   lastName: Scalars['String'];
@@ -403,6 +412,8 @@ export type UsersInput = {
   email?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
+  isOnChat?: InputMaybe<Scalars['Boolean']>;
+  isOnline?: InputMaybe<Scalars['Boolean']>;
   lang?: InputMaybe<Array<Scalars['String']>>;
   lastLogin?: InputMaybe<Scalars['DateTime']>;
   lastName?: InputMaybe<Scalars['String']>;
@@ -458,6 +469,13 @@ export type CreateNewPostMutationVariables = Exact<{
 
 
 export type CreateNewPostMutation = { __typename?: 'Mutation', createPosts: { __typename?: 'Posts', title: string, intro: string, content?: string | null, mainPicture?: string | null, likes?: number | null, submitted?: boolean | null, validated?: string | null } };
+
+export type DeleteMessagesMutationVariables = Exact<{
+  messageId: Scalars['String'];
+}>;
+
+
+export type DeleteMessagesMutation = { __typename?: 'Mutation', deleteMessages: { __typename?: 'Messages', id?: string | null } };
 
 export type GetAllDraftPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -567,6 +585,11 @@ export type OnMessageAddedSubscriptionVariables = Exact<{ [key: string]: never; 
 
 
 export type OnMessageAddedSubscription = { __typename?: 'Subscription', messageSent: { __typename?: 'Messages', id?: string | null, content?: string | null, createdAt?: any | null, mainPicture?: string | null, author?: { __typename?: 'Users', firstName: string, avatar?: string | null, email?: string | null, status?: string | null } | null } };
+
+export type OnMessageDeletedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type OnMessageDeletedSubscription = { __typename?: 'Subscription', messageDeleted: { __typename?: 'Messages', id?: string | null } };
 
 export type NewUserConnectedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -695,6 +718,39 @@ export function useCreateNewPostMutation(baseOptions?: ApolloReactHooks.Mutation
 export type CreateNewPostMutationHookResult = ReturnType<typeof useCreateNewPostMutation>;
 export type CreateNewPostMutationResult = Apollo.MutationResult<CreateNewPostMutation>;
 export type CreateNewPostMutationOptions = Apollo.BaseMutationOptions<CreateNewPostMutation, CreateNewPostMutationVariables>;
+export const DeleteMessagesDocument = gql`
+    mutation deleteMessages($messageId: String!) {
+  deleteMessages(messageId: $messageId) {
+    id
+  }
+}
+    `;
+export type DeleteMessagesMutationFn = Apollo.MutationFunction<DeleteMessagesMutation, DeleteMessagesMutationVariables>;
+
+/**
+ * __useDeleteMessagesMutation__
+ *
+ * To run a mutation, you first call `useDeleteMessagesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMessagesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMessagesMutation, { data, loading, error }] = useDeleteMessagesMutation({
+ *   variables: {
+ *      messageId: // value for 'messageId'
+ *   },
+ * });
+ */
+export function useDeleteMessagesMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteMessagesMutation, DeleteMessagesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeleteMessagesMutation, DeleteMessagesMutationVariables>(DeleteMessagesDocument, options);
+      }
+export type DeleteMessagesMutationHookResult = ReturnType<typeof useDeleteMessagesMutation>;
+export type DeleteMessagesMutationResult = Apollo.MutationResult<DeleteMessagesMutation>;
+export type DeleteMessagesMutationOptions = Apollo.BaseMutationOptions<DeleteMessagesMutation, DeleteMessagesMutationVariables>;
 export const GetAllDraftPostsByUserDocument = gql`
     query getAllDraftPostsByUser {
   AllDraftPostsByUserList {
@@ -1502,6 +1558,35 @@ export function useOnMessageAddedSubscription(baseOptions?: ApolloReactHooks.Sub
       }
 export type OnMessageAddedSubscriptionHookResult = ReturnType<typeof useOnMessageAddedSubscription>;
 export type OnMessageAddedSubscriptionResult = Apollo.SubscriptionResult<OnMessageAddedSubscription>;
+export const OnMessageDeletedDocument = gql`
+    subscription onMessageDeleted {
+  messageDeleted {
+    id
+  }
+}
+    `;
+
+/**
+ * __useOnMessageDeletedSubscription__
+ *
+ * To run a query within a React component, call `useOnMessageDeletedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnMessageDeletedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnMessageDeletedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useOnMessageDeletedSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<OnMessageDeletedSubscription, OnMessageDeletedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useSubscription<OnMessageDeletedSubscription, OnMessageDeletedSubscriptionVariables>(OnMessageDeletedDocument, options);
+      }
+export type OnMessageDeletedSubscriptionHookResult = ReturnType<typeof useOnMessageDeletedSubscription>;
+export type OnMessageDeletedSubscriptionResult = Apollo.SubscriptionResult<OnMessageDeletedSubscription>;
 export const NewUserConnectedDocument = gql`
     subscription newUserConnected {
   newUserConnected {

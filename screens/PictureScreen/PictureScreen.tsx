@@ -7,8 +7,6 @@ import ImageViewer from 'react-native-image-zoom-viewer'
 interface PictureScreenProps {}
 
 const PictureScreen: React.FunctionComponent<PictureScreenProps> = (props) => {
-  console.log('url dans picturescreen', props.route.params.imageUrl)
-
   const images = [
     {
       // Simplest usage.
@@ -26,8 +24,8 @@ const PictureScreen: React.FunctionComponent<PictureScreenProps> = (props) => {
   ]
   return (
     <SafeAreaView className='flex-1 bg-white'>
-      <ScreenHeader />
-      <ImageViewer imageUrls={images} backgroundColor='white' />
+      <ScreenHeader arrowDirection={'down'} />
+      <ImageViewer imageUrls={images} backgroundColor='white' style={{ marginTop: -2 }} />
 
       {/* <View style={{ flex: 1, height: '100%', width: '100%' }}>
         <Image

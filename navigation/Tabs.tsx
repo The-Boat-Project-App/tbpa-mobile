@@ -83,7 +83,7 @@ const BottomTabs = () => {
         name='Messages'
         component={MessagesScreen}
         options={{
-          tabBarLabel: 'Messages',
+          tabBarLabel: 'Chat',
         }}
       />
       <Tab.Screen

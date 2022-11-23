@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Pressable } from 'native-base'
 import { Text, ScrollView } from 'react-native'
-import { CustomAvatar } from '@components/CustomAvatar/CustomAvatar'
+import { CustomAvatarSmall } from '@components/CustomAvatarSmall/CustomAvatarSmall'
 import { useGetAllUsersQuery } from '../../graphql/graphql'
 import { userDataVar } from '../../variables/userData'
 import { useReactiveVar, gql, useQuery } from '@apollo/client'
@@ -13,11 +13,11 @@ const CrewDisplay = ({ likes, postId }) => {
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} className='mb-3'>
       {data?.usersList.map((user, index) => {
-        if (user.status === 'crew' && user.email !== userDataInApollo.email) {
+        if (user.status === 'crew' /* && user.email !== userDataInApollo.email */) {
           return (
-            <CustomAvatar
+            <CustomAvatarSmall
               key={index}
-              isConnected={true}
+              isConnected={false}
               avatarPicture={user.avatar}
               userId={user.id}
             />

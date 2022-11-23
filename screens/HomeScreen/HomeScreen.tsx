@@ -103,7 +103,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
         <View className='justify-center bg-white '>
           <View className='flex flex-row space-x-10 w-screen  justify-between'>
             <View className='w-1/2 '>
-              <Text className='text-xl  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
+              <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
                 Actualités
               </Text>
             </View>
@@ -136,13 +136,18 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
             />
           )}
 
-          <Text className='text-xl color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
-            Les Compagnons de la Méditerranée
-          </Text>
+          <View className='flex flex-row justify-between'>
+            <Text className='text-lg color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
+              Les Compagnons de la Méditerranée
+            </Text>
+            <View className=' flex-row items-center mr-1'>
+              <SeeAll target='Crew' />
+            </View>
+          </View>
           <CrewDisplay />
           <View className='flex flex-row space-x-10 w-screen  justify-between'>
             <View className='w-1/2 '>
-              <Text className='text-xl  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
+              <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
                 Journal de bord
               </Text>
             </View>

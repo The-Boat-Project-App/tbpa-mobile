@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
-import { View, Image, Text, useWindowDimensions, Platform, FlatList } from 'react-native'
+import { View, Image, Text, TouchableOpacity, Platform, FlatList } from 'react-native'
 import { useReactiveVar } from '@apollo/client'
-import { Spinner, Avatar, useToast, Box } from 'native-base'
+import { useToast, Box, Spinner } from 'native-base'
+import { useNavigation } from '@react-navigation/native'
+import CustomAvatarExtraSmall from '@components/CustomAvatarExtraSmall/CustomAvatarExtraSmall'
+
 import {
   useNewUserConnectedSubscription,
   useNewUserDisconnectedSubscription,
@@ -10,11 +13,14 @@ import {
 } from '../../graphql/graphql'
 import { useIsFocused } from '@react-navigation/native'
 import { userDataVar } from '../../variables/userData'
+import { iteratorSymbol } from 'immer/dist/internal'
 
 interface OnlineUsersProps {}
 
 const OnlineUsers: React.FunctionComponent<OnlineUsersProps> = ({}) => {
   const [usersConnected, setUsersConnected] = useState([])
+  const navigation = useNavigation()
+
   const toast = useToast()
   const { data: newUserConnectedData, loading } = useNewUserConnectedSubscription()
   const { data: newUserDisconnectedData, loading: newUserDisconnectedLoading } =
@@ -46,8 +52,8 @@ const OnlineUsers: React.FunctionComponent<OnlineUsersProps> = ({}) => {
             placement: 'top',
             render: () => {
               return (
-                <Box bg='#139DB8' p={2} rounded='sm' mb={5}>
-                  <Text className='text-sm  color-white font-ralewayBold  '>{`${newUserConnectedData?.newUserConnected?.firstName} vient de se connecter`}</Text>
+                <Box bg='#f4f4f4' p={2} rounded='sm' mb={5}>
+                  <Text className='text-xs   font-raleway  '>{`👤 ${newUserConnectedData?.newUserConnected?.firstName} a rejoint le chat`}</Text>
                 </Box>
               )
             },
@@ -58,13 +64,10 @@ const OnlineUsers: React.FunctionComponent<OnlineUsersProps> = ({}) => {
   }, [newUserConnectedData])
 
   useEffect(() => {
-    console.log('newUserDisconnectedData a changé de valeur', newUserDisconnectedData)
-    console.log('usersConnected juste avant le filter', usersConnected)
     const newArray = usersConnected.filter((user) => {
-      console.log('user.id dans le filter', user.id)
       return user.id != newUserDisconnectedData?.newUserDisconnected.id
     })
-    console.log('newArray', newArray)
+
     setUsersConnected(newArray)
   }, [newUserDisconnectedData])
 
@@ -79,49 +82,68 @@ const OnlineUsers: React.FunctionComponent<OnlineUsersProps> = ({}) => {
     updateConnectionToChat()
   }, [isFocused])
 
+  let usersList = (
+    <FlatList
+      // ref={chatFlatListRef}
+      // onContentSizeChange={() => chatFlatListRef.current?.scrollToEnd({ animated: true })}
+      className='py-1'
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={(item) => item.id}
+      data={usersConnected}
+      // refreshControl={
+      //   <RefreshControl
+      //     refreshing={refreshing}
+      //     onRefresh={onRefresh}
+      //     tintColor='#87BC23'
+      //     colors={['#87BC23', '#139DB8']}
+      //   />
+      // }
+      renderItem={({ item, index }) => (
+        <CustomAvatarExtraSmall avatarPicture={item.avatar} iConnected={true} userId={item.id} />
+      )}
+    />
+  )
+  let usersCounter = (
+    <View className='h-16 flex flex-row items-center justify-center'>
+      <Spinner size='sm' />
+    </View>
+  )
+
+  if (usersConnected.length > 1) {
+    usersCounter = (
+      <>
+        {usersList}
+        <Text className='text-md  color-deepBlue font-raleway  ml-3 w-1/4 text-right'>
+          {`${usersConnected.length} utilisateurs connectés`}
+        </Text>
+      </>
+    )
+  }
+  if (usersConnected.length == 1) {
+    usersCounter = (
+      <>
+        {usersList}
+        <Text className='text-md  color-deepBlue font-raleway  ml-3 '>
+          {`1 utilisateur est en ligne`}
+        </Text>
+      </>
+    )
+  }
+
   return (
     <View
       className={`flex items-center bg-white  mb-0 ${
         Platform.OS === 'ios' ? 'pb-0' : ''
       } pr-1 bg-white  mx-3`}
-      style={{ borderBottomWidth: 1, borderBottomColor: '#bfbfbf' }}
+      style={{
+        borderBottomWidth: 1,
+        borderBottomColor: '#bfbfbf',
+        borderTopWidth: 1,
+        borderTopColor: '#bfbfbf',
+      }}
     >
-      <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>Chat</Text>
-      <View className='flex flex-row'>
-        <Text className='text-md  color-deepBlue font-raleway mt-2 ml-3 '>
-          {usersConnected.length > 0
-            ? `${usersConnected.length} utilisateurs connectés`
-            : 'Personne en ligne'}
-        </Text>
-        <FlatList
-          // ref={chatFlatListRef}
-          // onContentSizeChange={() => chatFlatListRef.current?.scrollToEnd({ animated: true })}
-          className=' mx-3 mb-1'
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
-          data={usersConnected}
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={refreshing}
-          //     onRefresh={onRefresh}
-          //     tintColor='#87BC23'
-          //     colors={['#87BC23', '#139DB8']}
-          //   />
-          // }
-          renderItem={({ item, index }) => (
-            <Avatar
-              className={`ml-2`}
-              bg='green.500'
-              alignSelf='center'
-              size='sm'
-              source={{
-                uri: item.avatar,
-              }}
-            ></Avatar>
-          )}
-        />
-      </View>
+      <View className='flex flex-row items-center'>{usersCounter}</View>
 
       {/* <Text>Users : {usersConnected.length ? usersConnected.join(' - ') : ''}</Text> */}
     </View>

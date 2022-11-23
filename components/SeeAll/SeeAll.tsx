@@ -18,7 +18,6 @@ const SeeAll: React.FunctionComponent<SeeAllProps> = ({ target }) => {
         color='#272E67'
         onPress={() => {
           navigation.navigate(target)
-          console.log('hello')
         }}
       />
     </Pressable>

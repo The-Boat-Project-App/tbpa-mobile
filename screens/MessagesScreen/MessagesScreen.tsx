@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { Platform, RefreshControl, FlatList, Keyboard, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Input, KeyboardAvoidingView, IconButton, Icon } from 'native-base'
-import { FontAwesome } from '@expo/vector-icons'
+import { Input, KeyboardAvoidingView, IconButton, Modal, Heading, Spinner } from 'native-base'
+import { FontAwesome, AntDesign } from '@expo/vector-icons'
 import OnlineUsers from '@components/OnlineUsers/OnlineUsers'
 
 import MessageCard from '@components/MessageCard/MessageCard'
@@ -10,13 +10,15 @@ import {
   useCreateMessagesMutation,
   useGetAllMessagesQuery,
   useOnMessageAddedSubscription,
+  useOnMessageDeletedSubscription,
 } from '../../graphql/graphql'
 
-import moment from 'moment'
-import localization from 'moment/locale/fr'
+// import moment from 'moment'
+// import localization from 'moment/locale/fr'
 import LoadingView from '@components/LoadingView/LoadingView'
 import { userDataVar } from '../../variables/userData'
 import { useReactiveVar } from '@apollo/client'
+import * as ImagePicker from 'expo-image-picker'
 
 interface MessagesScreenProps {}
 
@@ -34,6 +36,11 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   //   }
   // `
   const inputRef = useRef()
+  const [image, setImage] = useState('')
+  const [isDisabled, setIsDisabled] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [reload, setReload] = useState<boolean>(false)
+
   const chatFlatListRef = useRef<FlatList<any>>()
   const userDataInApollo = useReactiveVar(userDataVar)
   const [message, setMessage] = useState<string>('')
@@ -43,8 +50,15 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   const [chat, setChat] = useState([])
   // const { data, loading } = useSubscription(MESSAGES_SUBSCRIPTION)
   const { data: newMessageData, loading } = useOnMessageAddedSubscription()
+  const { data: deletedMessageData, loading: loadingDeletedMessage } =
+    useOnMessageDeletedSubscription()
+
   const [refreshing, setRefreshing] = useState<boolean>(false)
   useEffect(() => {
+    if (reload) {
+      setChat(messagesData)
+      setReload(false)
+    }
     if (messagesData?.MessagesList) {
       if (chat.length && newMessageData) {
         const existingMessages = [...chat]
@@ -56,7 +70,23 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
         setChat(messagesOnLoad)
       }
     }
-  }, [messagesData, newMessageData])
+  }, [messagesData, newMessageData, reload])
+  console.log('deletedMessageData', deletedMessageData)
+  useEffect(() => {
+    if (message.slice(-5) === '.gif ') {
+      setIsDisabled(true)
+      saveMessage('', message)
+    }
+  }, [message])
+
+  useEffect(() => {
+    if (deletedMessageData && !loadingDeletedMessage) {
+      console.log('deletedMessageData', deletedMessageData)
+      console.log('chat avant filter', chat)
+      const newArray = chat.filter((msg) => msg.id !== deletedMessageData?.messageDeleted.id)
+      setChat(newArray)
+    }
+  }, [deletedMessageData])
 
   // useEffect(() => {
   //   chatFlatListRef?.current?.scrollTo({
@@ -66,19 +96,69 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   // }, [chat])
   // console.log('newMessageData', newMessageData, 'loading', loading)
   // console.log('data from sub', data)
-  const saveMessage = async () => {
-    if (message && message !== '') {
-      inputRef?.current?.clear()
+  const saveMessage = async (image: string, messageToSave: string) => {
+    setIsDisabled(true)
+    if (image !== '') {
       const response = await sendMessage({
         variables: {
           newMessagesInput: {
-            content: message,
+            content: image,
             mainPicture: 'httpppp',
             author: '',
           },
         },
       })
       setMessage('')
+      setIsOpen(false)
+    } else {
+      if (message && message !== '') {
+        const response = await sendMessage({
+          variables: {
+            newMessagesInput: {
+              content: messageToSave,
+              mainPicture: 'httpppp',
+              author: '',
+            },
+          },
+        })
+        setMessage('')
+      }
+    }
+    setIsDisabled(false)
+  }
+
+  const pickImage = async () => {
+    setIsOpen(true)
+
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+
+      quality: 0.4,
+    })
+
+    if (result.cancelled) {
+    }
+    if (!result.cancelled) {
+      const data = new FormData()
+      const source = {
+        uri: result.uri,
+        type: 'image/jpeg',
+        name: 'newPic',
+      }
+      data.append('file', source)
+      data.append('upload_preset', 'bk8ems2f')
+      data.append('cloud_name', 'matthieudev')
+      fetch('https://api.cloudinary.com/v1_1/matthieudev/image/upload', {
+        method: 'post',
+        body: data,
+      })
+        .then((res) => res.json())
+        .then(async (data) => {
+          console.log('retour de cloudinary', data.secure_url)
+          saveMessage(data.secure_url, null)
+        })
     }
   }
   // Scroll to end when keyboard is closed.
@@ -95,7 +175,7 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
     wait(2000).then(() => {
       // console.log('liste de mess', messagesData)
 
-      refetchMessagesData(), setRefreshing(false)
+      refetchMessagesData(), setReload(true), setRefreshing(false)
     })
   }, [])
 
@@ -125,7 +205,11 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-white'>
+    <SafeAreaView className='flex-1 bg-white' edges={['top', 'left', 'right']}>
+      <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2 text-center'>
+        Chat
+      </Text>
+
       <OnlineUsers />
       <FlatList
         ref={chatFlatListRef}
@@ -146,10 +230,11 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
         }
         renderItem={({ item, index }) => (
           <MessageCard
-            key={index}
+            key={item.id}
             content={item.content}
             author={item.author}
             isAuthor={item.author.email == userDataInApollo.email}
+            messageId={item.id}
           />
         )}
       />
@@ -241,27 +326,50 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
           })}
         </View> */}
       <KeyboardAvoidingView
-        className='mx-3 flex flex-row justify-between border-b-4 border-white'
+        className='px-3 py-1 flex flex-row justify-between  border-white bg-lightBlue'
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <Input
           placeholder='Message'
-          w='82%'
+          style={{ color: '#0991b2', fontWeight: 'bold', backgroundColor: 'white' }}
+          w='65%'
           size='lg'
           onChangeText={(msg) => setMessage(msg)}
           ref={inputRef}
+          value={message}
         />
         <IconButton
-          w='15%'
+          w='13%'
+          size='md'
+          variant='ghost'
+          _icon={{
+            as: AntDesign,
+            name: 'picture',
+          }}
+          onPress={() => pickImage()}
+        />
+        <IconButton
+          isDisabled={isDisabled}
+          w='17%'
           size='sm'
           variant='solid'
           _icon={{
             as: FontAwesome,
             name: 'send',
           }}
-          onPress={() => saveMessage()}
+          onPress={() => saveMessage('', message)}
         />
       </KeyboardAvoidingView>
+      <Modal isOpen={isOpen} safeAreaTop={true}>
+        <Modal.Content maxWidth='350'>
+          <Modal.Body>
+            <Spinner accessibilityLabel='Loading image' />
+            <Text className='text-sm  color-deepBlue font-ralewayBold mt-2  my-2 text-center'>
+              Envoi de l'image en cours ...
+            </Text>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </SafeAreaView>
   )
 }
