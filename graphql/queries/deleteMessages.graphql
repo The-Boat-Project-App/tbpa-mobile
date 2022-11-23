@@ -1,0 +1,5 @@
+mutation deleteMessages($messageId: String!) {
+  deleteMessages(messageId: $messageId) {
+    id
+  }
+}

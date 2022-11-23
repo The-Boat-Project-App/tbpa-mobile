@@ -184,7 +184,7 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
                 <FormControl>
                   <Input
                     spellCheck={false}
-                    style={{ color: '#0991b2', fontWeight: 'bold', fontFamily: 'Open-Sans' }}
+                    style={{ color: '#0991b2', fontWeight: 'bold' }}
                     autoCorrect={false}
                     value={lastName}
                     onFocus={() =>
