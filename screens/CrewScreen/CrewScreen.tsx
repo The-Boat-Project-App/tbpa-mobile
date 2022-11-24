@@ -11,10 +11,12 @@ import {
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import PostCard from '@components/PostCard/PostCard'
 import LoadingView from '@components/LoadingView/LoadingView'
-import { Divider } from 'native-base'
+import { Divider, Pressable } from 'native-base'
 import { useGetValidatedPostsQuery } from '../../graphql/graphql'
 import { useGetAllUsersQuery } from '../../graphql/graphql'
 import CustomAvatarSmall from '@components/CustomAvatarSmall/CustomAvatarSmall'
+import CrewCarousel from '@components/CrewCarousel/CrewCarousel'
+import CrewDisplay from '@components/CrewDisplay/CrewDisplay'
 
 interface CrewScreenProps {}
 
@@ -27,7 +29,7 @@ const CrewScreen: React.FunctionComponent<CrewScreenProps> = (props) => {
   // console.log(props.route.params.postId)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const { data: postsData, refetch: refetchPostsData } = useGetValidatedPostsQuery()
-
+  console.log('data dans crewscreen', data)
   const { height, width } = useWindowDimensions()
   const wait = (timeout: number) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
@@ -46,8 +48,9 @@ const CrewScreen: React.FunctionComponent<CrewScreenProps> = (props) => {
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader arrowDirection={'left'} />
 
-      <ScrollView
-        className='mx-3'
+      <View
+        className='mx-3 flex flex-col justify-between'
+        style={{ height: '90%' }}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -58,40 +61,23 @@ const CrewScreen: React.FunctionComponent<CrewScreenProps> = (props) => {
           />
         }
       >
-        <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2 text-center'>
-          Les compagnons de la Méditerranée
-        </Text>
-        <Text className='text-md font-raleway text-justify text-deepBlue'>
-          Au cœur du projet : un voilier avec à son bord 8 compagnons de la Méditerranée, des
-          partenaires locaux et des collégiens, venant des 5 villes méditerranéennes visitées. Les
-          Compagnons de la Méditerranée pour créer des ateliers pédagogiques sur le vivre-ensemble.
-          Les partenaires locaux pour aider à la pédagogie des ateliers. Les collégiens des 5 villes
-          méditerranéennes pour assister aux ateliers et échanger sur le vivre-ensemble.
-        </Text>
-        <Text className='text-md font-raleway text-justify text-grey'></Text>
-        {data?.usersList.map((user, index) => {
-          if (user.status === 'crew' /* && user.email !== userDataInApollo.email */) {
-            return (
-              <View className='mt-4 flex flex-col items-center mx-4'>
-                <View className='flex flex-row items-center'>
-                  <CustomAvatarSmall
-                    key={index}
-                    isConnected={false}
-                    avatarPicture={user.avatar}
-                    userId={user.id}
-                  />
-                  <Text className='font-ralewayBold'>{user.firstName} </Text>
-                </View>
-                <Text className='font-raleway text-justify italic'>
-                  Marin est paysagiste de formation. De ce fait, il a acquis de solides compétences
-                  en dessin et écriture. Pour candidater, il y a réalisé un journal de bord dessiné
-                  fictif.
-                </Text>
-              </View>
-            )
-          }
-        })}
-      </ScrollView>
+        <View className='flex flex-col justify-end mb-4'>
+          <Text className='text-lg  color-deepBlue font-ralewayBold  ml-3 mb-6 text-center mt-6'>
+            Les compagnons de la Méditerranée
+          </Text>
+          <Text className='text-md font-raleway text-center text-deepBlue mx-8 leading-6'>
+            L’équipage du bateau est composé de deux skippers, d’un coordinateur mais aussi et
+            surtout des « Compagnons de la Méditerranée ». Qui sont-il ?
+          </Text>
+          <Text className='text-md font-raleway text-center text-deepBlue mx-8 leading-6 mt-4'>
+            Huit jeunes spécialement recrutés autour de la Méditerranée pour animer les ateliers
+            autour du vivre-ensemble. Ces jeunes naviguent entre les 5 villes méditerranéennes dont
+            ils sont originaires.
+          </Text>
+        </View>
+        <CrewDisplay />
+        {data && <CrewCarousel users={data?.usersList} />}
+      </View>
     </SafeAreaView>
   )
 }

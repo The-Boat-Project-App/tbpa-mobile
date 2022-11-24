@@ -4,6 +4,7 @@ query getPostsById($id: String!) {
     title
     content
     mainPicture
+    video
     createdAt
     author {
       avatar

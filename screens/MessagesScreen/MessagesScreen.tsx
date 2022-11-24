@@ -56,16 +56,25 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   const [refreshing, setRefreshing] = useState<boolean>(false)
   useEffect(() => {
     if (reload) {
+      console.log('ee')
       setChat(messagesData)
       setReload(false)
-    }
-    if (messagesData?.MessagesList) {
-      if (chat.length && newMessageData) {
+      return
+    } else if (messagesData?.MessagesList) {
+      console.log('oo', newMessageData?.messageSent)
+
+      if (
+        chat.length &&
+        newMessageData &&
+        !chat.some((e) => e.id == newMessageData?.messageSent.id)
+      ) {
+        console.log('kk', newMessageData?.messageSent)
         const existingMessages = [...chat]
         const newMessage = { ...newMessageData.messageSent }
         const finalArray = [...existingMessages, newMessage]
         setChat(finalArray)
       } else {
+        console.log('messagesOnLoad')
         const messagesOnLoad = [...messagesData?.MessagesList]
         setChat(messagesOnLoad)
       }
@@ -135,7 +144,7 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
 
-      quality: 0.4,
+      quality: 0.2,
     })
 
     if (result.cancelled) {

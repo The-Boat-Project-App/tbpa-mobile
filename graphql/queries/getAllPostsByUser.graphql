@@ -8,7 +8,7 @@ query getAllPostsByUser {
     likes
     validated
     submitted
-
+    video
     author {
       email
     }

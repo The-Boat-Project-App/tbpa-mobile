@@ -69,6 +69,7 @@ const NewsScreen: React.FunctionComponent<NewsScreenProps> = (props) => {
   return (
     <SafeAreaView className='flex-1 bg-white'>
       <ScreenHeader />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={

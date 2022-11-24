@@ -5,6 +5,7 @@ query getAllDraftPostsByUser {
     mainPicture
     createdAt
     intro
+    video
     validated
     submitted
     likes

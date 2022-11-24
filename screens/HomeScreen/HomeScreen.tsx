@@ -101,16 +101,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
         }
       >
         <View className='justify-center bg-white '>
-          <View className='flex flex-row space-x-10 w-screen  justify-between'>
-            <View className='w-1/2 '>
-              <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
-                Actualités
-              </Text>
-            </View>
-            <View className=' flex-row items-center mr-1'>
-              <SeeAll target='AllNews' />
-            </View>
-          </View>
+          <SeeAll target='AllNews' />
           {data && (
             <FlatList
               className='mb-3'
@@ -136,25 +127,9 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
             />
           )}
 
-          <View className='flex flex-row justify-between'>
-            <Text className='text-lg color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
-              Les Compagnons de la Méditerranée
-            </Text>
-            <View className=' flex-row items-center mr-1'>
-              <SeeAll target='Crew' />
-            </View>
-          </View>
+          <SeeAll target='Crew' />
           <CrewDisplay />
-          <View className='flex flex-row space-x-10 w-screen  justify-between'>
-            <View className='w-1/2 '>
-              <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2'>
-                Journal de bord
-              </Text>
-            </View>
-            <View className=' flex-row items-center mr-1'>
-              <SeeAll target='AllPosts' />
-            </View>
-          </View>
+          <SeeAll target='AllPosts' />
           <View className='mx-3'>
             {postsData?.ValidatedPostsList.map((postItem, index) => {
               return (
