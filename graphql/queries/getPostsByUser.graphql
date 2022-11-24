@@ -4,6 +4,7 @@ query getPostsByUser($id: String!) {
     title
     mainPicture
     createdAt
+    video
     intro
     likes
     comments {

@@ -6,5 +6,9 @@ query getAllUsers {
     lastName
     status
     avatar
+    city
+    country
+    lang
+    desc
   }
 }

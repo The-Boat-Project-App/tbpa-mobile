@@ -71,7 +71,9 @@ export const MessageCard: React.FunctionComponent<MessageCardProps> = ({
         </AlertDialog.Header>
         <AlertDialog.Body>
           <Text className='font-ralewayBold  text-xs mb-2'>
-            Êtes-vous sûr de vouloir supprimer le message de {author.firstName} ?
+            {isAuthor
+              ? `Êtes-vous sûr de vouloir supprimer votre message ?`
+              : `Êtes-vous sûr de vouloir supprimer le message de ${author.firstName} ?`}
           </Text>
           {content.slice(-5) === '.gif ' ||
           content.slice(-5) === '.gif' ||
@@ -96,11 +98,11 @@ export const MessageCard: React.FunctionComponent<MessageCardProps> = ({
         </AlertDialog.Body>
         <AlertDialog.Footer>
           <Button.Group space={2}>
-            <Button variant='unstyled' colorScheme='coolGray' onPress={onClose} ref={cancelRef}>
-              Annuler
+            <Button variant='outline' onPress={onClose} ref={cancelRef}>
+              <Text className='font-raleway text-xs color-deepBlue '>Annuler</Text>
             </Button>
             <Button colorScheme='danger' onPress={handleLongPressDeleteMessage}>
-              Supprimer
+              <Text className='font-raleway  text-xs color-white'> Supprimer</Text>
             </Button>
           </Button.Group>
         </AlertDialog.Footer>

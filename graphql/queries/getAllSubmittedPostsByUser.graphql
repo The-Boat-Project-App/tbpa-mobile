@@ -6,6 +6,7 @@ query getAllSubmittedPostsByUser {
     createdAt
     intro
     validated
+    video
     submitted
     likes
     comments {

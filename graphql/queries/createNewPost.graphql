@@ -8,5 +8,6 @@ mutation createNewPost($newPostsInput: PostsInput!) {
     likes
     submitted
     validated
+    video
   }
 }

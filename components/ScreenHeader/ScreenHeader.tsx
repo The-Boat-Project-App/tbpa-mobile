@@ -14,9 +14,9 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({ arrowDirecti
   const navigation = useNavigation()
 
   return (
-    <View className={`flex-row  ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 mt-4'} pr-1 `}>
+    <View className={`flex-row mx-3  ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 mt-4'} pr-1 `}>
       <TouchableOpacity
-        className=' justify-center align-middle flex-1 ml-4 '
+        className=' justify-center align-middle flex-1'
         onPress={() => navigation.goBack()}
       >
         {arrowDirection == 'down' ? (

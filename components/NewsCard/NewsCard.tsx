@@ -28,7 +28,7 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
   console.log('id dans newscard ', id)
   return (
     <TouchableOpacity
-      className='w-40 p-0 ml-3'
+      className='w-32 p-0 ml-3'
       onPress={() => navigation.navigate('News', { newsId: id })}
     >
       <Image

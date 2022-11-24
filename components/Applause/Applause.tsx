@@ -38,18 +38,6 @@ const Applause = ({ likes, postId }) => {
                 ],
               }}
             />
-            <Text
-              className='self-center text-zinc-900 font-bold'
-              style={{
-                transform: [
-                  {
-                    scale: isPressed ? 0.92 : 1,
-                  },
-                ],
-              }}
-            >
-              {likesDisplay}
-            </Text>
           </>
         )
       }}

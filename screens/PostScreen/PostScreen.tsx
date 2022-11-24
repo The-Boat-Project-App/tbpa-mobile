@@ -1,5 +1,13 @@
 import React, { useState, useCallback } from 'react'
-import { View, Text, Image, useWindowDimensions, ScrollView, RefreshControl } from 'react-native'
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  useWindowDimensions,
+  ScrollView,
+  RefreshControl,
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import RenderHtml from 'react-native-render-html'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
@@ -12,15 +20,21 @@ import { useGetPostsByIdQuery } from '../../graphql/graphql'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
 import LoadingView from '@components/LoadingView/LoadingView'
+import YoutubePlayer from 'react-native-youtube-iframe'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
+import { useNavigation } from '@react-navigation/native'
 
 interface PostScreenProps {}
 
 const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
+  const navigation = useNavigation()
+
   const { data, refetch } = useGetPostsByIdQuery({
     variables: { id: props.route.params.postId },
   })
+  console.log('data du post', data)
 
-  console.log(props.route.params.postId)
+  console.log('id du post,', props.route.params.postId)
   const [likes, setLikes] = useState<number>(data?.Posts.likes)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false)
@@ -73,39 +87,53 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
               {data?.Posts.title}
             </Text>
           )}
-          {/* <View className='self-end mr-2 -mb-4 z-40'>
-            {isBookmarked ? (
-              <BookmarkIcon
-                size={30}
-                onPress={() => setIsBookmarked(!isBookmarked)}
-                color='#0C617D'
+
+          {data?.Posts.video ? (
+            <View className=''>
+              <YoutubePlayer height={200} play={true} videoId={data?.Posts.video} />
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Picture', { imageUrl: data?.Posts.mainPicture })
+                console.log('clic detecté')
+              }}
+            >
+              <Image
+                className='h-60 rounded-md '
+                source={{
+                  uri: data?.Posts.mainPicture,
+                }}
               />
-            ) : (
-              <BookmarkIconOutline
-screens/UserScreen/UserScreen.tsx                size={30}
-                fill='white'
-                onPress={() => setIsBookmarked(!isBookmarked)}
-                color='#0C617D'
-              />
-            )}
-          </View> */}
-          <Image
-            className='h-40 rounded-md '
-            source={{
-              uri: data?.Posts.mainPicture,
-            }}
-          />
+            </TouchableOpacity>
+          )}
           <View className='flex-row justify-between mt-2 '>
             <View className='-mt-12'>
               <CustomAvatar
                 userId={data?.Posts.author.id}
-                isConnected={true}
+                isConnected={false}
                 avatarPicture={data?.Posts.author.avatar}
               />
             </View>
             {/* <View className='flex-row justify-center'>
               <Toggle isEnabled={false} />
             </View> */}
+            {data?.Posts.likes > 0 && (
+              <View className='ml-4 flex flex-row'>
+                <MaterialCommunityIcons name='hand-clap' color='#87BC23' size={16} />
+                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-2'>
+                  {data?.Posts.likes}
+                </Text>
+              </View>
+            )}
+            {data?.Posts.comments.length > 0 && (
+              <>
+                <MaterialCommunityIcons name='chat' color='#87BC23' size={18} />
+                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
+                  {data?.Posts.comments.length}
+                </Text>
+              </>
+            )}
           </View>
           <Text className='text-md color-deepBlue font-ralewayBold  '>
             {data?.Posts.author.firstName}

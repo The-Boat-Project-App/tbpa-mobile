@@ -4,6 +4,7 @@ query getValidatedPosts {
     title
     content
     mainPicture
+    video
     createdAt
     validated
     likes

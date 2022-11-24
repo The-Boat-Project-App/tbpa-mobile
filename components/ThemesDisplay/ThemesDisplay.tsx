@@ -11,7 +11,7 @@ interface ThemesDisplayProps {}
 const ThemesDisplay: React.FunctionComponent<ThemesDisplayProps> = ({}) => {
   return (
     <View className='ml-2.5 mt-4'>
-      <Text className='text-xl color-cyan-900 my-2   color-deepBlue font-ralewayBold'>Thèmes</Text>
+      <Text className='text-lg color-cyan-900 my-2   color-deepBlue font-ralewayBold'>Thèmes</Text>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <ThemesCard2 themeName='Éducation' />
         <ThemesCard2 themeName='Écologie' />

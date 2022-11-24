@@ -249,6 +249,7 @@ export type Posts = {
   submitted?: Maybe<Scalars['Boolean']>;
   title: Scalars['String'];
   validated?: Maybe<Scalars['String']>;
+  video?: Maybe<Scalars['String']>;
 };
 
 export type PostsInput = {
@@ -263,6 +264,7 @@ export type PostsInput = {
   submitted?: InputMaybe<Scalars['Boolean']>;
   title: Scalars['String'];
   validated?: InputMaybe<Scalars['String']>;
+  video?: InputMaybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -345,7 +347,6 @@ export type RegisterResponse = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  likeAdded: Posts;
   messageDeleted: Messages;
   messageSent: Messages;
   newUserConnected: Users;
@@ -386,6 +387,7 @@ export type Users = {
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
+  desc?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   id: Scalars['ID'];
@@ -409,6 +411,7 @@ export type UsersInput = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
+  desc?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
@@ -468,7 +471,7 @@ export type CreateNewPostMutationVariables = Exact<{
 }>;
 
 
-export type CreateNewPostMutation = { __typename?: 'Mutation', createPosts: { __typename?: 'Posts', title: string, intro: string, content?: string | null, mainPicture?: string | null, likes?: number | null, submitted?: boolean | null, validated?: string | null } };
+export type CreateNewPostMutation = { __typename?: 'Mutation', createPosts: { __typename?: 'Posts', title: string, intro: string, content?: string | null, mainPicture?: string | null, likes?: number | null, submitted?: boolean | null, validated?: string | null, video?: string | null } };
 
 export type DeleteMessagesMutationVariables = Exact<{
   messageId: Scalars['String'];
@@ -480,7 +483,7 @@ export type DeleteMessagesMutation = { __typename?: 'Mutation', deleteMessages: 
 export type GetAllDraftPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllDraftPostsByUserQuery = { __typename?: 'Query', AllDraftPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+export type GetAllDraftPostsByUserQuery = { __typename?: 'Query', AllDraftPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, video?: string | null, validated?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
 
 export type GetAllMessagesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -505,17 +508,17 @@ export type GetAllPostsQuery = { __typename?: 'Query', PostsList: Array<{ __type
 export type GetAllPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllPostsByUserQuery = { __typename?: 'Query', AllPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, likes?: number | null, validated?: string | null, submitted?: boolean | null, author: { __typename?: 'Users', email?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+export type GetAllPostsByUserQuery = { __typename?: 'Query', AllPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, likes?: number | null, validated?: string | null, submitted?: boolean | null, video?: string | null, author: { __typename?: 'Users', email?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
 
 export type GetAllSubmittedPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllSubmittedPostsByUserQuery = { __typename?: 'Query', AllSubmittedPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+export type GetAllSubmittedPostsByUserQuery = { __typename?: 'Query', AllSubmittedPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, video?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', usersList: Array<{ __typename?: 'Users', id: string, email?: string | null, firstName: string, lastName: string, status?: string | null, avatar?: string | null }> };
+export type GetAllUsersQuery = { __typename?: 'Query', usersList: Array<{ __typename?: 'Users', id: string, email?: string | null, firstName: string, lastName: string, status?: string | null, avatar?: string | null, city?: string | null, country?: string | null, lang: Array<string>, desc?: string | null }> };
 
 export type ConnectToChatMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -546,14 +549,14 @@ export type GetPostsByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsByIdQuery = { __typename?: 'Query', Posts: { __typename?: 'Posts', id: string, title: string, content?: string | null, mainPicture?: string | null, createdAt: any, intro: string, validated?: string | null, likes?: number | null, author: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> } };
+export type GetPostsByIdQuery = { __typename?: 'Query', Posts: { __typename?: 'Posts', id: string, title: string, content?: string | null, mainPicture?: string | null, video?: string | null, createdAt: any, intro: string, validated?: string | null, likes?: number | null, author: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> } };
 
 export type GetPostsByUserQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetPostsByUserQuery = { __typename?: 'Query', PostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+export type GetPostsByUserQuery = { __typename?: 'Query', PostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, video?: string | null, intro: string, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
 
 export type GetTripByIdQueryVariables = Exact<{
   id: Scalars['String'];
@@ -572,7 +575,7 @@ export type GetUsersByIdQuery = { __typename?: 'Query', user: { __typename?: 'Us
 export type GetValidatedPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetValidatedPostsQuery = { __typename?: 'Query', ValidatedPostsList: Array<{ __typename?: 'Posts', id: string, title: string, content?: string | null, mainPicture?: string | null, createdAt: any, validated?: string | null, likes?: number | null, intro: string, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+export type GetValidatedPostsQuery = { __typename?: 'Query', ValidatedPostsList: Array<{ __typename?: 'Posts', id: string, title: string, content?: string | null, mainPicture?: string | null, video?: string | null, createdAt: any, validated?: string | null, likes?: number | null, intro: string, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
 
 export type LoginMutationVariables = Exact<{
   UsersLoginInput: UsersInput;
@@ -689,6 +692,7 @@ export const CreateNewPostDocument = gql`
     likes
     submitted
     validated
+    video
   }
 }
     `;
@@ -759,6 +763,7 @@ export const GetAllDraftPostsByUserDocument = gql`
     mainPicture
     createdAt
     intro
+    video
     validated
     submitted
     likes
@@ -977,6 +982,7 @@ export const GetAllPostsByUserDocument = gql`
     likes
     validated
     submitted
+    video
     author {
       email
     }
@@ -1024,6 +1030,7 @@ export const GetAllSubmittedPostsByUserDocument = gql`
     createdAt
     intro
     validated
+    video
     submitted
     likes
     comments {
@@ -1070,6 +1077,10 @@ export const GetAllUsersDocument = gql`
     lastName
     status
     avatar
+    city
+    country
+    lang
+    desc
   }
 }
     `;
@@ -1255,6 +1266,7 @@ export const GetPostsByIdDocument = gql`
     title
     content
     mainPicture
+    video
     createdAt
     author {
       avatar
@@ -1308,6 +1320,7 @@ export const GetPostsByUserDocument = gql`
     title
     mainPicture
     createdAt
+    video
     intro
     likes
     comments {
@@ -1442,6 +1455,7 @@ export const GetValidatedPostsDocument = gql`
     title
     content
     mainPicture
+    video
     createdAt
     validated
     likes
