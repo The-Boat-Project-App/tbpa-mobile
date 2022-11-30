@@ -80,7 +80,7 @@ export type Mutation = {
   deleteMessages: Messages;
   deleteNews: Scalars['String'];
   deleteNotes: Scalars['String'];
-  deletePosts: Scalars['String'];
+  deletePosts: Posts;
   deleteUsers: Scalars['String'];
   loginUsers: LoginResponse;
   /** user connecting to chat */
@@ -89,7 +89,7 @@ export type Mutation = {
   newUserDisconnected: Users;
   revokeRefreshTokensForUser: Scalars['Boolean'];
   updateNotes: Notes;
-  updatePosts: Posts;
+  updatePost: Posts;
   updateTrip: Trip;
 };
 
@@ -169,8 +169,8 @@ export type MutationUpdateNotesArgs = {
 };
 
 
-export type MutationUpdatePostsArgs = {
-  editPostsInput: PostsInput;
+export type MutationUpdatePostArgs = {
+  newPostsInput: PostsInput;
 };
 
 /** The News Model */
@@ -480,10 +480,17 @@ export type DeleteMessagesMutationVariables = Exact<{
 
 export type DeleteMessagesMutation = { __typename?: 'Mutation', deleteMessages: { __typename?: 'Messages', id?: string | null } };
 
+export type DeletePostsMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeletePostsMutation = { __typename?: 'Mutation', deletePosts: { __typename?: 'Posts', id: string } };
+
 export type GetAllDraftPostsByUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllDraftPostsByUserQuery = { __typename?: 'Query', AllDraftPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, video?: string | null, validated?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
+export type GetAllDraftPostsByUserQuery = { __typename?: 'Query', AllDraftPostsByUserList: Array<{ __typename?: 'Posts', id: string, title: string, mainPicture?: string | null, createdAt: any, intro: string, video?: string | null, validated?: string | null, content?: string | null, submitted?: boolean | null, likes?: number | null, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> }> };
 
 export type GetAllMessagesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -549,7 +556,7 @@ export type GetPostsByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetPostsByIdQuery = { __typename?: 'Query', Posts: { __typename?: 'Posts', id: string, title: string, content?: string | null, mainPicture?: string | null, video?: string | null, createdAt: any, intro: string, validated?: string | null, likes?: number | null, author: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> } };
+export type GetPostsByIdQuery = { __typename?: 'Query', Posts: { __typename?: 'Posts', id: string, title: string, content?: string | null, mainPicture?: string | null, submitted?: boolean | null, video?: string | null, createdAt: any, intro: string, validated?: string | null, likes?: number | null, author: { __typename?: 'Users', avatar?: string | null, firstName: string, id: string, status?: string | null, email?: string | null }, comments: Array<{ __typename?: 'CommentObject', author: string, content: string, date: any }> } };
 
 export type GetPostsByUserQueryVariables = Exact<{
   id: Scalars['String'];
@@ -615,6 +622,13 @@ export type UpdateTripMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UpdateTripMutation = { __typename?: 'Mutation', updateTrip: { __typename?: 'Trip', locations: Array<{ __typename?: 'LocationObject', name: string, latitude: number, longitude: number, date: any, description: string }> } };
+
+export type UpdatePostMutationVariables = Exact<{
+  newPostsInput: PostsInput;
+}>;
+
+
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'Posts', id: string } };
 
 
 export const AddLikesDocument = gql`
@@ -755,6 +769,39 @@ export function useDeleteMessagesMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type DeleteMessagesMutationHookResult = ReturnType<typeof useDeleteMessagesMutation>;
 export type DeleteMessagesMutationResult = Apollo.MutationResult<DeleteMessagesMutation>;
 export type DeleteMessagesMutationOptions = Apollo.BaseMutationOptions<DeleteMessagesMutation, DeleteMessagesMutationVariables>;
+export const DeletePostsDocument = gql`
+    mutation deletePosts($id: String!) {
+  deletePosts(id: $id) {
+    id
+  }
+}
+    `;
+export type DeletePostsMutationFn = Apollo.MutationFunction<DeletePostsMutation, DeletePostsMutationVariables>;
+
+/**
+ * __useDeletePostsMutation__
+ *
+ * To run a mutation, you first call `useDeletePostsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePostsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePostsMutation, { data, loading, error }] = useDeletePostsMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeletePostsMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeletePostsMutation, DeletePostsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<DeletePostsMutation, DeletePostsMutationVariables>(DeletePostsDocument, options);
+      }
+export type DeletePostsMutationHookResult = ReturnType<typeof useDeletePostsMutation>;
+export type DeletePostsMutationResult = Apollo.MutationResult<DeletePostsMutation>;
+export type DeletePostsMutationOptions = Apollo.BaseMutationOptions<DeletePostsMutation, DeletePostsMutationVariables>;
 export const GetAllDraftPostsByUserDocument = gql`
     query getAllDraftPostsByUser {
   AllDraftPostsByUserList {
@@ -765,6 +812,7 @@ export const GetAllDraftPostsByUserDocument = gql`
     intro
     video
     validated
+    content
     submitted
     likes
     comments {
@@ -1266,6 +1314,7 @@ export const GetPostsByIdDocument = gql`
     title
     content
     mainPicture
+    submitted
     video
     createdAt
     author {
@@ -1273,6 +1322,7 @@ export const GetPostsByIdDocument = gql`
       firstName
       id
       status
+      email
     }
     intro
     validated
@@ -1740,3 +1790,36 @@ export function useUpdateTripMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type UpdateTripMutationHookResult = ReturnType<typeof useUpdateTripMutation>;
 export type UpdateTripMutationResult = Apollo.MutationResult<UpdateTripMutation>;
 export type UpdateTripMutationOptions = Apollo.BaseMutationOptions<UpdateTripMutation, UpdateTripMutationVariables>;
+export const UpdatePostDocument = gql`
+    mutation updatePost($newPostsInput: PostsInput!) {
+  updatePost(newPostsInput: $newPostsInput) {
+    id
+  }
+}
+    `;
+export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>;
+
+/**
+ * __useUpdatePostMutation__
+ *
+ * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
+ *   variables: {
+ *      newPostsInput: // value for 'newPostsInput'
+ *   },
+ * });
+ */
+export function useUpdatePostMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdatePostMutation, UpdatePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, options);
+      }
+export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
+export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
+export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;

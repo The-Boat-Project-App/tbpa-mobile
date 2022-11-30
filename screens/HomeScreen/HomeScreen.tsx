@@ -38,7 +38,7 @@ interface HomeScreenProps {}
 
 const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   const [refreshing, setRefreshing] = useState<boolean>(false)
-
+  const [isScrolled, setIsScrolled] = useState<boolean>(false)
   const { height, width } = useWindowDimensions()
   const [newList, setNewsList] = useState([])
   const navigation = useNavigation()
@@ -88,9 +88,9 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
 
   return (
     <SafeAreaView className='flex-1 bg-white' edges={['top', 'left', 'right']}>
-      <HomeHeader />
+      <HomeHeader isScrolled={isScrolled} />
       <ScrollView
-        showsVerticalScrollIndicator={false}
+        shorwsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -126,29 +126,37 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
               )}
             />
           )}
-
           <SeeAll target='Crew' />
           <CrewDisplay />
           <SeeAll target='AllPosts' />
-          <View className='mx-3'>
-            {postsData?.ValidatedPostsList.map((postItem, index) => {
-              return (
-                <View key={index}>
-                  <PostCard
-                    id={postItem.id}
-                    title={postItem.title}
-                    picture={postItem.mainPicture}
-                    likes={postItem.likes}
-                    comments={postItem.comments}
-                    intro={postItem.intro}
-                  />
-                  {index !== postsData?.ValidatedPostsList.length - 1 && (
-                    <Divider bg='#dddddd' thickness='1' my='3' orientation='horizontal' />
-                  )}
-                </View>
-              )
-            })}
+          <View className='mx-3 mb-4'>
+            {postsData?.ValidatedPostsList.slice(-4)
+              .reverse()
+              .map((postItem, index) => {
+                return (
+                  <View key={index}>
+                    <PostCard
+                      id={postItem.id}
+                      title={postItem.title}
+                      picture={postItem.mainPicture}
+                      likes={postItem.likes}
+                      comments={postItem.comments}
+                      intro={postItem.intro}
+                      video={postItem.video}
+                      date={
+                        moment().diff(postItem.createdAt, 'days') <= 2
+                          ? moment(postItem.createdAt).fromNow()
+                          : moment(postItem.createdAt).format('LL')
+                      }
+                    />
+                    {index !== postsData?.ValidatedPostsList.length - 1 && (
+                      <Divider bg='#dddddd' thickness='1' my='3' orientation='horizontal' />
+                    )}
+                  </View>
+                )
+              })}
           </View>
+          <SeeAll target='AllThemes' />
           <ThemesDisplay />
         </View>
       </ScrollView>

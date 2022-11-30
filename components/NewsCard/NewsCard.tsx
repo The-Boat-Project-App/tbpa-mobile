@@ -1,5 +1,6 @@
-import { View, Image, TouchableOpacity, Text } from 'react-native'
+import { Image, TouchableOpacity, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+// import FastImage from 'react-native-fast-image'
 
 interface NewsCard {
   id: string
@@ -37,6 +38,14 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
           uri: picture,
         }}
       />
+      {/* <FastImage
+        style={{ width: 200, height: 200 }}
+        source={{
+          uri: picture,
+          priority: FastImage.priority.normal,
+        }}
+        resizeMode={FastImage.resizeMode.contain}
+      /> */}
       <Text className='font-bold  text-xs  color-grey font-raleway'>{date}</Text>
       <Text className='text-md  color-deepBlue font-ralewayBold'>{title}</Text>
       <Text className='text-xs  color-grey font-raleway'>{shortenedContent}</Text>

@@ -67,6 +67,7 @@ const AllPostsScreen: React.FunctionComponent<AllPostsScreenProps> = (props) => 
                 likes={postItem.likes}
                 comments={postItem.comments}
                 intro={postItem.intro}
+                video={postItem.video}
               />
               {index !== postsData?.ValidatedPostsList.length - 1 && (
                 <Divider bg='#dddddd' thickness='1' my='3' orientation='horizontal' />

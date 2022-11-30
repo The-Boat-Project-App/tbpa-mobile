@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
-import { Platform, RefreshControl, FlatList, Keyboard, Text } from 'react-native'
+import { Platform, RefreshControl, FlatList, Keyboard, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Input, KeyboardAvoidingView, IconButton, Modal, Heading, Spinner } from 'native-base'
 import { FontAwesome, AntDesign } from '@expo/vector-icons'
@@ -19,32 +19,26 @@ import LoadingView from '@components/LoadingView/LoadingView'
 import { userDataVar } from '../../variables/userData'
 import { useReactiveVar } from '@apollo/client'
 import * as ImagePicker from 'expo-image-picker'
+import { useNavigation } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native'
 
 interface MessagesScreenProps {}
 
 const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => {
-  // const MESSAGES_SUBSCRIPTION = gql`
-  //   subscription messageSent {
-  //     messageSent {
-  //       id
-  //       content
-  //       mainPicture
-  //       author {
-  //         firstName
-  //       }
-  //     }
-  //   }
-  // `
+  const navigation = useNavigation()
+
   const inputRef = useRef()
   const [image, setImage] = useState('')
   const [isDisabled, setIsDisabled] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [reload, setReload] = useState<boolean>(false)
+  const [isConnectionModalOpen, setIsConnectionModalOpen] = useState<boolean>(false)
 
+  const [reload, setReload] = useState<boolean>(false)
   const chatFlatListRef = useRef<FlatList<any>>()
   const userDataInApollo = useReactiveVar(userDataVar)
-  const [message, setMessage] = useState<string>('')
+  const isFocused = useIsFocused()
 
+  const [message, setMessage] = useState<string>('')
   const [sendMessage] = useCreateMessagesMutation()
   const { data: messagesData, refetch: refetchMessagesData } = useGetAllMessagesQuery()
   const [chat, setChat] = useState([])
@@ -52,6 +46,9 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   const { data: newMessageData, loading } = useOnMessageAddedSubscription()
   const { data: deletedMessageData, loading: loadingDeletedMessage } =
     useOnMessageDeletedSubscription()
+  useEffect(() => {
+    isFocused && setIsConnectionModalOpen(userDataInApollo.firstName ? false : true)
+  }, [userDataInApollo.email, isFocused])
 
   const [refreshing, setRefreshing] = useState<boolean>(false)
   useEffect(() => {
@@ -80,7 +77,6 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
       }
     }
   }, [messagesData, newMessageData, reload])
-  console.log('deletedMessageData', deletedMessageData)
   useEffect(() => {
     if (message.slice(-5) === '.gif ') {
       setIsDisabled(true)
@@ -141,9 +137,8 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
 
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-
       quality: 0.2,
     })
 
@@ -218,7 +213,6 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
       <Text className='text-lg  color-deepBlue font-ralewayBold mt-2 ml-3 my-2 text-center'>
         Chat
       </Text>
-
       <OnlineUsers />
       <FlatList
         ref={chatFlatListRef}
@@ -247,7 +241,6 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
           />
         )}
       />
-
       {/* <View className=' bg-white flex flex-row mb-4 mt-2 justify-center'>
           {data?.user.firstName && (
             <View className='w-1/2 justify-center '>
@@ -369,6 +362,7 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
           onPress={() => saveMessage('', message)}
         />
       </KeyboardAvoidingView>
+      {/* Modal during image upload */}
       <Modal isOpen={isOpen} safeAreaTop={true}>
         <Modal.Content maxWidth='350'>
           <Modal.Body>
@@ -377,6 +371,40 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
               Envoi de l'image en cours ...
             </Text>
           </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      {/* Modal if user not connected */}
+      <Modal isOpen={isConnectionModalOpen} safeAreaTop={true}>
+        <Modal.Content maxWidth='350'>
+          <Modal.Header>
+            <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 text-center'>
+              Connectez-vous pour découvrir toutes les fonctionnalités
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('BottomTabs', { screen: 'Profile' })
+                setIsConnectionModalOpen(false)
+              }}
+            >
+              <Text className='text-md  color-deepBlue font-ralewayBold ml-3 text-center'>
+                Se connecter ou s'inscrire
+              </Text>
+            </TouchableOpacity>
+          </Modal.Body>
+          <Modal.Footer onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('BottomTabs', { screen: 'Home' })
+                setIsConnectionModalOpen(false)
+              }}
+            >
+              <Text className='text-xs  color-deepBlue font-raleway ml-3 text-center'>
+                Non merci
+              </Text>
+            </TouchableOpacity>
+          </Modal.Footer>
         </Modal.Content>
       </Modal>
     </SafeAreaView>

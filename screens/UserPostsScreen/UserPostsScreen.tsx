@@ -11,6 +11,8 @@ import {
   Platform,
   SnapshotViewIOSComponent,
 } from 'react-native'
+import { newPostVar } from '../../variables/newPost'
+
 import { Button, Divider, Badge, Modal } from 'native-base'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import {
@@ -18,6 +20,7 @@ import {
   useGetAllDraftPostsByUserQuery,
 } from '../../graphql/graphql'
 import PostCard from '@components/PostCard/PostCard'
+import EditPostCard from '@components/EditPostCard/EditPostCard'
 import LoadingView from '@components/LoadingView/LoadingView'
 import {
   PlusCircleIcon as PlusCircleIconOutline,
@@ -205,15 +208,18 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
         {isDraftSelected && (
           <>
             {draftPostsData?.AllDraftPostsByUserList.map((postItem, index) => {
+              console.log('tous les brouillons', postItem)
               return (
-                <PostCard
+                <EditPostCard
                   key={index}
-                  id={postItem.id}
+                  id={postItem.id ? postItem.id : null}
                   title={postItem.title}
                   picture={postItem.mainPicture}
                   likes={postItem.likes}
                   comments={postItem.comments}
                   intro={postItem.intro}
+                  content={postItem.content}
+                  video={postItem.video}
                 />
               )
             })}
@@ -222,7 +228,7 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
         )}
       </ScrollView>
       <View className='flex flex-row justify-center'>
-        <Text className='text-xl  color-deepBlue font-ralewayBold ml-3 mb-1 mt-4 text-center'>
+        <Text className='text-xl  color-deepBlue font-ralewayBold mx-16 mb-1 mt-4 text-center'>
           {draftPostsData?.AllDraftPostsByUserList.length == 0 &&
           submittedPostsData?.AllSubmittedPostsByUserList.length == 0
             ? `Proposez votre première publication !`
@@ -233,6 +239,14 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
         className='mx-6 my-4'
         onPress={() => {
           console.log('clic')
+          newPostVar({
+            title: '',
+            image: '',
+            content: '',
+            intro: '',
+            video: null,
+            id: null,
+          })
           navigation.navigate('AddNewPost')
         }}
       >

@@ -1,4 +1,11 @@
-import { View, Image, TouchableOpacity, Text, ImageBackground } from 'react-native'
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  ImageBackground,
+  useWindowDimensions,
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Badge } from 'native-base'
@@ -9,14 +16,16 @@ interface PostCardProps {
   content: string
   likes: number
   intro: string
+  video: string
   setIsLoading: Function
   validated: String
   authorView: Boolean
+  date: Date
   comments: [
     {
       author: string
       content: string
-      date: Date
+      date: string
     },
   ]
 }
@@ -31,11 +40,14 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
   intro,
   authorView = false,
   validated,
+  video,
+  date,
 }) => {
   console.log('validated in PostCard', validated)
   //* Regex to shorten text content
-  const shortenedContent = intro.replace(/^(.{70}[^\s]*).*/, '$1') + ' ...'
+  const shortenedContent = intro.replace(/^(.{120}[^\s]*).*/, '$1') + ' ...'
   const navigation = useNavigation()
+  const { height, width } = useWindowDimensions()
 
   return (
     <TouchableOpacity
@@ -53,38 +65,51 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
         ></Image>
       </View>
       <View className='w-3/5 pl-3 flex-col '>
-        <Text className='color-deepBlue font-ralewayBold'>{title}</Text>
-        <Text className='text-xs  color-grey font-raleway text-justify'>{shortenedContent}</Text>
+        <View className='flex flex-row justify-between' style={{ width: width * 0.5 }}>
+          <Text className='color-deepBlue font-ralewayBold'>{title}</Text>
+        </View>
+        <Text className='text-xs  color-deepBlue font-raleway'>{shortenedContent}</Text>
         <View
-          className={`flex-row mt-2   self-end items-center  w-full   ${
+          className={`flex-row mt-2 self-end items-between  w-full   ${
             authorView ? 'justify-between' : 'justify-end'
           }`}
         >
-          {authorView && (
-            <Badge
-              colorScheme={validated == 'validated' ? 'green' : 'coolGray'}
-              alignSelf='center'
-              variant='subtle'
-            >
-              {validated == 'validated' ? 'Validée' : 'En attente de validation'}
-            </Badge>
-          )}
-          {likes > 0 && (
-            <View className='ml-4 flex flex-row'>
-              <MaterialCommunityIcons name='hand-clap' color='#87BC23' size={16} />
-              <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-2'>
-                {likes}
-              </Text>
-            </View>
-          )}
-          {comments.length > 0 && (
-            <>
-              <MaterialCommunityIcons name='chat' color='#87BC23' size={18} />
-              <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
-                {comments.length}
-              </Text>
-            </>
-          )}
+          <Text className='font-bold  text-xs  color-grey font-raleway'>{date}</Text>
+          <View className='flex flex-row s'>
+            {authorView && (
+              <Badge
+                colorScheme={validated == 'validated' ? 'green' : 'coolGray'}
+                alignSelf='center'
+                variant='subtle'
+              >
+                {validated == 'validated' ? 'Validée' : 'En cours de validation'}
+              </Badge>
+            )}
+            {video && (
+              <>
+                <MaterialCommunityIcons name='play-circle' color='#87BC23' size={18} />
+                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
+                  Vidéo
+                </Text>
+              </>
+            )}
+            {likes > 0 && (
+              <View className='ml-4 flex flex-row'>
+                <MaterialCommunityIcons name='hand-clap' color='#87BC23' size={16} />
+                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-2'>
+                  {likes}
+                </Text>
+              </View>
+            )}
+            {comments.length > 0 && (
+              <>
+                <MaterialCommunityIcons name='chat' color='#87BC23' size={18} />
+                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
+                  {comments.length}
+                </Text>
+              </>
+            )}
+          </View>
         </View>
       </View>
     </TouchableOpacity>

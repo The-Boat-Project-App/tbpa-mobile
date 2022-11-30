@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Icon, Pressable } from 'native-base'
-import { Text } from 'react-native'
+import { Platform } from 'react-native'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { useAddLikesMutation } from '../../graphql/graphql'
 
@@ -19,7 +19,9 @@ const Applause = ({ likes, postId }) => {
   }
   return (
     <Pressable
-      className='flex-column justify-center align-center absolute bottom-12 right-8 rounded-full bg-white border border-2 p-2 border-green shadow shadow-deepBlue'
+      className={`${
+        Platform.OS === 'ios' ? 'bottom-10' : 'bottom-6'
+      } flex-column justify-center align-center absolute   right-8 rounded-full bg-white  p-2 border-green shadow shadow-deepBlue`}
       onPress={applause}
     >
       {({ isHovered, isFocused, isPressed }) => {

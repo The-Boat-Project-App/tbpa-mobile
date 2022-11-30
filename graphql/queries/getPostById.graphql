@@ -4,6 +4,7 @@ query getPostsById($id: String!) {
     title
     content
     mainPicture
+    submitted
     video
     createdAt
     author {
@@ -11,6 +12,7 @@ query getPostsById($id: String!) {
       firstName
       id
       status
+      email
     }
     intro
     validated

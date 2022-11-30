@@ -5,6 +5,6 @@
   "minify": false,
   "urlRandomness": "45-uxh",
   "https": false,
-  "scheme": null,
+  "scheme": "exp+theboatapp",
   "devClient": false
 }
