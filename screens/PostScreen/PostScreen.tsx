@@ -116,6 +116,9 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
     a: {
       color: '#87BC23',
     },
+    p: {
+      lineHeight: '1.8em',
+    },
   }
   if (!data) {
     return <LoadingView />
@@ -163,7 +166,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
             <View
               className={` ${
                 data?.Posts.video
-                  ? '-mt-3 flex flex-row items-center justify-start '
+                  ? '-mt-1 flex flex-row items-center justify-start '
                   : 'flex flex-col items-center -mt-8 mx-3'
               } `}
             >
@@ -180,6 +183,15 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
                 >
                   {data?.Posts.author.firstName}
                 </Text>
+                {data?.Posts.author.status === 'crew' && (
+                  <Text
+                    className={`text-xs color-clearBlue font-raleway ${
+                      data?.Posts.video ? '' : 'text-center'
+                    } `}
+                  >
+                    Compagnon
+                  </Text>
+                )}
                 <Text className='text-xs color-deepBlue font-raleway'>
                   {moment().diff(data?.Posts.createdAt, 'days') <= 2
                     ? moment(data?.Posts.createdAt).fromNow()
@@ -229,7 +241,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
           </View>
 
           {data?.Posts.title && (
-            <Text className='text-xl color-deepBlue font-ralewayBold  ml-3 mb-4 text-center'>
+            <Text className='text-xl color-deepBlue font-ralewayBold  ml-3 mt-5 mb-6 text-center'>
               {data?.Posts.title}
             </Text>
           )}
