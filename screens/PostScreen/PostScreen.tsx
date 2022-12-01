@@ -245,6 +245,22 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
               <RenderHtml contentWidth={width} tagsStyles={tagsStyles} source={source} />
             </View>
           )}
+
+          {data?.Posts.video && (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Picture', { imageUrl: data?.Posts.mainPicture })
+                console.log('clic detecté')
+              }}
+            >
+              <Image
+                className='h-52'
+                source={{
+                  uri: data?.Posts.mainPicture,
+                }}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
       {data?.Posts.likes && <Applause likes={data?.Posts.likes} postId={data?.Posts.id} />}
