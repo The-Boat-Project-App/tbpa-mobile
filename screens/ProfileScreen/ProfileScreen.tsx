@@ -52,7 +52,7 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
     return <SignInScreen />
   } else {
     return (
-      <SafeAreaView className='flex-1 items-center text-center '>
+      <SafeAreaView className='flex-1 items-center text-center bg-white '>
         {userDataInApollo.status === 'dev' && <DevController />}
         <View className='flex-row-reverse'>
           <Image
@@ -68,9 +68,22 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
         <Text className='text-center font-bold text-xl mt-5 text-gray-600'>
           {`${userDataInApollo.firstName} ${userDataInApollo.lastName}`}
         </Text>
-        <Text className='text-center ' selectionColor='#0C617D'>
-          Compagnon de la Méditerranée
-        </Text>
+        {userDataInApollo.status === 'crew' && (
+          <Text className='text-center ' selectionColor='#0C617D'>
+            Compagnon de la Méditerranée
+          </Text>
+        )}
+        {userDataInApollo.status === 'admin' && (
+          <Text className='text-center ' selectionColor='#0C617D'>
+            Administrateur
+          </Text>
+        )}
+
+        {userDataInApollo.status === 'dev' && (
+          <Text className='text-center ' selectionColor='#0C617D'>
+            Développeur 💻
+          </Text>
+        )}
         <TouchableOpacity>
           <Text style={styles.colorBlue} className='text-center font-bold text-xl mt-5 '>
             12
@@ -85,14 +98,14 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
             </TouchableOpacity>
             <TouchableOpacity className='items-center space-y-5 rounded-lg shadow-md  p-10'>
               <MicrophoneIcon size={30} color={'#0C617D'} />
-              <Text style={styles.colorBlue}>Dîte bonjour !</Text>
+              <Text style={styles.colorBlue}>Enregistrer votre bio vocale !</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity className='flex-row items-center space-x-40 shadow-md rounded-lg  p-5'>
             <View className='flex-row items-center'>
               <ListBulletIcon size={30} color={'grey'} />
-              <Text> Mes activitées</Text>
+              <Text> Mes activités</Text>
             </View>
             <ChevronRightIcon size={20} color={'grey'} style={styles.paddingLeft3} />
           </TouchableOpacity>

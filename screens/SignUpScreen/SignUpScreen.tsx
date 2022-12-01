@@ -126,7 +126,7 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
             )
           },
         })
-        navigation.navigate('BottomTabs')
+        navigation.navigate('Profile')
       }
     }
   }

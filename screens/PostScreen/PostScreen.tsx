@@ -140,7 +140,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
         <View className='justify-center bg-white'>
           {data?.Posts.video ? (
             <View className=''>
-              <YoutubePlayer height={230} play={true} videoId={data?.Posts.video} />
+              <YoutubePlayer height={250} play={true} videoId={data?.Posts.video} />
             </View>
           ) : (
             <TouchableOpacity
@@ -248,6 +248,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
 
           {data?.Posts.video && (
             <TouchableOpacity
+              className='mb-20'
               onPress={() => {
                 navigation.navigate('Picture', { imageUrl: data?.Posts.mainPicture })
                 console.log('clic detecté')
