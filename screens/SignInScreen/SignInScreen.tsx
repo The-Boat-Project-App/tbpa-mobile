@@ -87,7 +87,7 @@ const SignInScreen: React.FunctionComponent<SignInScreenProps> = ({}) => {
               )
             },
           })
-          navigation.navigate('BottomTabs', { screen: 'Home' })
+          navigation.navigate('BottomTabs', { screen: 'Profile' })
         }
       }
     } catch (error) {
