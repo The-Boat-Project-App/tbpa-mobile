@@ -1,9 +1,9 @@
 {
   "expoServerPort": null,
-  "packagerPort": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "packagerPort": 19000,
+  "expoServerNgrokUrl": "https://45-uxh.matthieudev.tbpa-mobile.exp.direct",
+  "packagerNgrokUrl": "https://45-uxh.matthieudev.tbpa-mobile.exp.direct",
+  "ngrokPid": 69952,
   "packagerPid": null,
   "webpackServerPort": null
 }

@@ -137,11 +137,6 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
           />
         }
       >
-        {data?.Posts.submitted === false && (
-          <TouchableOpacity onPress={() => editPost()}>
-            <Text>Editer</Text>
-          </TouchableOpacity>
-        )}
         <View className='justify-center bg-white'>
           {data?.Posts.video ? (
             <View className=''>
@@ -246,7 +241,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
             </Text>
           )}
           {data?.Posts.content && (
-            <View className='mx-3'>
+            <View className='mx-3 pb-12'>
               <RenderHtml contentWidth={width} tagsStyles={tagsStyles} source={source} />
             </View>
           )}
