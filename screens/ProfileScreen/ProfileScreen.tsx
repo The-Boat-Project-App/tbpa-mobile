@@ -52,7 +52,7 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
     return <SignInScreen />
   } else {
     return (
-      <SafeAreaView className='flex-1 items-center text-center bg-white '>
+      <SafeAreaView className='flex-1  bg-white '>
         {userDataInApollo.status === 'dev' && <DevController />}
         <View className='flex-row-reverse'>
           <Image
