@@ -23,6 +23,7 @@ import { StatusBar } from 'expo-status-bar'
 
 //* DEV SCREENS
 import DevScreen from '@screens/DevScreen/DevScreen'
+import OnboardingScreen from '@screens/OnboardingScreen/OnboardingScreen'
 
 //* DEV SCREENS
 const HomeStack = createNativeStackNavigator<HomeStackNavigatorParamList>()
@@ -48,15 +49,16 @@ const HomeStackNavigator = () => {
           headerShown: false,
         }}
       >
-        <HomeStack.Screen name='BottomTabs' component={BottomTabs} />
         <HomeStack.Screen
-          name='AddNewPost'
-          component={AddPostScreen}
+          name='Onboarding'
+          component={OnboardingScreen}
           options={{
             animationTypeForReplace: 'push',
             animation: 'slide_from_right',
           }}
         />
+        <HomeStack.Screen name='BottomTabs' component={BottomTabs} />
+        <HomeStack.Screen name='AddNewPost' component={AddPostScreen} />
         <HomeStack.Screen name='SignIn' component={SignInScreen} />
         <HomeStack.Screen
           name='SignUp'

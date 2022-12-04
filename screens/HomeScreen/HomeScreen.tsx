@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
+import InitialLoader from '@components/InitialLoader/InitialLoader'
 import LoadingView from '@components/LoadingView/LoadingView'
 
 import {
@@ -70,6 +71,9 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   }, [])
 
   console.log('API_URL in .env', API_URL)
+  // console.log('data', data)
+  console.log('tripDatadata', tripData)
+
   // ! Changement locale Momentjs en global en même temps que la langue ?
   moment.updateLocale('fr', localization)
 
@@ -77,7 +81,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
     navigation.setOptions({
       tabBarStyle: { display: 'none' },
     })
-    return <LoadingView />
+    return <InitialLoader />
   }
 
   if (data && postsData && tripData) {
@@ -108,7 +112,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item) => item.id}
-              data={data.NewsList}
+              data={data.NewsList.slice(-6).reverse()}
               renderItem={({ item, index }) => (
                 <NewsCard
                   key={index}
