@@ -505,7 +505,7 @@ export type GetAllNewsQuery = { __typename?: 'Query', NewsList: Array<{ __typena
 export type GetAllPartnersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllPartnersQuery = { __typename?: 'Query', PartnersList: Array<{ __typename?: 'Partners', id: string, latitude: number, longitude: number, name: { __typename?: 'nameObject', FR: string } }> };
+export type GetAllPartnersQuery = { __typename?: 'Query', PartnersList: Array<{ __typename?: 'Partners', id: string, latitude: number, logo?: string | null, city?: string | null, country?: string | null, main_picture?: string | null, longitude: number, name: { __typename?: 'nameObject', FR: string } }> };
 
 export type GetAllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -939,6 +939,10 @@ export const GetAllPartnersDocument = gql`
   PartnersList {
     id
     latitude
+    logo
+    city
+    country
+    main_picture
     longitude
     name {
       FR

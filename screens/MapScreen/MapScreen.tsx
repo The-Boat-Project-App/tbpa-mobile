@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { View, Dimensions, StyleSheet, Text } from 'react-native'
+import { View, Dimensions, StyleSheet, Text, Image } from 'react-native'
 import MapView, { Marker, Callout } from 'react-native-maps'
 import { useReactiveVar } from '@apollo/client'
 import { boatLocationVar } from '../../variables/boatLocation'
@@ -62,7 +62,32 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
           title='Emplacement actuel du bateau :'
           description={`${boatLocationInApollo.name}  ${boatLocationInApollo.latitude} ${boatLocationInApollo.longitude}`}
           image={require('../../assets/icons/sailboat.png')} //uses relative file path.
-        />
+        >
+          <Callout>
+            <View className=' m-4 h-180'>
+              <Text className='flex items-center justify-center font-raleway text-deepBlue'>
+                <Image
+                  style={{
+                    height: 120,
+                    width: 120,
+                    borderRadius: 8,
+                  }}
+                  source={{
+                    uri: 'https://res.cloudinary.com/matthieudev/image/upload/c_scale,w_584/v1670249453/Capture_d_e%CC%81cran_2022-12-05_a%CC%80_15.10.21_uzufxq.png',
+                    width: 200,
+                    height: 200,
+                  }}
+                  resizeMode='cover'
+                />
+                {'\n'}
+                {`Emplacement actuel : ${boatLocationInApollo.name}`} {'\n'}
+                {`Latitude : ${boatLocationInApollo.latitude}`}
+                {'\n'}
+                {`Longitude : ${boatLocationInApollo.longitude}`} {'\n'}
+              </Text>
+            </View>
+          </Callout>
+        </Marker>
 
         {partnersData?.PartnersList.map((partnerItem, index) => {
           return (
@@ -76,13 +101,38 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
               }}
             >
               <Callout>
-                <View>
-                  <Text
-                    onPress={() => {
-                      navigation.navigate('Partner', { partnerId: partnerItem.id })
-                    }}
-                  >
-                    {partnerItem.name.FR}
+                <View className=' m-4 h-180'>
+                  <Text className='flex items-center justify-center font-ralewayBold text-deepBlue'>
+                    <Image
+                      style={{
+                        height: 120,
+                        width: 120,
+                        borderRadius: 8,
+                      }}
+                      source={{
+                        uri: partnerItem.logo,
+                        width: 80,
+                        height: 80,
+                      }}
+                      resizeMode='cover'
+                    />
+                    <Image
+                      style={{
+                        height: 100,
+                        width: 100,
+                        borderRadius: 8,
+                        marginLeft: 10,
+                      }}
+                      source={{
+                        uri: partnerItem.main_picture,
+                        width: 150,
+                        height: 150,
+                      }}
+                      resizeMode='cover'
+                    />
+                    {'\n'}
+                    {`${partnerItem.name.FR}`} {'\n'}
+                    {`${partnerItem.city}, ${partnerItem.country}`} {'\n'}
                   </Text>
                 </View>
               </Callout>

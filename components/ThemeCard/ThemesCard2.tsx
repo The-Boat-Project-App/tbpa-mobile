@@ -17,13 +17,15 @@ const ThemesCard2: React.FunctionComponent<ThemesCard2Props> = ({ themeName }) =
   const displayName = (themeReference: string) => {
     switch (themeReference) {
       case 'Tanger - Barcelone':
-        return require('../../assets/drawings/horizon.png')
+        return require('../../assets/drawings/dive.png')
       case 'Marseille - Tanger':
         return require('../../assets/drawings/horizon.png')
       case 'Barcelone - Tunis':
-        return require('../../assets/drawings/compagnons.jpg')
+        return require('../../assets/drawings/marseille.png')
       case 'Tunis - Bastia':
-        return require('../../assets/drawings/horizon.png')
+        return require('../../assets/drawings/compagnons.jpg')
+      case 'Bastia - Marseille':
+        return require('../../assets/drawings/horizon_abstrait.png')
       default:
         return 'voilier.jpg'
     }
@@ -214,7 +216,7 @@ const ThemesCard2: React.FunctionComponent<ThemesCard2Props> = ({ themeName }) =
         shadow='5'
         bg='white'
         p='1'
-        mr={0}
+        m={1}
       >
         {({ isHovered, isFocused, isPressed }) => {
           return (
@@ -235,11 +237,11 @@ const ThemesCard2: React.FunctionComponent<ThemesCard2Props> = ({ themeName }) =
               alignContent={'center'}
             >
               <ImageBackground
-                className='h-32 '
+                className='h-32 rounded-md'
                 source={displayName(themeName)}
                 resizeMode='cover'
               ></ImageBackground>
-              <Badge colorScheme='deepBlue' variant='outline' rounded='4' border>
+              <Badge colorScheme='deepBlue' variant='outline' rounded='4' border className='mt-1'>
                 {themeName}
               </Badge>
             </Box>

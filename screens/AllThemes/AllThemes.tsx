@@ -276,7 +276,7 @@ const AllThemesScreen: React.FunctionComponent<AllThemesScreenProps> = (props) =
           width: width,
           resizeMode: 'contain',
           marginTop: 0,
-          marginBottom: -20,
+          marginBottom: -40,
           backgroundColor: 'white',
         }}
       />

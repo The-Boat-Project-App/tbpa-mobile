@@ -2,6 +2,10 @@ query getAllPartners {
   PartnersList {
     id
     latitude
+    logo
+    city
+    country
+    main_picture
     longitude
     name {
       FR

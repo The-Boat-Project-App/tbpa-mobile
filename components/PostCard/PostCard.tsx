@@ -51,10 +51,10 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
 
   return (
     <TouchableOpacity
-      className='flex-row bg-white p-0  rounded-xl '
+      className={`flex-row bg-lightBlue p-2 rounded-md `}
       onPress={() => navigation.navigate('Post', { postId: id })}
     >
-      <View className='w-2/5'>
+      <View className='w-2/5 justify-center'>
         <Image
           className='h-24 flex-row justify-end rounded-lg'
           // imageStyle={{ borderRadius: '10%' }}
@@ -64,17 +64,20 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
           resizeMode='cover'
         ></Image>
       </View>
-      <View className='w-3/5 pl-3 flex-col '>
+      <View className='w-3/5 pl-2 flex-col '>
         <View className='flex flex-row justify-between' style={{ width: width * 0.5 }}>
-          <Text className='color-deepBlue font-ralewayBold'>{title}</Text>
+          <View>
+            <Text className='font-bold  text-xs  color-grey font-raleway'>{date}</Text>
+            <Text className='color-deepBlue font-ralewayBold'>{title}</Text>
+          </View>
         </View>
         <Text className='text-xs  color-deepBlue font-raleway'>{shortenedContent}</Text>
+
         <View
           className={`flex-row mt-2 self-end items-between  w-full   ${
             authorView ? 'justify-between' : 'justify-end'
           }`}
         >
-          <Text className='font-bold  text-xs  color-grey font-raleway'>{date}</Text>
           <View className='flex flex-row s'>
             {authorView && (
               <Badge
@@ -88,23 +91,19 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
             {video && (
               <>
                 <MaterialCommunityIcons name='play-circle' color='#87BC23' size={18} />
-                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
-                  Vidéo
-                </Text>
+                <Text className='text-xs  color-deepBlue font-ralewayBold  mr-1'>Vidéo</Text>
               </>
             )}
             {likes > 0 && (
               <View className='ml-4 flex flex-row'>
                 <MaterialCommunityIcons name='hand-clap' color='#87BC23' size={16} />
-                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-2'>
-                  {likes}
-                </Text>
+                <Text className='text-xs  color-deepBlue font-ralewayBold mr-2'>{likes}</Text>
               </View>
             )}
             {comments.length > 0 && (
               <>
                 <MaterialCommunityIcons name='chat' color='#87BC23' size={18} />
-                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
+                <Text className='text-xs  color-deepBlue font-ralewayBold  mr-1'>
                   {comments.length}
                 </Text>
               </>
