@@ -7,7 +7,7 @@ import {
   BellAlertIcon,
   MapPinIcon,
   ArrowRightOnRectangleIcon,
-  CameraIcon,
+  PencilSquareIcon,
 } from 'react-native-heroicons/solid'
 
 import { useNavigation, useIsFocused } from '@react-navigation/native'
@@ -46,7 +46,7 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
     }
     isTokenExisting()
     // setIsLoggedIn(checkedToken)
-  }, [isFocused])
+  }, [isFocused, userDataInApollo.firstName])
 
   if (!userToken) {
     return <SignInScreen />
@@ -54,87 +54,64 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
     return (
       <SafeAreaView className='flex-1  bg-white '>
         {userDataInApollo.status === 'dev' && <DevController />}
-        <View className='flex-row-reverse'>
-          <Image
-            className='w-40 h-40 rounded-full mt-20'
-            source={{
-              uri: userDataInApollo.avatar,
-            }}
-          />
-          <TouchableOpacity className='absolute mt-52'>
-            <CameraIcon size={40} color={'#87BC23'} />
-          </TouchableOpacity>
-        </View>
-        <Text className='text-center font-bold text-xl mt-5 text-gray-600'>
-          {`${userDataInApollo.firstName} ${userDataInApollo.lastName}`}
-        </Text>
-        {userDataInApollo.status === 'crew' && (
-          <Text className='text-center ' selectionColor='#0C617D'>
-            Compagnon de la Méditerranée
-          </Text>
-        )}
-        {userDataInApollo.status === 'admin' && (
-          <Text className='text-center ' selectionColor='#0C617D'>
-            Administrateur
-          </Text>
-        )}
+        <ScrollView className='mx-3' horizontal={false} showsVerticalScrollIndicator={false}>
+          <View className='flex flex-col items-center'>
+            <Image
+              className='w-40 h-40 rounded-full mt-16'
+              source={{
+                uri: userDataInApollo.avatar,
+              }}
+            />
 
-        {userDataInApollo.status === 'dev' && (
-          <Text className='text-center ' selectionColor='#0C617D'>
-            Développeur 💻
-          </Text>
-        )}
-        <TouchableOpacity>
-          <Text style={styles.colorBlue} className='text-center font-bold text-xl mt-5 '>
-            12
-          </Text>
-          <Text style={styles.colorBlue}>Publications</Text>
-        </TouchableOpacity>
-        <ScrollView>
-          <View className='flex-row mt-10'>
-            <TouchableOpacity className='items-center space-y-5 rounded-lg shadow-md  p-10 '>
+            <Text className='text-center font-ralewayBold text-xl mt-5 text-deepBlue'>
+              {`${userDataInApollo.firstName} ${userDataInApollo.lastName}`}
+            </Text>
+            {userDataInApollo.status === 'crew' && (
+              <Text className='text-center font-ralewayBold text-clearBlue'>
+                Compagnon de la Méditerranée
+              </Text>
+            )}
+            {userDataInApollo.status === 'admin' && (
+              <Text className='text-center font-ralewayBold text-clearBlue'>Administrateur</Text>
+            )}
+
+            {userDataInApollo.status === 'dev' && (
+              <Text className='text-center font-ralewayBold text-clearBlue'>Développeur 💻</Text>
+            )}
+          </View>
+
+          <View className='flex-row justify-around rounded-lg mt-10 mb-10'>
+            <TouchableOpacity className='items-center space-y-4 p-4'>
               <UserIcon size={30} color={'#0C617D'} />
-              <Text style={styles.colorBlue}>Éditez votre profil</Text>
+              <Text className='text-center font-ralewayBold text-mainBlue'>Mon profil public</Text>
             </TouchableOpacity>
-            <TouchableOpacity className='items-center space-y-5 rounded-lg shadow-md  p-10'>
-              <MicrophoneIcon size={30} color={'#0C617D'} />
-              <Text style={styles.colorBlue}>Enregistrer votre bio vocale !</Text>
+            <TouchableOpacity className='items-center space-y-4 p-4  '>
+              <PencilSquareIcon size={30} color={'#0C617D'} />
+              <Text className='text-center font-ralewayBold text-mainBlue'>Éditer mon profil</Text>
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity className='flex-row items-center space-x-40 shadow-md rounded-lg  p-5'>
+          <TouchableOpacity className='flex-row items-center justify-between space-x-40 mt-5  rounded-lg shadow-md  p-2 mb-5 '>
             <View className='flex-row items-center'>
-              <ListBulletIcon size={30} color={'grey'} />
-              <Text> Mes activités</Text>
-            </View>
-            <ChevronRightIcon size={20} color={'grey'} style={styles.paddingLeft3} />
-          </TouchableOpacity>
-
-          <TouchableOpacity className='flex-row items-center space-x-40 mt-5 rounded-lg shadow-md  p-5'>
-            <View className='flex-row items-center'>
-              <BellAlertIcon size={30} color={'grey'} />
-              <Text> Notifications</Text>
-            </View>
-            <ChevronRightIcon size={20} color={'grey'} style={styles.paddingLeft5} />
-          </TouchableOpacity>
-
-          <TouchableOpacity className='flex-row items-center space-x-40 mt-5 rounded-lg shadow-md  p-5'>
-            <View className='flex-row items-center'>
-              <MapPinIcon size={30} color={'grey'} />
-              <Text> Ma localisation</Text>
+              <ListBulletIcon size={30} color={'#0C617D'} />
+              <Text className='text-center font-ralewayBold ml-3 text-mainBlue'>
+                Mes publications
+              </Text>
             </View>
             <ChevronRightIcon size={20} color={'grey'} />
           </TouchableOpacity>
 
           <TouchableOpacity
-            className='flex-row items-center space-x-40 mt-5 rounded-lg shadow-md  p-5 mb-5'
+            className='flex-row items-center space-x-40 mt-5 justify-between shadow-md  p-2 mb-5  '
             onPress={() => emptySecureStore()}
           >
-            <View className='flex-row items-center'>
+            <View className='flex-row items-center '>
               <ArrowRightOnRectangleIcon size={30} color={'red'} />
-              <Text className='text-red-600'> Déconnexion</Text>
+              <Text className='text-center font-ralewayBold  ml-3' style={{ color: 'red' }}>
+                Déconnexion
+              </Text>
             </View>
-            <ChevronRightIcon size={20} color={'grey'} style={styles.paddingLeft5} />
+            <ChevronRightIcon size={20} color={'red'} />
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
