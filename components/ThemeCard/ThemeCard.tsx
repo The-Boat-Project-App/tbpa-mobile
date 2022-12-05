@@ -33,7 +33,7 @@ const ThemesCard: React.FunctionComponent<ThemesCardProps> = ({ themeName }) => 
       shadow='5'
       bg='white'
       p='2'
-      mr={3}
+      mr={5}
     >
       <ImageBackground
         className='h-32 w-32 rounded'

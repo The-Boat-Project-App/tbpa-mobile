@@ -22,7 +22,7 @@ const SeeAll: React.FunctionComponent<SeeAllProps> = ({ target }) => {
         {target === 'Crew' && 'Les Compagnons de la Méditerranée'}
         {target === 'AllPosts' && 'Journal de bord'}
         {target === 'AllNews' && 'Actualités du projet'}
-        {target === 'AllThemes' && 'Thèmes & routes maritimes'}
+        {target === 'AllThemes' && 'Routes maritimes'}
       </Text>
       <ChevronRightIcon size='30' color='#272E67' />
     </Pressable>

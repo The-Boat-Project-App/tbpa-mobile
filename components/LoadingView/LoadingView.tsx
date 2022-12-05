@@ -10,7 +10,7 @@ const LoadingView: React.FunctionComponent<LoadingViewProps> = () => {
   return (
     <View className='flex-1 items-center justify-center bg-white'>
       <LottieView
-        style={{ width: width * 0.13 }}
+        style={{ width: width * 0.11 }}
         source={require('../../assets/animations/faster_loader.json')}
         autoPlay
         loop

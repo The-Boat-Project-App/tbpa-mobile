@@ -94,7 +94,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
     <SafeAreaView className='flex-1 bg-white' edges={['top', 'left', 'right']}>
       <HomeHeader isScrolled={isScrolled} />
       <ScrollView
-        shorwsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -161,7 +161,23 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
               })}
           </View>
           <SeeAll target='AllThemes' />
-          <ThemesDisplay />
+          {/* <ThemesDisplay /> */}
+          <TouchableOpacity
+            className='flex flex-row justify-center mx-3 mb-3'
+            onPress={() => navigation.navigate('AllThemes')}
+          >
+            <Image
+              className='rounded-md '
+              source={require('../../assets/images/project_map.png')}
+              style={{
+                height: width * 0.35,
+                width: '100%',
+                resizeMode: 'cover',
+                margin: 0,
+                backgroundColor: 'white',
+              }}
+            />
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
