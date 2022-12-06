@@ -59,12 +59,12 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
             latitude: boatLocationInApollo.latitude,
             longitude: boatLocationInApollo.longitude,
           }}
-          title='Emplacement actuel du bateau :'
-          description={`${boatLocationInApollo.name}  ${boatLocationInApollo.latitude} ${boatLocationInApollo.longitude}`}
+          title='Emplacement actuel du bateau'
+          description={`${boatLocationInApollo.name} - Latitude: ${boatLocationInApollo.latitude}  Longitude : ${boatLocationInApollo.longitude}`}
           image={require('../../assets/icons/sailboat.png')} //uses relative file path.
           style={{ width: 26, height: 28 }}
-        >
-          <Callout>
+        />
+        {/* <Callout>
             <View className=' m-4 h-180'>
               <Text className='flex items-center justify-center font-raleway text-deepBlue'>
                 <Image
@@ -87,8 +87,7 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
                 {`Longitude : ${boatLocationInApollo.longitude}`} {'\n'}
               </Text>
             </View>
-          </Callout>
-        </Marker>
+          </Callout> */}
 
         {partnersData?.PartnersList.map((partnerItem, index) => {
           return (
