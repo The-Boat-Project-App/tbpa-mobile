@@ -62,6 +62,7 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
           title='Emplacement actuel du bateau :'
           description={`${boatLocationInApollo.name}  ${boatLocationInApollo.latitude} ${boatLocationInApollo.longitude}`}
           image={require('../../assets/icons/sailboat.png')} //uses relative file path.
+          style={{ width: 26, height: 28 }}
         >
           <Callout>
             <View className=' m-4 h-180'>
