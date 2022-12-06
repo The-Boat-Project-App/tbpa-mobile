@@ -10,8 +10,11 @@ const InitialLoader: React.FunctionComponent<InitialLoaderProps> = () => {
       source={require('../../assets/onboarding/onboarding.png')}
       style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}
     >
-      <View className='p-20 flex justify-center items-center'>
-        <Spinner className='' size='lg' color='white' />
+      <View
+        className='mb-10 p-2 flex flex-col justify-center items-center'
+        style={{ opacity: 0.65, backgroundColor: 'white', borderRadius: '50%' }}
+      >
+        <Spinner className='' size='lg' color='#0C617D' />
       </View>
     </ImageBackground>
   )

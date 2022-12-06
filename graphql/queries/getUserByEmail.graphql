@@ -1,0 +1,16 @@
+query getUsersByEmail($email: String!) {
+  userEmail(email: $email) {
+    firstName
+    lastName
+    email
+    avatar
+    audio
+    bio
+    lang
+    status
+    country
+    createdAt
+    lastLogin
+    city
+  }
+}

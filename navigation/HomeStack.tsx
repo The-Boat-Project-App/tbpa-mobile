@@ -7,6 +7,8 @@ import { getAccessToken } from '../accessToken'
 import SignUpScreen from '@screens/SignUpScreen/SignUpScreen'
 import SignInScreen from '@screens/SignInScreen/SignInScreen'
 import UserScreen from '@screens/UserScreen/UserScreen'
+import MyUserScreen from '@screens/MyUserScreen/MyUserScreen'
+
 import PostScreen from '@screens/PostScreen/PostScreen'
 import PreviewPostScreen from '@screens/PreviewPostScreen/PreviewPostScreen'
 import NewsScreen from '@screens/NewsScreen/NewsScreen'
@@ -139,6 +141,14 @@ const HomeStackNavigator = () => {
         <HomeStack.Screen
           name='User'
           component={UserScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <HomeStack.Screen
+          name='MyUser'
+          component={MyUserScreen}
           options={{
             animationTypeForReplace: 'push',
             animation: 'slide_from_right',

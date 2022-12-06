@@ -40,6 +40,7 @@ interface HomeScreenProps {}
 const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [isScrolled, setIsScrolled] = useState<boolean>(false)
+  const [isInitialLoaderVisible, setIsInitialLoaderVisible] = useState<boolean>(true)
   const { height, width } = useWindowDimensions()
   const [newList, setNewsList] = useState([])
   const navigation = useNavigation()
@@ -48,6 +49,11 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   const { data: tripData, refetch: refetchTripData } = useGetTripByIdQuery({
     variables: { id: '63627a16ad3d7a6d9999e8e9' },
   })
+  useEffect(() => {
+    setTimeout(() => {
+      setIsInitialLoaderVisible(false)
+    }, 2500)
+  }, [])
 
   if (tripData) {
     boatLocationVar({
@@ -72,19 +78,20 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
 
   console.log('API_URL in .env', API_URL)
   // console.log('data', data)
-  console.log('tripDatadata', tripData)
+  // console.log('tripDatadata', tripData)
 
   // ! Changement locale Momentjs en global en même temps que la langue ?
   moment.updateLocale('fr', localization)
 
-  if (!data || !postsData || !tripData) {
+  if (!data || !postsData || !tripData || isInitialLoaderVisible) {
     navigation.setOptions({
       tabBarStyle: { display: 'none' },
     })
+
     return <InitialLoader />
   }
 
-  if (data && postsData && tripData) {
+  if (data && postsData && tripData && !isInitialLoaderVisible) {
     navigation.setOptions({
       tabBarStyle: { display: 'flex' },
     })

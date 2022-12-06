@@ -71,7 +71,7 @@ const Slide = ({ item }) => {
           backgroundColor: 'white',
         }}
       />
-      <View className='mt-10'>
+      <View className='mt-10  items-center'>
         <Text className='font-ralewayBold' style={styles.title}>
           {item?.title}
         </Text>
@@ -170,9 +170,8 @@ const OnboardingScreen: React.FunctionComponent<OnboardingScreenProps> = (props)
                 onPress={skip}
               >
                 <Text
-                  className='font-raleway'
+                  className='font-ralewayBold'
                   style={{
-                    fontWeight: 'bold',
                     fontSize: 15,
                     color: '#139DB8',
                   }}

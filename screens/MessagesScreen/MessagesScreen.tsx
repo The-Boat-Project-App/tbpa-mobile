@@ -133,8 +133,6 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   }
 
   const pickImage = async () => {
-    setIsOpen(true)
-
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -143,8 +141,11 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
     })
 
     if (result.cancelled) {
+      setIsOpen(false)
     }
     if (!result.cancelled) {
+      setIsOpen(true)
+
       const data = new FormData()
       const source = {
         uri: result.uri,

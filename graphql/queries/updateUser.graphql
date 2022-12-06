@@ -1,0 +1,8 @@
+mutation updateUserData($UsersUpdateInput: UsersInput!) {
+  userUpdate(UsersUpdateInput: $UsersUpdateInput) {
+    firstName
+    lastName
+    avatar
+    password
+  }
+}

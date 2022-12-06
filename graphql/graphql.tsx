@@ -91,6 +91,7 @@ export type Mutation = {
   updateNotes: Notes;
   updatePost: Posts;
   updateTrip: Trip;
+  userUpdate: Users;
 };
 
 
@@ -171,6 +172,11 @@ export type MutationUpdateNotesArgs = {
 
 export type MutationUpdatePostArgs = {
   newPostsInput: PostsInput;
+};
+
+
+export type MutationUserUpdateArgs = {
+  UsersUpdateInput: UsersInput;
 };
 
 /** The News Model */
@@ -295,6 +301,7 @@ export type Query = {
   /** Get List of Notes */
   notesList: Array<Notes>;
   user: Users;
+  userEmail: Users;
   /** Get List of Users */
   usersList: Array<Users>;
 };
@@ -332,6 +339,11 @@ export type QueryNotesArgs = {
 
 export type QueryUserArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryUserEmailArgs = {
+  email: Scalars['String'];
 };
 
 export type RegisterResponse = {
@@ -572,6 +584,13 @@ export type GetTripByIdQueryVariables = Exact<{
 
 export type GetTripByIdQuery = { __typename?: 'Query', Trip: { __typename?: 'Trip', id: string, start_date?: any | null, locations: Array<{ __typename?: 'LocationObject', name: string, latitude: number, longitude: number, date: any }> } };
 
+export type GetUsersByEmailQueryVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type GetUsersByEmailQuery = { __typename?: 'Query', userEmail: { __typename?: 'Users', firstName: string, lastName: string, email?: string | null, avatar?: string | null, audio?: string | null, bio?: string | null, lang: Array<string>, status?: string | null, country?: string | null, createdAt: any, lastLogin: any, city?: string | null } };
+
 export type GetUsersByIdQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -629,6 +648,13 @@ export type UpdatePostMutationVariables = Exact<{
 
 
 export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'Posts', id: string } };
+
+export type UpdateUserDataMutationVariables = Exact<{
+  UsersUpdateInput: UsersInput;
+}>;
+
+
+export type UpdateUserDataMutation = { __typename?: 'Mutation', userUpdate: { __typename?: 'Users', firstName: string, lastName: string, avatar?: string | null, password?: string | null } };
 
 
 export const AddLikesDocument = gql`
@@ -1455,6 +1481,52 @@ export function useGetTripByIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type GetTripByIdQueryHookResult = ReturnType<typeof useGetTripByIdQuery>;
 export type GetTripByIdLazyQueryHookResult = ReturnType<typeof useGetTripByIdLazyQuery>;
 export type GetTripByIdQueryResult = Apollo.QueryResult<GetTripByIdQuery, GetTripByIdQueryVariables>;
+export const GetUsersByEmailDocument = gql`
+    query getUsersByEmail($email: String!) {
+  userEmail(email: $email) {
+    firstName
+    lastName
+    email
+    avatar
+    audio
+    bio
+    lang
+    status
+    country
+    createdAt
+    lastLogin
+    city
+  }
+}
+    `;
+
+/**
+ * __useGetUsersByEmailQuery__
+ *
+ * To run a query within a React component, call `useGetUsersByEmailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersByEmailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersByEmailQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useGetUsersByEmailQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetUsersByEmailQuery, GetUsersByEmailQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<GetUsersByEmailQuery, GetUsersByEmailQueryVariables>(GetUsersByEmailDocument, options);
+      }
+export function useGetUsersByEmailLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUsersByEmailQuery, GetUsersByEmailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetUsersByEmailQuery, GetUsersByEmailQueryVariables>(GetUsersByEmailDocument, options);
+        }
+export type GetUsersByEmailQueryHookResult = ReturnType<typeof useGetUsersByEmailQuery>;
+export type GetUsersByEmailLazyQueryHookResult = ReturnType<typeof useGetUsersByEmailLazyQuery>;
+export type GetUsersByEmailQueryResult = Apollo.QueryResult<GetUsersByEmailQuery, GetUsersByEmailQueryVariables>;
 export const GetUsersByIdDocument = gql`
     query getUsersById($id: String!) {
   user(id: $id) {
@@ -1827,3 +1899,39 @@ export function useUpdatePostMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
 export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
+export const UpdateUserDataDocument = gql`
+    mutation updateUserData($UsersUpdateInput: UsersInput!) {
+  userUpdate(UsersUpdateInput: $UsersUpdateInput) {
+    firstName
+    lastName
+    avatar
+    password
+  }
+}
+    `;
+export type UpdateUserDataMutationFn = Apollo.MutationFunction<UpdateUserDataMutation, UpdateUserDataMutationVariables>;
+
+/**
+ * __useUpdateUserDataMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserDataMutation, { data, loading, error }] = useUpdateUserDataMutation({
+ *   variables: {
+ *      UsersUpdateInput: // value for 'UsersUpdateInput'
+ *   },
+ * });
+ */
+export function useUpdateUserDataMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateUserDataMutation, UpdateUserDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useMutation<UpdateUserDataMutation, UpdateUserDataMutationVariables>(UpdateUserDataDocument, options);
+      }
+export type UpdateUserDataMutationHookResult = ReturnType<typeof useUpdateUserDataMutation>;
+export type UpdateUserDataMutationResult = Apollo.MutationResult<UpdateUserDataMutation>;
+export type UpdateUserDataMutationOptions = Apollo.BaseMutationOptions<UpdateUserDataMutation, UpdateUserDataMutationVariables>;
