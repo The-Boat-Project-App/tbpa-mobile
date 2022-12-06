@@ -86,6 +86,7 @@ const SignUpScreen: React.FunctionComponent<SignUpScreenProps> = ({}) => {
     }
     return false
   }
+  //
   const signUp = async () => {
     if (validateEmail(email) && validatePassword(password)) {
       setIsLoading(true)
