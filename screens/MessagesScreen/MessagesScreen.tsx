@@ -25,6 +25,7 @@ import { useIsFocused } from '@react-navigation/native'
 interface MessagesScreenProps {}
 
 const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => {
+  const [keyboardVisible, setKeyboardVisible] = useState(false)
   const navigation = useNavigation()
 
   const inputRef = useRef()
@@ -37,7 +38,19 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
   const chatFlatListRef = useRef<FlatList<any>>()
   const userDataInApollo = useReactiveVar(userDataVar)
   const isFocused = useIsFocused()
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true) // or some other action
+    })
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false) // or some other action
+    })
 
+    return () => {
+      keyboardDidHideListener.remove()
+      keyboardDidShowListener.remove()
+    }
+  }, [])
   const [message, setMessage] = useState<string>('')
   const [sendMessage] = useCreateMessagesMutation()
   const { data: messagesData, refetch: refetchMessagesData } = useGetAllMessagesQuery()
@@ -329,12 +342,17 @@ const MessagesScreen: React.FunctionComponent<MessagesScreenProps> = (props) => 
           })}
         </View> */}
       <KeyboardAvoidingView
-        className='px-3 py-1 flex flex-row justify-between  border-white bg-lightBlue'
+        className='px-3 py-2 flex flex-row justify-between items-around  bg-lightBlue'
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={keyboardVisible ? 0 : 90}
       >
         <Input
           placeholder='Message'
-          style={{ color: '#0991b2', fontWeight: 'bold', backgroundColor: 'white' }}
+          style={{
+            color: '#0991b2',
+            fontWeight: 'bold',
+            backgroundColor: 'white',
+          }}
           w='65%'
           size='lg'
           onChangeText={(msg) => setMessage(msg)}
