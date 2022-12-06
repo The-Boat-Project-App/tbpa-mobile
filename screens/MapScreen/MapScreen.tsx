@@ -48,8 +48,8 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
         initialRegion={{
           latitude: boatLocationInApollo.latitude,
           longitude: boatLocationInApollo.longitude,
-          latitudeDelta: 8,
-          longitudeDelta: 8,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
         }}
         style={styles.map}
         onMapReady={() => onMapReady()}
@@ -62,7 +62,6 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
           title='Emplacement actuel du bateau'
           description={`${boatLocationInApollo.name} - Latitude: ${boatLocationInApollo.latitude}  Longitude : ${boatLocationInApollo.longitude}`}
           image={require('../../assets/icons/sailboat.png')} //uses relative file path.
-          style={{ width: 26, height: 28 }}
         />
         {/* <Callout>
             <View className=' m-4 h-180'>
