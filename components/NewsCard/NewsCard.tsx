@@ -1,6 +1,6 @@
 import { Image, TouchableOpacity, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-// import FastImage from 'react-native-fast-image'
+import FastImage from 'react-native-fast-image'
 
 interface NewsCard {
   id: string
@@ -32,7 +32,7 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
       className='w-32 p-0 ml-3'
       onPress={() => navigation.navigate('News', { newsId: id })}
     >
-      <Image
+      <FastImage
         className='rounded-md w-full h-24'
         source={{
           uri: picture,

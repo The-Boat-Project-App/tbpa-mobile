@@ -21,6 +21,7 @@ import moment from 'moment'
 import localization from 'moment/locale/fr'
 import LoadingView from '@components/LoadingView/LoadingView'
 import { Modal } from 'native-base'
+import FastImage from 'react-native-fast-image'
 
 interface NewsScreenProps {}
 
@@ -89,7 +90,7 @@ const NewsScreen: React.FunctionComponent<NewsScreenProps> = (props) => {
               console.log('clic detecté')
             }}
           >
-            <Image
+            <FastImage
               className='h-60 rounded-md '
               source={{
                 uri: data?.News.mainPicture,

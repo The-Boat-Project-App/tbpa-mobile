@@ -1,5 +1,6 @@
 import { View, Image, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import FastImage from 'react-native-fast-image'
 
 interface CustomAvatarSmall {
   avatarPicture: string
@@ -23,7 +24,7 @@ export const CustomAvatarSmall: React.FunctionComponent<CustomAvatarSmallProps> 
         !noLink && navigation.navigate('User', { userId: userId })
       }}
     >
-      <Image
+      <FastImage
         source={{
           uri: avatarPicture,
         }}
