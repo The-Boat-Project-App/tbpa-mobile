@@ -4,5 +4,8 @@ mutation updateUserData($UsersUpdateInput: UsersInput!) {
     lastName
     avatar
     password
+    bio
+    city
+    country
   }
 }

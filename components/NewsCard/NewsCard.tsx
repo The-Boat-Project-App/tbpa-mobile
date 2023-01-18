@@ -19,14 +19,14 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
   intro,
 }) => {
   //* Regex to shorten text content
-  console.log(intro)
+  // console.log(intro)
   let shortenedContent = intro.replace(/^(.{80}[^\s]*).*/, '$1')
   if (shortenedContent.length > 80) {
     shortenedContent += ' ...'
   }
   const navigation = useNavigation()
-  console.log('tessst')
-  console.log('id dans newscard ', id)
+  // console.log('tessst')
+  // console.log('id dans newscard ', id)
   return (
     <TouchableOpacity
       className='w-32 p-0 ml-3'

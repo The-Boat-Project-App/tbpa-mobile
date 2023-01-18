@@ -6,6 +6,7 @@ import {
   ImageBackground,
   useWindowDimensions,
 } from 'react-native'
+
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Badge } from 'native-base'
@@ -43,7 +44,7 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
   video,
   date,
 }) => {
-  console.log('validated in PostCard', validated)
+  // console.log('validated in PostCard', validated)
   //* Regex to shorten text content
   const shortenedContent = intro.replace(/^(.{120}[^\s]*).*/, '$1') + ' ...'
   const navigation = useNavigation()
@@ -52,7 +53,7 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
   return (
     <TouchableOpacity
       className={`flex-row bg-lightBlue p-2 rounded-md `}
-      onPress={() => navigation.navigate('Post', { postId: id })}
+      onPress={() => navigation.navigate('Post', { postId: id, key: id })}
     >
       <View className='w-2/5 justify-center'>
         <Image

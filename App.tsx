@@ -31,7 +31,7 @@ export default function App() {
   })
   // Initialize Apollo Client
   const httpLink = createHttpLink({
-    uri: `${process.env.API_URL}/graphql`,
+    uri: `https://tbpa-backend.herokuapp.com/graphql`,
   })
   const link = split(
     ({ query }) => {

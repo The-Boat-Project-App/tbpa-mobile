@@ -38,7 +38,7 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
   const isFocused = useIsFocused()
 
   const userDataInApollo = useReactiveVar(userDataVar)
-  console.log('userdateinapollo', userDataInApollo)
+  console.log('userdateinapollo in UserPostScreen', userDataInApollo)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const navigation = useNavigation()
@@ -57,8 +57,8 @@ const UserPostsScreen: React.FunctionComponent<UserPostsScreenProps> = (props) =
       refetchSubmittedPostsData(), setRefreshing(false)
     })
   }, [])
-  console.log('🍭submittedPostsData', submittedPostsData)
-  console.log('🍭draftPostsData', draftPostsData)
+  // console.log('🍭submittedPostsData', submittedPostsData)
+  // console.log('🍭draftPostsData', draftPostsData)
 
   useEffect(() => {
     isFocused && setIsOpen(userDataInApollo.firstName ? false : true)

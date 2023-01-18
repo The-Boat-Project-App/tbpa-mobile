@@ -5,12 +5,12 @@ import { useReactiveVar } from '@apollo/client'
 import { boatLocationVar } from '../../variables/boatLocation'
 import { useGetAllPartnersQuery } from '../../graphql/graphql'
 import LoadingView from '@components/LoadingView/LoadingView'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 
 interface MapScreenProps {}
 
 const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
-  const navigation = useNavigation()
+  const isFocused = useIsFocused()
 
   // const size = useWindowDimensions()
   // const { width, height } = size
@@ -44,26 +44,27 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
   }
   return (
     <View style={styles.container}>
-      <MapView
-        initialRegion={{
-          latitude: boatLocationInApollo.latitude,
-          longitude: boatLocationInApollo.longitude,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02,
-        }}
-        style={styles.map}
-        onMapReady={() => onMapReady()}
-      >
-        <Marker
-          coordinate={{
+      {isFocused && (
+        <MapView
+          initialRegion={{
             latitude: boatLocationInApollo.latitude,
             longitude: boatLocationInApollo.longitude,
+            latitudeDelta: 1,
+            longitudeDelta: 1,
           }}
-          title='Emplacement actuel du bateau'
-          description={`${boatLocationInApollo.name} - Latitude: ${boatLocationInApollo.latitude}  Longitude : ${boatLocationInApollo.longitude}`}
-          image={require('../../assets/icons/sailboat.png')} //uses relative file path.
-        />
-        {/* <Callout>
+          style={styles.map}
+          onMapReady={() => onMapReady()}
+        >
+          <Marker
+            coordinate={{
+              latitude: boatLocationInApollo.latitude,
+              longitude: boatLocationInApollo.longitude,
+            }}
+            title='Emplacement actuel du bateau'
+            description={`${boatLocationInApollo.name} - Latitude: ${boatLocationInApollo.latitude}  Longitude : ${boatLocationInApollo.longitude}`}
+            image={require('../../assets/icons/sailboat.png')} //uses relative file path.
+          />
+          {/* <Callout>
             <View className=' m-4 h-180'>
               <Text className='flex items-center justify-center font-raleway text-deepBlue'>
                 <Image
@@ -88,21 +89,21 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
             </View>
           </Callout> */}
 
-        {partnersData?.PartnersList.map((partnerItem, index) => {
-          return (
-            <Marker
-              key={index}
-              pinColor={'#0C617D'}
-              title={partnerItem.name.FR}
-              coordinate={{
-                latitude: partnerItem.latitude,
-                longitude: partnerItem.longitude,
-              }}
-            >
-              <Callout>
-                <View className=' m-4 h-180'>
-                  <Text className='flex items-center justify-center font-ralewayBold text-deepBlue'>
-                    <Image
+          {partnersData?.PartnersList.map((partnerItem, index) => {
+            return (
+              <Marker
+                key={index}
+                pinColor={'#0C617D'}
+                title={partnerItem.name.FR}
+                coordinate={{
+                  latitude: partnerItem.latitude,
+                  longitude: partnerItem.longitude,
+                }}
+              >
+                <Callout>
+                  <View className=' m-4 h-180'>
+                    <Text className='flex items-center justify-center font-ralewayBold text-deepBlue'>
+                      {/* <Image
                       style={{
                         height: 120,
                         width: 120,
@@ -114,8 +115,8 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
                         height: 80,
                       }}
                       resizeMode='cover'
-                    />
-                    <Image
+                    /> */}
+                      {/* <Image
                       style={{
                         height: 100,
                         width: 100,
@@ -128,17 +129,18 @@ const MapScreen: React.FunctionComponent<MapScreenProps> = ({}) => {
                         height: 150,
                       }}
                       resizeMode='cover'
-                    />
-                    {'\n'}
-                    {`${partnerItem.name.FR}`} {'\n'}
-                    {`${partnerItem.city}, ${partnerItem.country}`} {'\n'}
-                  </Text>
-                </View>
-              </Callout>
-            </Marker>
-          )
-        })}
-      </MapView>
+                    /> */}
+                      {'\n'}
+                      {`${partnerItem.name.FR}`} {'\n'}
+                      {`${partnerItem.city}, ${partnerItem.country}`} {'\n'}
+                    </Text>
+                  </View>
+                </Callout>
+              </Marker>
+            )
+          })}
+        </MapView>
+      )}
     </View>
   )
 }

@@ -30,7 +30,7 @@ const CrewCarousel: React.FunctionComponent<CrewCarouselProps> = ({ users }) => 
   const crewData = users.filter((e) => {
     return e.status == 'crew'
   })
-  console.log('crew', crewData)
+  // console.log('crew', crewData)
   return (
     <View
       style={{

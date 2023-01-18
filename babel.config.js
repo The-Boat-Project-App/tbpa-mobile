@@ -15,6 +15,12 @@ module.exports = function (api) {
       ],
       'nativewind/babel',
       [
+        'inline-dotenv',
+        {
+          systemVar: 'all',
+        },
+      ],
+      [
         'module:react-native-dotenv',
         {
           moduleName: 'react-native-dotenv',

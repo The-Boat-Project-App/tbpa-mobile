@@ -77,7 +77,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   // copy youtube Link from clipboard
   const fetchCopiedText = async () => {
     const text = await Clipboard.getStringAsync()
-    console.log('dans le presse papier', text)
+    // console.log('dans le presse papier', text)
     youtubeParser(text)
     setVideo(text)
   }
@@ -89,7 +89,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
 
   const youtubeParser = (url: string) => {
     const match = url.match(youtubeRegex)
-    console.log('match', match)
+    // console.log('match', match)
     if (match) {
       const videoId = match[0].substr(match[0].length - 11)
       console.log('videoId', videoId)
@@ -113,7 +113,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
       setImage(result.uri)
     }
   }
-  console.log('deschtml', descHTML)
+  // console.log('deschtml', descHTML)
 
   const addImageInRichText = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -121,7 +121,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
       allowsEditing: true,
       quality: 0.2,
     }).then((image) => {
-      console.log('image', image)
+      // console.log('image', image)
       if (image.cancelled) {
         return
       }
@@ -214,13 +214,13 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1, justifyContent: 'space-between' }}
           >
-            <Text className={` text-center text-xl  color-deepBlue font-ralewayBold `}>
+            <Text className={` text-center text-lg  color-deepBlue font-ralewayBold `}>
               Créez votre publication
             </Text>
             {/* <Text className='text-xl color-deepBlue font-ralewayBold  mt-4 ml-3 mb-2 text-center'>
             Proposer une publication
           </Text> */}
-            <View className='mb-2 mt-2 flex flex-col justify-end items-end '>
+            <View className='mb-1 mt-1 flex flex-col justify-end items-end '>
               <Input
                 size='lg'
                 style={{ color: '#0991b2', fontWeight: 'bold', backgroundColor: 'white' }}
@@ -261,7 +261,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
             </View>
             <View className='flex items-center bg-lightBlue p-2 rounded-md'>
               <Text
-                className={` text-center text-lg  color-deepBlue font-ralewayBold ml-3 mb-3  ${
+                className={` text-center text-md  color-deepBlue font-ralewayBold ml-3 mb-3  ${
                   Platform.OS === 'ios' ? 'mt-1' : 'mt-1'
                 }`}
               >
@@ -306,7 +306,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
             </View>
             <View className='flex items-center bg-lightBlue p-1 rounded-md'>
               <Text
-                className={` text-center text-lg  color-deepBlue font-ralewayBold ml-3 mb-2  ${
+                className={` text-center text-md  color-deepBlue font-ralewayBold ml-3 mb-2  ${
                   Platform.OS === 'ios' ? 'mt-1' : 'mt-1'
                 }`}
               >
@@ -324,7 +324,7 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
                   onPress={() => pickVideo()}
                 />
               ) : (
-                <View className='flex flex-row justify-center items-center bg-lightBlue p-2 rounded-md'>
+                <View className='flex flex-row justify-center items-center bg-lightBlue p-0 rounded-md'>
                   <View className='flex flex-row justify-center items-center bg-white p-1 rounded-md'>
                     <YoutubePlayer
                       height={width * 0.28}
@@ -454,127 +454,131 @@ const AddPostScreen: React.FunctionComponent<AddPostScreenProps> = ({}) => {
   } else if (formProgress == 2) {
     return (
       <SafeAreaView
-        className={`flex-1 justify-around bg-white ${
+        className={`flex-1 justify-around  ${
           Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 mt-10'
         }  `}
         edges={['top', 'left', 'right']}
       >
-        <View className='mt-2'>
-          <TouchableOpacity
-            onPress={() => setFormProgress(1)}
-            className='mx-3 flex flex-row  justify-between items-center'
-          >
-            <ArrowLeftCircleIconOutline size='42' color='#0C617D' />
-
-            <Button
-              isLoadingText='Chargement...'
-              onPress={() => {
-                Keyboard.dismiss()
-                submitContentHandle()
-              }}
+        <ScrollView className='flex-1'>
+          <View className='mt-2 '>
+            <TouchableOpacity
+              onPress={() => setFormProgress(1)}
+              className='mx-3 flex flex-row  justify-between items-center'
             >
-              <Text className='color-white font-ralewayBold'>Prévisualiser</Text>
-            </Button>
-          </TouchableOpacity>
-        </View>
-        <View className='flex flex-row bg-lightBlue p-2 mx-3 rounded-md mt-3'>
-          <TouchableOpacity onPress={pickImage}>
-            <Image
-              className='rounded-md'
-              width='150'
-              alt='uploaded image'
-              height='100'
-              resizeMode='cover'
-              source={{
-                uri: image,
+              <ArrowLeftCircleIconOutline size='42' color='#0C617D' />
+
+              <Button
+                isLoadingText='Chargement...'
+                onPress={() => {
+                  Keyboard.dismiss()
+                  submitContentHandle()
+                }}
+              >
+                <Text className='color-white font-ralewayBold'>Prévisualiser</Text>
+              </Button>
+            </TouchableOpacity>
+          </View>
+          <View className='flex flex-row bg-lightBlue p-2 mx-3 rounded-md mt-3'>
+            <TouchableOpacity onPress={pickImage}>
+              <Image
+                className='rounded-md'
+                width='150'
+                alt='uploaded image'
+                height='100'
+                resizeMode='cover'
+                source={{
+                  uri: image,
+                }}
+              />
+            </TouchableOpacity>
+            <View className='ml-2' style={{ width: width / 2.05 }}>
+              <Text className='color-deepBlue font-ralewayBold '>{title}</Text>
+              <Text className='text-xs  color-grey font-raleway text-justify '>{intro}</Text>
+            </View>
+          </View>
+          <View className='mx-3 mt-2'>
+            <RichToolbar
+              style={styles.richTextToolbarStyle}
+              onPressAddImage={() => {
+                addImageInRichText()
+              }}
+              editor={richText}
+              actions={[
+                actions.undo,
+                actions.redo,
+                actions.insertImage,
+                actions.setBold,
+                actions.setItalic,
+                actions.setUnderline,
+                actions.heading1,
+                actions.insertBulletsList,
+                actions.insertLink,
+                actions.keyboard,
+              ]}
+              iconMap={{
+                [actions.undo]: ({ tintColor }) => (
+                  <ArrowUturnLeftIcon size='16' color={tintColor} />
+                ),
+                [actions.redo]: ({ tintColor }) => (
+                  <ArrowUturnRightIcon size='16' color={tintColor} />
+                ),
+                [actions.insertImage]: ({ tintColor }) => <PhotoIcon size='16' color={tintColor} />,
+                [actions.heading1]: ({ tintColor }) => (
+                  <Text style={[{ color: tintColor, textAlign: 'center' }]}>Sous-titre</Text>
+                ),
+                [actions.setBold]: ({ tintColor }) => (
+                  <Text style={[{ color: tintColor, fontWeight: 'bold' }]}>B</Text>
+                ),
+                [actions.setItalic]: ({ tintColor }) => (
+                  <Text style={[{ color: tintColor, fontStyle: 'italic' }]}>i</Text>
+                ),
+                [actions.setUnderline]: ({ tintColor }) => (
+                  <Text style={[{ color: tintColor, textDecorationLine: 'underline' }]}>U</Text>
+                ),
+                [actions.insertBulletsList]: ({ tintColor }) => (
+                  <ListBulletIcon size='16' color={tintColor} />
+                ),
+                [actions.insertLink]: ({ tintColor }) => <LinkIcon size='16' color={tintColor} />,
               }}
             />
-          </TouchableOpacity>
-          <View className='ml-2' style={{ width: width / 2.05 }}>
-            <Text className='color-deepBlue font-ralewayBold '>{title}</Text>
-            <Text className='text-xs  color-grey font-raleway text-justify '>{intro}</Text>
           </View>
-        </View>
-        <View className='mx-3 mt-2'>
-          <RichToolbar
-            style={styles.richTextToolbarStyle}
-            onPressAddImage={() => {
-              addImageInRichText()
+          <ScrollView
+            ref={scrollViewRef}
+            onContentSizeChange={() => {
+              scrollViewRef.current?.scrollToEnd()
             }}
-            editor={richText}
-            actions={[
-              actions.undo,
-              actions.redo,
-              actions.insertImage,
-              actions.setBold,
-              actions.setItalic,
-              actions.setUnderline,
-              actions.heading1,
-              actions.insertBulletsList,
-              actions.insertLink,
-              actions.keyboard,
-            ]}
-            iconMap={{
-              [actions.undo]: ({ tintColor }) => <ArrowUturnLeftIcon size='16' color={tintColor} />,
-              [actions.redo]: ({ tintColor }) => (
-                <ArrowUturnRightIcon size='16' color={tintColor} />
-              ),
-              [actions.insertImage]: ({ tintColor }) => <PhotoIcon size='16' color={tintColor} />,
-              [actions.heading1]: ({ tintColor }) => (
-                <Text style={[{ color: tintColor, textAlign: 'center' }]}>Sous-titre</Text>
-              ),
-              [actions.setBold]: ({ tintColor }) => (
-                <Text style={[{ color: tintColor, fontWeight: 'bold' }]}>B</Text>
-              ),
-              [actions.setItalic]: ({ tintColor }) => (
-                <Text style={[{ color: tintColor, fontStyle: 'italic' }]}>i</Text>
-              ),
-              [actions.setUnderline]: ({ tintColor }) => (
-                <Text style={[{ color: tintColor, textDecorationLine: 'underline' }]}>U</Text>
-              ),
-              [actions.insertBulletsList]: ({ tintColor }) => (
-                <ListBulletIcon size='16' color={tintColor} />
-              ),
-              [actions.insertLink]: ({ tintColor }) => <LinkIcon size='16' color={tintColor} />,
-            }}
-          />
-        </View>
-        <ScrollView
-          ref={scrollViewRef}
-          onContentSizeChange={() => {
-            scrollViewRef.current?.scrollToEnd()
-          }}
-          showsVerticalScrollIndicator={false}
-          className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
-        >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1 }}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 40}
+            showsVerticalScrollIndicator={false}
+            className={`bg-white mx-3 ${Platform.OS === 'ios' ? 'pb-0 ' : 'pb-1 mt-8'}`}
           >
-            <View style={styles.richTextContainer}>
-              <RichEditor
-                ref={richText}
-                onChange={richTextHandle}
-                placeholder='Rédigez votre publication ici ...'
-                androidHardwareAccelerationDisabled={true}
-                initialHeight={300}
-                placeholderTextColor='#272E67'
-                initialContentHTML={descHTML}
-              />
-            </View>
-          </KeyboardAvoidingView>
-          {/* Modal during image upload */}
-          <Modal isOpen={isOpen} safeAreaTop={true}>
-            <Modal.Content maxWidth='350'>
-              <Modal.Body>
-                <Spinner accessibilityLabel='Loading image' />
-                <Text className='text-sm  color-deepBlue font-ralewayBold mt-2  my-2 text-center'>
-                  Envoi de l'image en cours ...
-                </Text>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{ flex: 1 }}
+              keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 40}
+            >
+              <View style={styles.richTextContainer}>
+                <RichEditor
+                  ref={richText}
+                  onChange={richTextHandle}
+                  placeholder='Rédigez votre publication ici ...'
+                  androidHardwareAccelerationDisabled={true}
+                  initialHeight={300}
+                  placeholderTextColor='#272E67'
+                  initialContentHTML={descHTML}
+                />
+              </View>
+            </KeyboardAvoidingView>
+            {/* Modal during image upload */}
+            <Modal isOpen={isOpen} safeAreaTop={true}>
+              <Modal.Content maxWidth='350'>
+                <Modal.Body>
+                  <Spinner accessibilityLabel='Loading image' />
+                  <Text className='text-sm  color-deepBlue font-ralewayBold mt-2  my-2 text-center'>
+                    Envoi de l'image en cours ...
+                  </Text>
+                </Modal.Body>
+              </Modal.Content>
+            </Modal>
+          </ScrollView>
         </ScrollView>
       </SafeAreaView>
     )

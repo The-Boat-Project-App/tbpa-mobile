@@ -5,6 +5,6 @@
   "minify": false,
   "urlRandomness": "45-uxh",
   "https": false,
-  "scheme": "exp+theboatapp",
+  "scheme": "com.matthieudev.mobile",
   "devClient": false
 }

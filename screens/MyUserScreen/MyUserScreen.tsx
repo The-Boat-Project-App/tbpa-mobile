@@ -7,15 +7,20 @@ import {
   Platform,
   ScrollView,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
+import { PencilSquareIcon } from 'react-native-heroicons/outline'
 
 import { useGetUsersByEmailQuery } from '../../graphql/graphql'
 import moment from 'moment'
 import localization from 'moment/locale/fr'
 import LoadingView from '@components/LoadingView/LoadingView'
+import { useNavigation } from '@react-navigation/native'
+import { useReactiveVar } from '@apollo/client'
 
+import { userDataVar } from '../../variables/userData'
 import { HomeModernIcon, ChatBubbleLeftIcon } from 'react-native-heroicons/outline'
 
 interface MyUserScreenProps {}
@@ -26,6 +31,9 @@ const MyUserScreen: React.FunctionComponent<MyUserScreenProps> = (props) => {
   const { data, refetch } = useGetUsersByEmailQuery({
     variables: { email: props.route.params.userEmail },
   })
+
+  const navigation = useNavigation()
+  const userDataInApollo = useReactiveVar(userDataVar)
 
   const [refreshing, setRefreshing] = useState<boolean>(false)
 
@@ -60,7 +68,22 @@ const MyUserScreen: React.FunctionComponent<MyUserScreenProps> = (props) => {
           />
         }
       >
-        <View className=' bg-white flex flex-row mb-4 mt-2 justify-center'>
+        {data?.userEmail.email == userDataInApollo.email && (
+          <View className='ml-4 flex flex-col m-2  self-end'>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('EditProfile', { userEmail: data?.userEmail.email })
+              }
+              className='flex flex-row p-1 bg-lightBlue rounded-md items-center justify-between mb-1'
+            >
+              <PencilSquareIcon size='18' color={'#0C617D'} />
+              <Text className='text-md ml-2 color-deepBlue font-ralewayBold  mr-2'>
+                Éditer mon profil
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        <View className=' bg-white flex flex-row mb-4 mt-2 px-2'>
           {data?.userEmail.firstName && (
             <View className='w-1/2 justify-center '>
               <Text className='text-xl color-deepBlue font-ralewayBold'>
@@ -74,7 +97,7 @@ const MyUserScreen: React.FunctionComponent<MyUserScreenProps> = (props) => {
           )}
 
           <Image
-            className='rounded-full w-40 h-40'
+            className='rounded-full w-32 h-32'
             source={{
               uri: data?.userEmail.avatar,
             }}
@@ -98,7 +121,7 @@ const MyUserScreen: React.FunctionComponent<MyUserScreenProps> = (props) => {
                 if (language === 'EN') {
                   formattedLanguage = 'English'
                 }
-                if (language === 'SP') {
+                if (language === 'ES') {
                   formattedLanguage = 'Español'
                 }
                 if (language === 'AR') {
@@ -120,7 +143,10 @@ const MyUserScreen: React.FunctionComponent<MyUserScreenProps> = (props) => {
           <View className='flex flex-row items-center mb-6'>
             <HomeModernIcon size={24} color='#272E67' />
             <Text className='text-sm color-grey font-raleway ml-1'>
-              Vient de : {`${data?.userEmail.city}, ${data?.userEmail.country}`}
+              Vient de :{' '}
+              {data?.userEmail.city != null && data?.userEmail.country != null
+                ? `${data?.userEmail.city}, ${data?.userEmail.country}`
+                : ''}
             </Text>
           </View>
 
