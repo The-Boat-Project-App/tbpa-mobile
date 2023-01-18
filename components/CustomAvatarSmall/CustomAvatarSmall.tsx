@@ -1,6 +1,6 @@
 import { View, Image, TouchableOpacity } from 'react-native'
+import { useRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import FastImage from 'react-native-fast-image'
 
 interface CustomAvatarSmall {
   avatarPicture: string
@@ -16,15 +16,16 @@ export const CustomAvatarSmall: React.FunctionComponent<CustomAvatarSmallProps> 
   noLink = false,
 }) => {
   const navigation = useNavigation()
+  const key = useRef(null)
 
   return (
     <TouchableOpacity
       className='w-16 h-18 items-center justify-center'
       onPress={() => {
-        !noLink && navigation.navigate('User', { userId: userId })
+        !noLink && navigation.navigate('User', { userId: userId, key: key.current })
       }}
     >
-      <FastImage
+      <Image
         source={{
           uri: avatarPicture,
         }}

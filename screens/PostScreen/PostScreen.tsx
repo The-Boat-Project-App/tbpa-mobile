@@ -28,7 +28,7 @@ import localization from 'moment/locale/fr'
 import LoadingView from '@components/LoadingView/LoadingView'
 import YoutubePlayer from 'react-native-youtube-iframe'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { newPostVar } from '../../variables/newPost'
 import { useReactiveVar } from '@apollo/client'
 
@@ -39,14 +39,15 @@ interface PostScreenProps {}
 const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
   const toast = useToast()
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
   const userDataInApollo = useReactiveVar(userDataVar)
 
   const { data, refetch } = useGetPostsByIdQuery({
     variables: { id: props.route.params.postId },
   })
-  console.log('data du post', data)
+  // console.log('data du post', data)
 
-  console.log('id du post,', props.route.params.postId)
+  // console.log('id du post,', props.route.params.postId)
   const [likes, setLikes] = useState<number>(data?.Posts.likes)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false)
@@ -56,7 +57,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout))
   }
-  console.log('🔥data.Posts', data?.Posts)
+  // console.log('🔥data.Posts', data?.Posts)
 
   const editPost = () => {
     console.log('au clci data.Posts', data?.Posts)
@@ -106,7 +107,7 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
     html: `${data?.Posts.content}`,
   }
 
-  console.log('🧡source', source)
+  // console.log('🧡source', source)
   // Modification du style du rendu HTML
   const tagsStyles = {
     body: {
@@ -126,144 +127,148 @@ const PostScreen: React.FunctionComponent<PostScreenProps> = (props) => {
   return (
     <SafeAreaView className='flex-1 bg-white' edges={['top', 'left', 'right']}>
       <ScreenHeader />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor='#87BC23'
-            colors={['#87BC23', '#139DB8']}
-          />
-        }
-      >
-        <View className='justify-center bg-white'>
-          {data?.Posts.video ? (
-            <View className=''>
-              <YoutubePlayer height={250} play={true} videoId={data?.Posts.video} />
-            </View>
-          ) : (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Picture', { imageUrl: data?.Posts.mainPicture })
-                console.log('clic detecté')
-              }}
-            >
-              <Image
-                className='h-52'
-                source={{
-                  uri: data?.Posts.mainPicture,
-                }}
+      {isFocused ? (
+        <>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor='#87BC23'
+                colors={['#87BC23', '#139DB8']}
               />
-            </TouchableOpacity>
-          )}
-          <View className='flex-row justify-between '>
-            <View
-              className={` ${
-                data?.Posts.video
-                  ? '-mt-1 flex flex-row items-center justify-start '
-                  : 'flex flex-col items-center -mt-8 mx-3'
-              } `}
-            >
-              <CustomAvatar
-                userId={data?.Posts.author.id}
-                isConnected={false}
-                avatarPicture={data?.Posts.author.avatar}
-              />
-              <View>
-                <Text
-                  className={`text-md color-deepBlue font-ralewayBold ${
-                    data?.Posts.video ? '' : 'text-center'
+            }
+          >
+            <View className='justify-center bg-white'>
+              {data?.Posts.video ? (
+                <View className=''>
+                  <YoutubePlayer height={250} play={true} videoId={data?.Posts.video} />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('Picture', { imageUrl: data?.Posts.mainPicture })
+                    console.log('clic detecté')
+                  }}
+                >
+                  <Image
+                    className='h-52'
+                    source={{
+                      uri: data?.Posts.mainPicture,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+              <View className='flex-row justify-between '>
+                <View
+                  className={` ${
+                    data?.Posts.video
+                      ? '-mt-1 flex flex-row items-center justify-start '
+                      : 'flex flex-col items-center -mt-8 mx-3'
                   } `}
                 >
-                  {data?.Posts.author.firstName}
-                </Text>
-                {data?.Posts.author.status === 'crew' && (
-                  <Text
-                    className={`text-xs color-clearBlue font-raleway ${
-                      data?.Posts.video ? '' : 'text-center'
-                    } `}
-                  >
-                    Compagnon
-                  </Text>
-                )}
-                <Text className='text-xs color-deepBlue font-raleway'>
-                  {moment().diff(data?.Posts.createdAt, 'days') <= 2
-                    ? moment(data?.Posts.createdAt).fromNow()
-                    : moment(data?.Posts.createdAt).format('LL')}
-                </Text>
-              </View>
-            </View>
-            {/* <View className='flex-row justify-center'>
+                  <CustomAvatar
+                    userId={data?.Posts.author.id}
+                    isConnected={false}
+                    avatarPicture={data?.Posts.author.avatar}
+                  />
+                  <View>
+                    <Text
+                      className={`text-md color-deepBlue font-ralewayBold ${
+                        data?.Posts.video ? '' : 'text-center'
+                      } `}
+                    >
+                      {data?.Posts.author.firstName}
+                    </Text>
+                    {data?.Posts.author.status === 'crew' && (
+                      <Text
+                        className={`text-xs color-clearBlue font-raleway ${
+                          data?.Posts.video ? '' : 'text-center'
+                        } `}
+                      >
+                        Compagnon
+                      </Text>
+                    )}
+                    <Text className='text-xs color-deepBlue font-raleway'>
+                      {moment().diff(data?.Posts.createdAt, 'days') <= 2
+                        ? moment(data?.Posts.createdAt).fromNow()
+                        : moment(data?.Posts.createdAt).format('LL')}
+                    </Text>
+                  </View>
+                </View>
+                {/* <View className='flex-row justify-center'>
               <Toggle isEnabled={false} />
             </View> */}
-            {data?.Posts.likes > 0 && (
-              <View className='ml-4 flex flex-row mt-2'>
-                <MaterialCommunityIcons name='hand-clap' color='#87BC23' size={16} />
-                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-2'>
-                  {data?.Posts.likes}
-                </Text>
+                {data?.Posts.likes > 0 && (
+                  <View className='ml-4 flex flex-row mt-2'>
+                    <MaterialCommunityIcons name='hand-clap' color='#87BC23' size={16} />
+                    <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-2'>
+                      {data?.Posts.likes}
+                    </Text>
+                  </View>
+                )}
+
+                {data?.Posts.author.email == userDataInApollo.email && (
+                  <View className='ml-4 flex flex-col m-2'>
+                    <TouchableOpacity
+                      onPress={editPost}
+                      className='flex flex-row p-1 bg-lightBlue rounded-md items-center justify-between mb-1'
+                    >
+                      <PencilSquareIcon size='18' color={'#0C617D'} />
+                      <Text className='text-xs  color-deepBlue font-ralewayBold  mr-2'>Éditer</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={deletePost}
+                      className='flex flex-row p-1 bg-lightBlue rounded-md items-center justify-between'
+                    >
+                      <ArchiveBoxIcon size='18' color={'#0C617D'} />
+                      <Text className='text-xs  color-deepBlue font-ralewayBold '>Supprimer</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {data?.Posts.comments.length > 0 && (
+                  <>
+                    <MaterialCommunityIcons name='chat' color='#87BC23' size={18} />
+                    <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
+                      {data?.Posts.comments.length}
+                    </Text>
+                  </>
+                )}
               </View>
-            )}
 
-            {data?.Posts.author.email == userDataInApollo.email && (
-              <View className='ml-4 flex flex-col m-2'>
-                <TouchableOpacity
-                  onPress={editPost}
-                  className='flex flex-row p-1 bg-lightBlue rounded-md items-center justify-between mb-1'
-                >
-                  <PencilSquareIcon size='18' color={'#0C617D'} />
-                  <Text className='text-xs  color-deepBlue font-ralewayBold  mr-2'>Éditer</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={deletePost}
-                  className='flex flex-row p-1 bg-lightBlue rounded-md items-center justify-between'
-                >
-                  <ArchiveBoxIcon size='18' color={'#0C617D'} />
-                  <Text className='text-xs  color-deepBlue font-ralewayBold '>Supprimer</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            {data?.Posts.comments.length > 0 && (
-              <>
-                <MaterialCommunityIcons name='chat' color='#87BC23' size={18} />
-                <Text className='text-xs  color-deepBlue font-ralewayBold bg-white mr-1'>
-                  {data?.Posts.comments.length}
+              {data?.Posts.title && (
+                <Text className='text-xl color-deepBlue font-ralewayBold  ml-3 mt-5 mb-6 text-center'>
+                  {data?.Posts.title}
                 </Text>
-              </>
-            )}
-          </View>
+              )}
+              {data?.Posts.content && (
+                <View className='mx-3 pb-12'>
+                  <RenderHtml contentWidth={width} tagsStyles={tagsStyles} source={source} />
+                </View>
+              )}
 
-          {data?.Posts.title && (
-            <Text className='text-xl color-deepBlue font-ralewayBold  ml-3 mt-5 mb-6 text-center'>
-              {data?.Posts.title}
-            </Text>
-          )}
-          {data?.Posts.content && (
-            <View className='mx-3 pb-12'>
-              <RenderHtml contentWidth={width} tagsStyles={tagsStyles} source={source} />
+              {data?.Posts.video && (
+                <TouchableOpacity
+                  className='mb-20'
+                  onPress={() => {
+                    navigation.navigate('Picture', { imageUrl: data?.Posts.mainPicture })
+                    console.log('clic detecté')
+                  }}
+                >
+                  <Image
+                    className='h-52'
+                    source={{
+                      uri: data?.Posts.mainPicture,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
-          )}
-
-          {data?.Posts.video && (
-            <TouchableOpacity
-              className='mb-20'
-              onPress={() => {
-                navigation.navigate('Picture', { imageUrl: data?.Posts.mainPicture })
-                console.log('clic detecté')
-              }}
-            >
-              <Image
-                className='h-52'
-                source={{
-                  uri: data?.Posts.mainPicture,
-                }}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
-      </ScrollView>
+          </ScrollView>
+        </>
+      ) : null}
       {data?.Posts.likes && <Applause likes={data?.Posts.likes} postId={data?.Posts.id} />}
     </SafeAreaView>
   )

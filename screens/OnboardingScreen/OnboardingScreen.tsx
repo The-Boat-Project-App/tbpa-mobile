@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   ScrollView,
@@ -14,11 +14,12 @@ import {
   Platform,
 } from 'react-native'
 import { FlatList } from 'native-base'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 
 import ScreenHeader from '@components/ScreenHeader/ScreenHeader'
 import PostCard from '@components/PostCard/PostCard'
 import InitialLoader from '@components/InitialLoader/InitialLoader'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 interface OnboardingScreenProps {}
 const slides = [
@@ -62,14 +63,25 @@ const Slide = ({ item }) => {
       <Image
         className='rounded-md '
         source={item?.image}
-        style={{
-          marginTop: 10,
-          height: '60%',
-          width: '70%',
-          resizeMode: 'contain',
-          margin: 0,
-          backgroundColor: 'white',
-        }}
+        style={
+          Platform.OS === 'ios'
+            ? {
+                marginTop: 10,
+                height: '60%',
+                width: '70%',
+                resizeMode: 'contain',
+                margin: 0,
+                backgroundColor: 'white',
+              }
+            : {
+                marginTop: 10,
+                height: width * 0.6,
+                width: width * 0.4,
+                resizeMode: 'cover',
+                margin: 0,
+                backgroundColor: 'white',
+              }
+        }
       />
       <View className='mt-10  items-center'>
         <Text className='font-ralewayBold' style={styles.title}>
@@ -84,8 +96,8 @@ const Slide = ({ item }) => {
 }
 const OnboardingScreen: React.FunctionComponent<OnboardingScreenProps> = (props) => {
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
   const { height, width } = useWindowDimensions()
-
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
   const ref = useRef()
   const updateCurrentSlideIndex = (e) => {
@@ -200,18 +212,22 @@ const OnboardingScreen: React.FunctionComponent<OnboardingScreenProps> = (props)
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <FlatList
-        ref={ref}
-        onMomentumScrollEnd={updateCurrentSlideIndex}
-        contentContainerStyle={{ height: height * 0.69 }}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        horizontal
-        data={slides}
-        pagingEnabled
-        renderItem={({ item }) => <Slide item={item} />}
-      />
-      <Footer />
+      {isFocused ? (
+        <>
+          <FlatList
+            ref={ref}
+            onMomentumScrollEnd={updateCurrentSlideIndex}
+            contentContainerStyle={{ height: height * 0.69 }}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            horizontal
+            data={slides}
+            pagingEnabled
+            renderItem={({ item }) => <Slide item={item} />}
+          />
+          <Footer />
+        </>
+      ) : null}
     </SafeAreaView>
   )
 }

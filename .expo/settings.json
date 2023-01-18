@@ -6,5 +6,5 @@
   "urlRandomness": "45-uxh",
   "https": false,
   "scheme": "com.matthieudev.mobile",
-  "devClient": true
+  "devClient": false
 }

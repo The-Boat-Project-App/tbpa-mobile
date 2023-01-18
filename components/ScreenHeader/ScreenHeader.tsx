@@ -4,6 +4,7 @@ import {
   ArrowDownCircleIcon as ArrowDownCircleIconOutline,
 } from 'react-native-heroicons/outline'
 import { useNavigation } from '@react-navigation/native'
+import { useRef } from 'react'
 
 interface ScreenHeaderProps {
   arrowDirection: String
@@ -17,7 +18,9 @@ const ScreenHeader: React.FunctionComponent<ScreenHeaderProps> = ({ arrowDirecti
     <View className={`flex-row mx-3  ${Platform.OS === 'ios' ? 'pb-0 -mt-2' : 'pb-1 mt-1'} pr-1 `}>
       <TouchableOpacity
         className=' justify-center align-middle flex-1'
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          navigation.pop()
+        }}
       >
         {arrowDirection == 'down' ? (
           <ArrowDownCircleIconOutline size='42' color='#0C617D' />

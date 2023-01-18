@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, memo } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
+
 import moment from 'moment'
 import localization from 'moment/locale/fr'
 import InitialLoader from '@components/InitialLoader/InitialLoader'
@@ -16,6 +17,7 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Modal,
 } from 'react-native'
 import { API_URL } from 'react-native-dotenv'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -34,16 +36,19 @@ import {
 import { boatLocationVar } from '../../variables/boatLocation'
 import { userDataVar } from '../../variables/userData'
 import { Divider } from 'native-base'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 interface HomeScreenProps {}
 
 const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
+  const [modalVisible, setModalVisible] = useState(true)
   const [refreshing, setRefreshing] = useState<boolean>(false)
   const [isScrolled, setIsScrolled] = useState<boolean>(false)
   const [isInitialLoaderVisible, setIsInitialLoaderVisible] = useState<boolean>(true)
   const { height, width } = useWindowDimensions()
   const [newList, setNewsList] = useState([])
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
   const { data, refetch } = useGetAllNewsQuery()
   const { data: postsData, refetch: refetchPostsData } = useGetValidatedPostsQuery()
   const { data: tripData, refetch: refetchTripData } = useGetTripByIdQuery({
@@ -52,8 +57,37 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
   useEffect(() => {
     setTimeout(() => {
       setIsInitialLoaderVisible(false)
-    }, 2500)
+    }, 500)
+    // const storeData = async () => {
+    //   try {
+    //     await AsyncStorage.setItem('firstUse', 'false')
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // }
+
+    // const getData = async () => {
+    //   try {
+    //     const value = await AsyncStorage.getItem('firstUse')
+    //     console.log('firstUse', value)
+    //     if (value == null) {
+    //       storeData()
+    //       navigation.navigate('Onboarding')
+    //     }
+    //   } catch (e) {
+    //     // error reading value
+    //   }
+    // }
+    // getData()
   }, [])
+
+  useEffect(() => {
+    if (data) {
+      setTimeout(() => {
+        setModalVisible(false)
+      }, 500)
+    }
+  }, [data])
 
   if (tripData) {
     boatLocationVar({
@@ -76,20 +110,20 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
     })
   }, [])
 
-  console.log('API_URL in .env', API_URL)
+  // console.log('API_URL in .env', API_URL)
   // console.log('data', data)
   // console.log('tripDatadata', tripData)
 
   // ! Changement locale Momentjs en global en même temps que la langue ?
   moment.updateLocale('fr', localization)
 
-  if (!data || !postsData || !tripData || isInitialLoaderVisible) {
-    navigation.setOptions({
-      tabBarStyle: { display: 'none' },
-    })
+  // if (!data || !postsData || !tripData || isInitialLoaderVisible) {
+  //   navigation.setOptions({
+  //     tabBarStyle: { display: 'none' },
+  //   })
 
-    return <InitialLoader />
-  }
+  //   return <InitialLoader />
+  // }
 
   if (data && postsData && tripData && !isInitialLoaderVisible) {
     navigation.setOptions({
@@ -113,7 +147,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
       >
         <View className='justify-center bg-white '>
           <SeeAll target='AllNews' />
-          {data && (
+          {data && isFocused && (
             <FlatList
               className='mb-3'
               horizontal={true}
@@ -186,6 +220,15 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({}) => {
             />
           </TouchableOpacity>
         </View>
+        <Modal
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible)
+          }}
+        >
+          <InitialLoader />
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   )
@@ -196,4 +239,4 @@ const styles = StyleSheet.create({
   colorDate: { backgroundColor: '#139db8' },
 })
 
-export default HomeScreen
+export default memo(HomeScreen)

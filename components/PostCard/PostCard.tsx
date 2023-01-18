@@ -6,7 +6,6 @@ import {
   ImageBackground,
   useWindowDimensions,
 } from 'react-native'
-import FastImage from 'react-native-fast-image'
 
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
@@ -45,7 +44,7 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
   video,
   date,
 }) => {
-  console.log('validated in PostCard', validated)
+  // console.log('validated in PostCard', validated)
   //* Regex to shorten text content
   const shortenedContent = intro.replace(/^(.{120}[^\s]*).*/, '$1') + ' ...'
   const navigation = useNavigation()
@@ -54,17 +53,17 @@ export const PostCard: React.FunctionComponent<PostCardProps> = ({
   return (
     <TouchableOpacity
       className={`flex-row bg-lightBlue p-2 rounded-md `}
-      onPress={() => navigation.navigate('Post', { postId: id })}
+      onPress={() => navigation.navigate('Post', { postId: id, key: id })}
     >
       <View className='w-2/5 justify-center'>
-        <FastImage
+        <Image
           className='h-24 flex-row justify-end rounded-lg'
           // imageStyle={{ borderRadius: '10%' }}
           source={{
             uri: picture,
           }}
           resizeMode='cover'
-        ></FastImage>
+        ></Image>
       </View>
       <View className='w-3/5 pl-2 flex-col '>
         <View className='flex flex-row justify-between' style={{ width: width * 0.5 }}>

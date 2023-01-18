@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-
 import { HomeStackNavigatorParamList } from './types'
 import { getAccessToken } from '../accessToken'
 
@@ -8,7 +7,7 @@ import SignUpScreen from '@screens/SignUpScreen/SignUpScreen'
 import SignInScreen from '@screens/SignInScreen/SignInScreen'
 import UserScreen from '@screens/UserScreen/UserScreen'
 import MyUserScreen from '@screens/MyUserScreen/MyUserScreen'
-
+import EditProfileScreen2 from '@screens/EditProfileScreen2/EditProfileScreen2'
 import PostScreen from '@screens/PostScreen/PostScreen'
 import PreviewPostScreen from '@screens/PreviewPostScreen/PreviewPostScreen'
 import NewsScreen from '@screens/NewsScreen/NewsScreen'
@@ -18,7 +17,9 @@ import PartnerScreen from '@screens/PartnerScreen/PartnerScreen'
 import AddPostScreen from '@screens/AddPostScreen/AddPostScreen'
 import PictureScreen from '@screens/PictureScreen/PictureScreen'
 import AllThemesScreen from '@screens/AllThemes/AllThemes'
+import PartnersScreen from '@screens/PartnersScreen/PartnersScreen'
 import CrewScreen from '@screens/CrewScreen/CrewScreen'
+import ProjectDescriptionScreen from '@screens/ProjectDescriptionScreen/ProjectDescriptionScreen'
 import BottomTabs from './Tabs'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
@@ -45,7 +46,6 @@ const HomeStackNavigator = () => {
   return (
     <SafeAreaProvider>
       <StatusBar style='dark' backgroundColor='white' />
-
       <HomeStack.Navigator
         screenOptions={{
           headerShown: false,
@@ -60,6 +60,14 @@ const HomeStackNavigator = () => {
           }}
         />
         <HomeStack.Screen name='BottomTabs' component={BottomTabs} />
+        <HomeStack.Screen
+          name='ProjectDescription'
+          component={ProjectDescriptionScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
         <HomeStack.Screen name='AddNewPost' component={AddPostScreen} />
         <HomeStack.Screen name='SignIn' component={SignInScreen} />
         <HomeStack.Screen
@@ -81,6 +89,14 @@ const HomeStackNavigator = () => {
         <HomeStack.Screen
           name='AllPosts'
           component={AllPostsScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <HomeStack.Screen
+          name='Partners'
+          component={PartnersScreen}
           options={{
             animationTypeForReplace: 'push',
             animation: 'slide_from_right',
@@ -110,7 +126,6 @@ const HomeStackNavigator = () => {
             animation: 'slide_from_right',
           }}
         />
-
         <HomeStack.Screen
           name='PreviewPost'
           component={PreviewPostScreen}
@@ -129,7 +144,6 @@ const HomeStackNavigator = () => {
             animation: 'slide_from_bottom',
           }}
         />
-
         <HomeStack.Screen
           name='News'
           component={NewsScreen}
@@ -149,6 +163,14 @@ const HomeStackNavigator = () => {
         <HomeStack.Screen
           name='MyUser'
           component={MyUserScreen}
+          options={{
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right',
+          }}
+        />
+        <HomeStack.Screen
+          name='EditProfile'
+          component={EditProfileScreen2}
           options={{
             animationTypeForReplace: 'push',
             animation: 'slide_from_right',

@@ -1,6 +1,6 @@
 import { Image, TouchableOpacity, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import FastImage from 'react-native-fast-image'
+// import FastImage from 'react-native-fast-image'
 
 interface NewsCard {
   id: string
@@ -19,20 +19,20 @@ export const NewsCard: React.FunctionComponent<NewsCardProps> = ({
   intro,
 }) => {
   //* Regex to shorten text content
-  console.log(intro)
+  // console.log(intro)
   let shortenedContent = intro.replace(/^(.{80}[^\s]*).*/, '$1')
   if (shortenedContent.length > 80) {
     shortenedContent += ' ...'
   }
   const navigation = useNavigation()
-  console.log('tessst')
-  console.log('id dans newscard ', id)
+  // console.log('tessst')
+  // console.log('id dans newscard ', id)
   return (
     <TouchableOpacity
       className='w-32 p-0 ml-3'
       onPress={() => navigation.navigate('News', { newsId: id })}
     >
-      <FastImage
+      <Image
         className='rounded-md w-full h-24'
         source={{
           uri: picture,

@@ -12,7 +12,7 @@ const InitialLoader: React.FunctionComponent<InitialLoaderProps> = () => {
     >
       <View
         className='mb-10 p-2 flex flex-col justify-center items-center'
-        style={{ opacity: 0.65, backgroundColor: 'white', borderRadius: '50%' }}
+        style={{ opacity: 0.65, backgroundColor: 'white', borderRadius: 50 }}
       >
         <Spinner className='' size='lg' color='#0C617D' />
       </View>

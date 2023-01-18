@@ -8,6 +8,7 @@ import {
   MapPinIcon,
   ArrowRightOnRectangleIcon,
   PencilSquareIcon,
+  CameraIcon,
 } from 'react-native-heroicons/solid'
 import * as ImagePicker from 'expo-image-picker'
 import { Modal, Spinner } from 'native-base'
@@ -38,7 +39,7 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
   })
 
   const emptySecureStore = async () => {
-    console.log('suppression de l access token et retour à SignInScreen')
+    // console.log('suppression de l access token et retour à SignInScreen')
     await deleteAccessToken()
     accessTokenVar('')
     userDataVar({ firstName: '', lastName: '', avatar: '', status: '', email: '' })
@@ -115,13 +116,18 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
       {userDataInApollo.status === 'dev' && <DevController />}
       <ScrollView className='mx-3' horizontal={false} showsVerticalScrollIndicator={false}>
         <View className='flex flex-col items-center'>
-          <TouchableOpacity onPress={pickImage} activeOpacity={0.9}>
+          <TouchableOpacity
+            onPress={pickImage}
+            activeOpacity={0.9}
+            className='flex items-end mt-16'
+          >
             <Image
-              className='w-40 h-40 rounded-full mt-16'
+              className='w-40 h-40 rounded-full'
               source={{
                 uri: userDataInApollo.avatar,
               }}
             />
+            <CameraIcon size={24} color='green' />
           </TouchableOpacity>
 
           <Text className='text-center font-ralewayBold text-xl mt-5 text-deepBlue'>
@@ -151,13 +157,18 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
             <UserIcon size={30} color={'#0C617D'} />
             <Text className='text-center font-ralewayBold text-mainBlue'>Mon profil public</Text>
           </TouchableOpacity>
-          <TouchableOpacity className='items-center space-y-4 p-4  '>
+          <TouchableOpacity
+            className='items-center space-y-4 p-4'
+            onPress={() =>
+              navigation.navigate('EditProfile', { userEmail: userDataInApollo.email })
+            }
+          >
             <PencilSquareIcon size={30} color={'#0C617D'} />
             <Text className='text-center font-ralewayBold text-mainBlue'>Éditer mon profil</Text>
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity className='flex-row items-center justify-between space-x-40 mt-5  rounded-lg shadow-md  p-2 mb-5 '>
+        {/* <TouchableOpacity className='flex-row items-center justify-between space-x-40 mt-5  rounded-lg shadow-md  p-2 mb-5 '>
           <View className='flex-row items-center'>
             <ListBulletIcon size={30} color={'#0C617D'} />
             <Text className='text-center font-ralewayBold ml-3 text-mainBlue'>
@@ -165,7 +176,7 @@ const ProfileScreen: React.FunctionComponent<ProfileScreenProps> = ({}) => {
             </Text>
           </View>
           <ChevronRightIcon size={20} color={'grey'} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity
           className='flex-row items-center space-x-40 mt-5 justify-between shadow-md  p-2 mb-5  '
